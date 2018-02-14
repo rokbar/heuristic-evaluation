@@ -5,7 +5,7 @@ import { authMethod } from "actions/auth";
 
 class SignInContainer extends Component {
   render() {
-    const { signInUser } = this.props;
+    const { authMethod } = this.props;
     return (
       <SignInForm
         onSubmit={authMethod}
@@ -20,4 +20,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { authMethod })(SignInContainer);
+export default connect(null, { authMethod })(SignInContainer);

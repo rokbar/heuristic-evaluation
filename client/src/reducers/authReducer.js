@@ -5,10 +5,12 @@ import {
 
 export default (state = {}, action) => {
   switch(action.type) {
-    case AUTH_USER:
-      return { ...state, authenticated: true };
+    case AUTH_USER: {
+      const { role, authenticated } = action.payload;
+      return { ...state, authenticated, role };
+    }
     case UNAUTH_USER:
-      return { ...state, authenticated: false };
+      return { authenticated: false };
   }
 
   return state;

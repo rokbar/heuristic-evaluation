@@ -100,16 +100,22 @@ app.service('authentication').hooks({
 // the password with a hash of the password before saving it.
 app.service('users').hooks({
   before: {
-    find: [
+    all: [
       auth.hooks.authenticate('jwt'),
+    ],
+    find: [
       authHooks.restrictToRoles({
         roles: ['systemadmin'],
         fieldName: 'typeSelector',
         idField: 'id_User',
       }),
-      (context) => console.log(context),
     ],
     create: [
+      authHooks.restrictToRoles({
+        roles: ['systemadmin'],
+        fieldName: 'typeSelector',
+        idField: 'id_User',
+      }),
       local.hooks.hashPassword({ passwordField: 'password' })
     ]
   },
