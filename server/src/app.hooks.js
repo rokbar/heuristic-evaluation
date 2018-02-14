@@ -23,8 +23,15 @@ module.exports = {
   },
 
   error: {
-    all: [ logger() ],
-    find: [],
+    all: [
+      // logger(),
+      (hook) => {
+
+      }
+    ],
+    find: [
+
+    ],
     get: [],
     create: [],
     update: [],

@@ -1,4 +1,4 @@
-CREATE TABLE Heuristics
+CREATE TABLE Heuristic
 (
 	id_Heuristic integer AUTO_INCREMENT,
 	name varchar (255),
@@ -28,7 +28,7 @@ INSERT INTO TeamState(id_TeamState, name) VALUES(3, 'generalization');
 INSERT INTO TeamState(id_TeamState, name) VALUES(4, 'new');
 INSERT INTO TeamState(id_TeamState, name) VALUES(5, 'ratingProblems');
 
-CREATE TABLE Rules
+CREATE TABLE Rule
 (
 	id_Rule integer AUTO_INCREMENT,
 	description varchar (255),
@@ -36,7 +36,7 @@ CREATE TABLE Rules
 	PRIMARY KEY(id_Rule)
 );
 
-CREATE TABLE ProblemsRules
+CREATE TABLE ProblemRule
 (
 	id_ProblemRule integer AUTO_INCREMENT,
 	fk_Problemid_Problem integer NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE ProblemsRules
 	PRIMARY KEY(id_ProblemRule)
 );
 
-CREATE TABLE Ratings
+CREATE TABLE Rating
 (
 	id_Rating integer AUTO_INCREMENT,
 	value integer,
@@ -54,7 +54,7 @@ CREATE TABLE Ratings
 	PRIMARY KEY(id_Rating)
 );
 
-CREATE TABLE Teams
+CREATE TABLE Team
 (
 	id_Team integer AUTO_INCREMENT,
 	name varchar (255),
@@ -69,7 +69,7 @@ CREATE TABLE Teams
 	PRIMARY KEY(id_Team)
 );
 
-CREATE TABLE Users
+CREATE TABLE User
 (
 	id_User integer AUTO_INCREMENT,
 	name varchar (255),
@@ -83,7 +83,7 @@ CREATE TABLE Users
 	PRIMARY KEY(id_User)
 );
 
-CREATE TABLE Companies
+CREATE TABLE Company
 (
 	id_Company integer AUTO_INCREMENT,
 	name varchar (255),
@@ -94,7 +94,7 @@ CREATE TABLE Companies
 	PRIMARY KEY(id_Company)
 );
 
-CREATE TABLE Tasks
+CREATE TABLE Task
 (
 	id_Task integer AUTO_INCREMENT,
 	description varchar (255),
@@ -103,7 +103,7 @@ CREATE TABLE Tasks
 	PRIMARY KEY(id_Task)
 );
 
-CREATE TABLE ExpertsProblems
+CREATE TABLE ExpertProblem
 (
 	id_ExpertProblem integer AUTO_INCREMENT,
 	fk_Expertid_User integer NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE ExpertsProblems
 	PRIMARY KEY(id_ExpertProblem)
 );
 
-CREATE TABLE ExpertTeams
+CREATE TABLE ExpertTeam
 (
 	id_ExpertTeam integer AUTO_INCREMENT,
 	state integer,
@@ -120,7 +120,7 @@ CREATE TABLE ExpertTeams
 	PRIMARY KEY(id_ExpertTeam)
 );
 
-CREATE TABLE Problems
+CREATE TABLE Problem
 (
 	id_Problem integer AUTO_INCREMENT,
 	description varchar (255),
@@ -132,41 +132,41 @@ CREATE TABLE Problems
 	PRIMARY KEY(id_Problem)
 );
 
-ALTER TABLE Rules
-	ADD CONSTRAINT consists_of FOREIGN KEY(fk_Heuristicid_Heuristic) REFERENCES Heuristics (id_Heuristic);
+ALTER TABLE Rule
+	ADD CONSTRAINT consists_of FOREIGN KEY(fk_Heuristicid_Heuristic) REFERENCES Heuristic (id_Heuristic);
 
-ALTER TABLE ProblemsRules
-	ADD CONSTRAINT violates FOREIGN KEY(fk_Problemid_Problem) REFERENCES Problems (id_Problem),
-    ADD FOREIGN KEY(fk_Ruleid_Rule) REFERENCES Rules (id_Rule);
+ALTER TABLE ProblemRule
+	ADD CONSTRAINT violates FOREIGN KEY(fk_Problemid_Problem) REFERENCES Problem (id_Problem),
+    ADD FOREIGN KEY(fk_Ruleid_Rule) REFERENCES Rule (id_Rule);
     
-ALTER TABLE Ratings
-	ADD FOREIGN KEY(fk_Problemid_Problem) REFERENCES Problems (id_Problem),
-	ADD FOREIGN KEY(fk_Expertid_User) REFERENCES Users (id_User);
+ALTER TABLE Rating
+	ADD FOREIGN KEY(fk_Problemid_Problem) REFERENCES Problem (id_Problem),
+	ADD FOREIGN KEY(fk_Expertid_User) REFERENCES User (id_User);
 
-ALTER TABLE Teams
+ALTER TABLE Team
 	ADD FOREIGN KEY(state) REFERENCES TeamState (id_TeamState),
-	ADD CONSTRAINT creates FOREIGN KEY(fk_CompanyAdminid_User) REFERENCES Users (id_User),
-	ADD CONSTRAINT manages FOREIGN KEY(fk_LeadExpertid_User) REFERENCES Users (id_User),
-	ADD CONSTRAINT uses FOREIGN KEY(fk_Heuristicid_Heuristic) REFERENCES Heuristics (id_Heuristic);
+	ADD CONSTRAINT creates FOREIGN KEY(fk_CompanyAdminid_User) REFERENCES User (id_User),
+	ADD CONSTRAINT manages FOREIGN KEY(fk_LeadExpertid_User) REFERENCES User (id_User),
+	ADD CONSTRAINT uses FOREIGN KEY(fk_Heuristicid_Heuristic) REFERENCES Heuristic (id_Heuristic);
     
-ALTER TABLE Users
-	ADD CONSTRAINT belongs_to FOREIGN KEY(fk_Companyid_Company) REFERENCES Companies (id_Company),
-	ADD CONSTRAINT admin_creates FOREIGN KEY(fk_SystemAdminid_User) REFERENCES Users (id_User);
+ALTER TABLE User
+	ADD CONSTRAINT belongs_to FOREIGN KEY(fk_Companyid_Company) REFERENCES Company (id_Company),
+	ADD CONSTRAINT admin_creates FOREIGN KEY(fk_SystemAdminid_User) REFERENCES User (id_User);
     
-ALTER TABLE Companies
-	ADD CONSTRAINT admin_creates_company FOREIGN KEY(fk_SystemAdminid_User) REFERENCES Users (id_User);
+ALTER TABLE Company
+	ADD CONSTRAINT admin_creates_company FOREIGN KEY(fk_SystemAdminid_User) REFERENCES User (id_User);
     
-ALTER TABLE Tasks
-	ADD CONSTRAINT has FOREIGN KEY(fk_Teamid_Team) REFERENCES Teams (id_Team);
+ALTER TABLE Task
+	ADD CONSTRAINT has FOREIGN KEY(fk_Teamid_Team) REFERENCES Team (id_Team);
     
-ALTER TABLE ExpertsProblems
-	ADD CONSTRAINT detected FOREIGN KEY(fk_Expertid_User) REFERENCES Users (id_User),
-	ADD FOREIGN KEY(fk_Problemid_Problem) REFERENCES Problems (id_Problem);
+ALTER TABLE ExpertProblem
+	ADD CONSTRAINT detected FOREIGN KEY(fk_Expertid_User) REFERENCES User (id_User),
+	ADD FOREIGN KEY(fk_Problemid_Problem) REFERENCES Problem (id_Problem);
     
-ALTER TABLE ExpertTeams
+ALTER TABLE ExpertTeam
 	ADD FOREIGN KEY(state) REFERENCES ExpertTeamState (id_ExpertTeamState),
-	ADD FOREIGN KEY(fk_Teamid_Team) REFERENCES Teams (id_Team),
-	ADD FOREIGN KEY(fk_Expertid_User) REFERENCES Users (id_User);
+	ADD FOREIGN KEY(fk_Teamid_Team) REFERENCES Team (id_Team),
+	ADD FOREIGN KEY(fk_Expertid_User) REFERENCES User (id_User);
     
-ALTER TABLE Problems
-	ADD CONSTRAINT finds FOREIGN KEY(fk_Teamid_Team) REFERENCES Teams (id_Team);
+ALTER TABLE Problem
+	ADD CONSTRAINT finds FOREIGN KEY(fk_Teamid_Team) REFERENCES Team (id_Team);

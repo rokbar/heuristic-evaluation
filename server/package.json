@@ -27,6 +27,9 @@
     "mocha": "mocha test/ --recursive --exit"
   },
   "dependencies": {
+    "@feathersjs/authentication": "^2.1.1",
+    "@feathersjs/authentication-jwt": "^2.0.0",
+    "@feathersjs/authentication-local": "^1.1.0",
     "@feathersjs/configuration": "^1.0.2",
     "@feathersjs/errors": "^3.2.2",
     "@feathersjs/express": "^1.2.0",
@@ -34,7 +37,11 @@
     "@feathersjs/socketio": "^3.2.0",
     "compression": "^1.7.1",
     "cors": "^2.8.4",
+    "feathers-authentication-hooks": "^0.1.6",
+    "feathers-knex": "^3.0.2",
     "helmet": "^3.11.0",
+    "knex": "^0.14.3",
+    "mysql": "^2.15.0",
     "serve-favicon": "^2.4.5",
     "winston": "^2.4.0"
   },
