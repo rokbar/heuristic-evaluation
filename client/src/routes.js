@@ -8,9 +8,11 @@ import SystemAdminHomeContainer from './containers/SystemAdminHomeContainer';
 import CompanyAdminHomeContainer from './containers/CompanyAdminHomeContainer';
 import UserHomeContainer from './containers/UserHomeContainer';
 
-const SystemAdminRoutes = AuthorizationHOC(['systemadmin']);
+const UserRoutes = AuthorizationHOC(['user', 'leader']);
+const LeaderRoutes = AuthorizationHOC(['leader']);
+const TeamAdminRoutes = AuthorizationHOC(['leader', 'companyadmin'])
 const CompanyAdminRoutes = AuthorizationHOC(['companyadmin']);
-const UserRoutes = AuthorizationHOC(['user']);
+const SystemAdminRoutes = AuthorizationHOC(['systemadmin']);
 
 // const AsyncApp = asyncComponent(() => import('./App'));
 // const AsyncHome = Loadable({

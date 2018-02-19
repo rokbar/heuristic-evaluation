@@ -1,0 +1,35 @@
+.Layout {
+  display: flex;
+  flex-flow: column nowrap;
+  font-weight: bold;
+  text-align: center;
+}
+
+.Layout > * {
+  padding: 10px;
+}
+
+.Layout__header {
+  background: tomato;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+}
+
+.Layout__row-layout {
+  margin-top: 40px;
+  display: flex;
+  flex: 1 0 auto;
+  flex-flow: row wrap;
+  align-items: stretch;
+}
+
+.Layout__footer {
+  background: lightgreen;
+}
+
+@media all and (min-width: 800px) {
+  .Layout__footer  { order: 4; }
+}
