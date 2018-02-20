@@ -10,7 +10,7 @@ import {
 const feathersClient = feathers();
 feathersClient.configure(rest().fetch(fetch)).configure(auth({ storage: localStorage }));
 
-export function authMethod({ username, password }) {
+export function localAuth({ username, password }) {
   return (dispatch) => {
     let role;
     feathersClient.authenticate({
@@ -41,6 +41,42 @@ export function authMethod({ username, password }) {
       })
       .catch(function (error) {
         console.error('Error authenticating!', error);
+        dispatch(push('/'));
+      });
+  }
+}
+
+export function jwtAuth({ token }) {
+  return (dispatch) => {
+    let role;
+    feathersClient.authenticate({
+      strategy: 'jwt',
+      accessToken: token,
+    })
+      .then(response => {
+        console.log('Authenticated!', response);
+        return feathersClient.passport.verifyJWT(response.accessToken);
+      })
+      .then(payload => {
+        console.log('JWT Payload', payload);
+        role = payload.role;
+        dispatch({
+          type: AUTH_USER,
+          payload: {
+            role,
+            authenticated: true,
+          }
+        });
+        return feathersClient.service('users').get(payload.userId);
+      })
+      .then(user => {
+        feathersClient.set('user', user);
+        console.log('User', feathersClient.get('user'));
+        dispatch(push(`${user.typeSelector}`));
+      })
+      .catch(function (error) {
+        console.error('Error authenticating!', error);
+        dispatch(push('/'));
       });
   }
 }

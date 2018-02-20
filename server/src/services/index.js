@@ -1,3 +1,5 @@
-// eslint-disable-next-line no-unused-vars
+const users = require('./users');
+
 module.exports = function (app) {
+
 };

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SignInForm from 'components/SignInForm';
-import { authMethod } from "actions/auth";
+import { localAuth } from 'actions/auth';
 
 class SignInContainer extends Component {
   render() {
-    const { authMethod } = this.props;
+    const { localAuth } = this.props;
     return (
       <SignInForm
-        onSubmit={authMethod}
+        onSubmit={localAuth}
       />
     )
   }
@@ -20,4 +20,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(null, { authMethod })(SignInContainer);
+export default connect(null, { localAuth })(SignInContainer);

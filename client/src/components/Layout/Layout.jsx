@@ -1,10 +1,11 @@
 import React from 'react';
+import FixedMenu from 'components/FixedMenu';
 import './Layout.css';
 
 export default function Layout(props) {
   return (
     <div className="Layout">
-      <header className="Layout__header">Header</header>
+      <FixedMenu />
       <div className="Layout__row-layout">
         {props.children}
       </div>

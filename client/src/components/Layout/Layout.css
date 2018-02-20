@@ -3,23 +3,15 @@
   flex-flow: column nowrap;
   font-weight: bold;
   text-align: center;
+  height: 100%;
 }
 
 .Layout > * {
   padding: 10px;
 }
 
-.Layout__header {
-  background: tomato;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-}
-
 .Layout__row-layout {
-  margin-top: 40px;
+  margin-top: 60px;
   display: flex;
   flex: 1 0 auto;
   flex-flow: row wrap;
