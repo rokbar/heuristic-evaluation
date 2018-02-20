@@ -9,7 +9,7 @@ export default function AuthorizationHOC(allowedRoles) {
       }
 
       render() {
-        const {role} = this.props;
+        const { role } = this.props;
         if (allowedRoles.includes(role)) {
           return <WrappedComponent {...this.props} />
         } else {

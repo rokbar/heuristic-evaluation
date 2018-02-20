@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import AsideWithArticle from 'components/Layout/AsideWithArticle';
+import Layout from 'components/Layout';
+import SharedMenuContainer from 'containers/SharedMenuContainer';
 
 export default class SystemAdminHomeContainer extends Component {
   render() {
     return (
-      <AsideWithArticle />
+      <Layout
+        header={SharedMenuContainer}
+      />
     )
   }
 }

@@ -5,6 +5,7 @@ import { push } from 'react-router-redux'
 
 import {
   AUTH_USER,
+  UNAUTH_USER,
 } from './types';
 
 const feathersClient = feathers();
@@ -12,7 +13,6 @@ feathersClient.configure(rest().fetch(fetch)).configure(auth({ storage: localSto
 
 export function localAuth({ username, password }) {
   return (dispatch) => {
-    let role;
     feathersClient.authenticate({
       strategy: 'local',
       email: username,
@@ -24,10 +24,11 @@ export function localAuth({ username, password }) {
       })
       .then(payload => {
         console.log('JWT Payload', payload);
-        role = payload.role;
+        const { name, role } = payload;
         dispatch({
           type: AUTH_USER,
           payload: {
+            name,
             role,
             authenticated: true,
           }
@@ -48,7 +49,6 @@ export function localAuth({ username, password }) {
 
 export function jwtAuth({ token }) {
   return (dispatch) => {
-    let role;
     feathersClient.authenticate({
       strategy: 'jwt',
       accessToken: token,
@@ -59,10 +59,11 @@ export function jwtAuth({ token }) {
       })
       .then(payload => {
         console.log('JWT Payload', payload);
-        role = payload.role;
+        const { name, role } = payload;
         dispatch({
           type: AUTH_USER,
           payload: {
+            name,
             role,
             authenticated: true,
           }
@@ -81,43 +82,17 @@ export function jwtAuth({ token }) {
   }
 }
 
-export function signInUser({ username, password }) {
-  return function (dispatch) {
-    fetch('api/signin', {
-      method: 'POST',
-      body: JSON.stringify({ username, password }),
-    })
+export function logout() {
+  return (dispatch) => {
+    feathersClient.logout()
       .then(response => {
-        // If request is good...
-        // - Update state to indicate user is authenticated
-        dispatch({
-          type: AUTH_USER
-        });
-        // - Save the JWT token and username
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('username', username);
-        // - Redirect to the route '/'
-        dispatch.push('/groups');
+        console.log(response);
       })
-      .catch(() => {
-        // dispatch(authError('Bad Login Info'));
+      .catch(error => {
+        console.log(error);
       });
+
+    dispatch({ type: UNAUTH_USER });
+    dispatch(push('/'));
   }
 }
-
-// export function signupUser({ username, password }) {
-//   return function (dispatch) {
-//     axios.post(`${ROOT_URL}/signup`, { username, password })
-//       .then(response => {
-//         dispatch({
-//           type: AUTH_USER
-//         });
-//         localStorage.setItem('token', response.data.token);
-//         localStorage.setItem('username', username);
-//         browserHistory.push('/groups');
-//       })
-//       .catch(error => {
-//         dispatch(authError(error.response.data.error));
-//       });
-//   }
-// }

@@ -6,8 +6,8 @@ import {
 export default (state = {}, action) => {
   switch(action.type) {
     case AUTH_USER: {
-      const { role, authenticated } = action.payload;
-      return { ...state, authenticated, role };
+      const { role, name, authenticated } = action.payload;
+      return { ...state, authenticated, role, name };
     }
     case UNAUTH_USER:
       return { authenticated: false };

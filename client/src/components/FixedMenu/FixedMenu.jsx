@@ -1,30 +1,26 @@
 import React from 'react';
-import { Menu, Container, Image, Dropdown } from 'semantic-ui-react';
+import { Menu, Container, Icon, Dropdown } from 'semantic-ui-react';
 
-export default function FixedMenu(props) {
+export default function FixedMenu({ name, logout }) {
   return (
     <Menu fixed='top' inverted>
       <Container>
         <Menu.Item as='a' header>
           Euristinis vertinimas
         </Menu.Item>
-        <Menu.Item as='a'>Pagrindinis</Menu.Item>
+        <Menu.Item as='a' position='right'>Pagrindinis</Menu.Item>
 
-        <Dropdown item simple text='Meniu'>
+        <Dropdown item simple position='right' text='Meniu'>
           <Dropdown.Menu>
-            <Dropdown.Item>List Item</Dropdown.Item>
-            <Dropdown.Item>List Item</Dropdown.Item>
+            <Dropdown.Header
+              content={`Labas, ${name}`}
+            />
             <Dropdown.Divider/>
-            <Dropdown.Header>Header Item</Dropdown.Header>
-            <Dropdown.Item>
-              <i className='dropdown icon'/>
-              <span className='text'>Submenu</span>
-              <Dropdown.Menu>
-                <Dropdown.Item>List Item</Dropdown.Item>
-                <Dropdown.Item>List Item</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown.Item>
-            <Dropdown.Item>List Item</Dropdown.Item>
+            <Dropdown.Item
+              icon='log out'
+              content='Atsijungti'
+              onClick={logout}
+            />
           </Dropdown.Menu>
         </Dropdown>
       </Container>
