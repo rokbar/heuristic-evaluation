@@ -1,21 +1,21 @@
 import React from 'react';
+import Footer from 'components/Footer';
 import './Layout.css';
 
 export default function Layout(props) {
-  const { header: Menu, aside, article } = props;
+  const { header: Menu, aside: AsideContent, article: ArticleContent } = props;
   return (
     <div className="Layout">
       <Menu />
       <div className="Layout__row-layout">
         <aside className="Aside">
-          {props.aside}
-          <p>Aside</p>
+          <AsideContent />
         </aside>
         <article className="Article">
-          {props.article}
+          <ArticleContent />
         </article>
       </div>
-      <footer className="Layout__footer">Footer</footer>
+      <Footer className="Layout__footer" />
     </div>
   )
 }
