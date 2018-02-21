@@ -6,7 +6,7 @@ export default function TableActions(props) {
   return (
     <Table.Header>
       <Table.Row>
-        <Table.HeaderCell colspan={headersCount}>
+        <Table.HeaderCell colSpan={headersCount}>
           {actions}
         </Table.HeaderCell>
       </Table.Row>

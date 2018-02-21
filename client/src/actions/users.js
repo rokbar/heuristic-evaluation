@@ -24,15 +24,17 @@ export function getUsers() {
   }
 }
 
-export function addUser({ name, password, email, userId: systemAdminId }) {
-  return (dispatch) => {
+export function addUser({ name, password, email }) {
+  return (dispatch, getState) => {
+    console.log(getState());
+    const { userId } = getState().auth;
     return fetch('/users', {
-      body: {
+      body: JSON.stringify({
         name,
         password,
         email,
-        'fk_SystemAdminid_User': systemAdminId,
-      },
+        'fk_SystemAdminid_User': userId,
+      }),
       headers: {
         'Authorization': getJwtToken(),
         'Content-Type': 'application/json',
@@ -40,7 +42,10 @@ export function addUser({ name, password, email, userId: systemAdminId }) {
       method: 'POST',
     })
       .then(response => {
-        console.log(response);
+        return response.json();
+      })
+      .then(users => {
+        console.log(users);
       })
       .catch(error => {
         console.log(error);

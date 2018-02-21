@@ -24,7 +24,6 @@ export default ({childProps}) =>
   <Switch>
     <Route path="/" exact component={SignInContainer} props={childProps} />
     <Route path="/systemadmin" component={SystemAdminRoutes(SystemAdminHomeContainer)} props={childProps} />
-    <Route path="/systemadmin/addUser" component={SystemAdminRoutes(SystemAdminHomeContainer)} props={childProps} />
     <Route path="/companyadmin" component={CompanyAdminRoutes(CompanyAdminHomeContainer)} props={childProps} />
     <Route path="/user" component={UserRoutes(UserHomeContainer)} props={childProps} />
   </Switch>

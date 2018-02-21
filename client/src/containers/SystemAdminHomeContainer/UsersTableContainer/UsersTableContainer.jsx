@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import DataTable from 'components/DataTable';
 import AddUserButton from './AddUserButton';
-import { getUsers, addUser } from 'actions/users';
+import { getUsers } from 'actions/users';
 
 const propTypes = {
   users: PropTypes.array,
@@ -31,7 +31,9 @@ class UsersTableContainer extends Component {
   }
 
   renderTableActions() {
-    return <AddUserButton onSubmit={addUser} />
+    return <AddUserButton
+      pushHistory={this.props.pushHistory}
+    />
   }
 
   render() {
@@ -56,5 +58,4 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   getUsers,
-  addUser,
 })(UsersTableContainer);

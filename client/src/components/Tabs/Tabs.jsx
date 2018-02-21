@@ -1,19 +1,24 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Menu } from 'semantic-ui-react';
 
 export default function Tabs(props) {
-  const renderPanes = (panes) => {
+  const renderPanes = (panes, currentLocation) => {
     return panes.map(item => {
-      const { menuItem, component: Component } = item;
-      return {
-        menuItem,
-        render: () => <Tab.Pane><Component /></Tab.Pane>,
-      }
+      const { name, pathName, activeItem } = item;
+      const regex = new RegExp('^' + pathName);
+      return <Menu.Item
+        content={name}
+        active={regex.test(currentLocation)}
+        as={Link} to={pathName}
+      />
     })
   };
 
-  const {panes} = props;
+  const { panes, currentLocation } = props;
   return (
-    <Tab panes={renderPanes(panes)}/>
+    <Menu attached="top" tabular>
+      {renderPanes(panes, currentLocation)}
+    </Menu>
   )
 }
