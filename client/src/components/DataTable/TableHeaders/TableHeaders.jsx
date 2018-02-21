@@ -3,7 +3,7 @@ import { Table } from 'semantic-ui-react';
 
 export default function TableHeaders({headers}) {
   const renderHeaderRow = (headers) => headers.map(item => (
-    <Table.HeaderCell>item</Table.HeaderCell>
+    <Table.HeaderCell>{item}</Table.HeaderCell>
   ));
 
   return (

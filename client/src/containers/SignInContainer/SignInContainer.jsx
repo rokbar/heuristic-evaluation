@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import SignInForm from 'components/SignInForm';
+import SignInForm from './SignInForm';
 import { localAuth } from 'actions/auth';
 
 class SignInContainer extends Component {

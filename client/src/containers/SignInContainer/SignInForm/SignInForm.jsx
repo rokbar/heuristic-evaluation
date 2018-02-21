@@ -32,7 +32,7 @@ function SignInForm(props) {
                 fluid
                 icon="user"
                 iconPosition="left"
-                placeholder="Prisijungimo vardas"
+                placeholder="El. paštas"
               />
               <Field 
                 name="password"

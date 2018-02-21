@@ -24,10 +24,11 @@ export function localAuth({ username, password }) {
       })
       .then(payload => {
         console.log('JWT Payload', payload);
-        const { name, role } = payload;
+        const { name, role, userId } = payload;
         dispatch({
           type: AUTH_USER,
           payload: {
+            userId,
             name,
             role,
             authenticated: true,
@@ -59,10 +60,11 @@ export function jwtAuth({ token }) {
       })
       .then(payload => {
         console.log('JWT Payload', payload);
-        const { name, role } = payload;
+        const { name, role, userId } = payload;
         dispatch({
           type: AUTH_USER,
           payload: {
+            userId,
             name,
             role,
             authenticated: true,
