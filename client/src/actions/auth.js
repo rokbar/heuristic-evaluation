@@ -39,7 +39,7 @@ export function localAuth({ username, password }) {
       .then(user => {
         feathersClient.set('user', user);
         console.log('User', feathersClient.get('user'));
-        dispatch(push(`${user.typeSelector}`));
+        dispatch(push(`${user.role}`));
       })
       .catch(function (error) {
         console.error('Error authenticating!', error);
@@ -75,7 +75,7 @@ export function jwtAuth({ token }) {
       .then(user => {
         feathersClient.set('user', user);
         console.log('User', feathersClient.get('user'));
-        dispatch(push(`${user.typeSelector}`));
+        dispatch(push(`${user.role}`));
       })
       .catch(function (error) {
         console.error('Error authenticating!', error);

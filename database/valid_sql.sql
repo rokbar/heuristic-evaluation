@@ -144,40 +144,42 @@ CREATE TABLE Problem
 );
 
 ALTER TABLE Rule
-	ADD CONSTRAINT consists_of FOREIGN KEY(heuristic_id) REFERENCES Heuristic (id);
+	ADD CONSTRAINT consists_of FOREIGN KEY(heuristic_id) REFERENCES Heuristic (id) ON DELETE CASCADE;
 
 ALTER TABLE ProblemRule
-	ADD CONSTRAINT violates FOREIGN KEY(problem_id) REFERENCES Problem (id),
-    ADD FOREIGN KEY(rule_id) REFERENCES Rule (id);
+	ADD CONSTRAINT violates FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE,
+    ADD FOREIGN KEY(rule_id) REFERENCES Rule (id) ON DELETE CASCADE;
     
 ALTER TABLE Rating
-	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id),
-	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id);
+	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE;
 
 ALTER TABLE Team
-	ADD FOREIGN KEY(state) REFERENCES TeamState (id),
-	ADD CONSTRAINT creates FOREIGN KEY(companyAdmin_id) REFERENCES User (id),
-	ADD CONSTRAINT manages FOREIGN KEY(leader_id) REFERENCES User (id),
-	ADD CONSTRAINT uses FOREIGN KEY(heuristic_id) REFERENCES Heuristic (id);
+	ADD FOREIGN KEY(state) REFERENCES TeamState (id) ON DELETE CASCADE,
+	ADD CONSTRAINT creates FOREIGN KEY(companyAdmin_id) REFERENCES User (id) ON DELETE CASCADE,
+	ADD CONSTRAINT manages FOREIGN KEY(leader_id) REFERENCES User (id) ON DELETE CASCADE,
+	ADD CONSTRAINT uses FOREIGN KEY(heuristic_id) REFERENCES Heuristic (id) ON DELETE CASCADE;
     
 ALTER TABLE User
-	ADD CONSTRAINT belongs_to FOREIGN KEY(company_id) REFERENCES Company (id),
-	ADD CONSTRAINT admin_creates FOREIGN KEY(systemAdmin_id) REFERENCES User (id);
+	ADD CONSTRAINT belongs_to FOREIGN KEY(company_id) REFERENCES Company (id) ON DELETE CASCADE,
+	ADD CONSTRAINT admin_creates FOREIGN KEY(systemAdmin_id) REFERENCES User (id) ON DELETE CASCADE;
     
 ALTER TABLE Company
-	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdmin_id) REFERENCES User (id);
+	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdmin_id) REFERENCES User (id) ON DELETE CASCADE;
     
 ALTER TABLE Task
-	ADD CONSTRAINT has FOREIGN KEY(team_id) REFERENCES Team (id);
+	ADD CONSTRAINT has FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE;
     
 ALTER TABLE EvaluatorProblem
-	ADD CONSTRAINT detected FOREIGN KEY(evaluator_id) REFERENCES User (id),
-	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id);
+	ADD CONSTRAINT detected FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE;
     
 ALTER TABLE EvaluatorTeam
-	ADD FOREIGN KEY(state) REFERENCES ExpertTeamState (id),
-	ADD FOREIGN KEY(team_id) REFERENCES Team (id),
-	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id);
+	ADD FOREIGN KEY(state) REFERENCES ExpertTeamState (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE;
     
 ALTER TABLE Problem
-	ADD CONSTRAINT finds FOREIGN KEY(team_id) REFERENCES Team (id);
+	ADD CONSTRAINT finds FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE;
+
+ALTER TABLE user AUTO_INCREMENT = 1
