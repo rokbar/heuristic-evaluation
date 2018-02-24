@@ -64,7 +64,7 @@ app.hooks(appHooks);
 app.use('/users', knex({
   Model: db,
   name: 'user',
-  id: 'id_User',
+  id: 'id',
 }));
 
 app.service('users').hooks({
@@ -78,7 +78,7 @@ app.service('authentication').hooks({
       auth.hooks.authenticate(['jwt', 'local']),
       context => {
         const { email, name, isBlocked } = context.params.user;
-        const companyId = context.params.user['fk_Companyid_Company'];
+        const companyId = context.params.user['company_id'];
         const role = context.params.user.typeSelector;
         context.params.payload = context.params.payload || {};
         Object.assign(context.params.payload, {
@@ -106,15 +106,15 @@ app.service('users').hooks({
     find: [
       authHooks.restrictToRoles({
         roles: ['systemadmin'],
-        fieldName: 'typeSelector',
-        idField: 'id_User',
+        fieldName: 'role',
+        idField: 'id',
       }),
     ],
     create: [
       authHooks.restrictToRoles({
         roles: ['systemadmin'],
-        fieldName: 'typeSelector',
-        idField: 'id_User',
+        fieldName: 'role',
+        idField: 'id',
       }),
       local.hooks.hashPassword({ passwordField: 'password' })
     ]

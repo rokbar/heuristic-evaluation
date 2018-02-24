@@ -33,7 +33,7 @@ export function addUser({ name, password, email }) {
         name,
         password,
         email,
-        'fk_SystemAdminid_User': userId,
+        systemAdmin_id: userId,
       }),
       headers: {
         'Authorization': getJwtToken(),

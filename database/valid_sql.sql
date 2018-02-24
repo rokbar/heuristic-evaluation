@@ -1,6 +1,7 @@
 CREATE TABLE Heuristic
 (
 	id integer AUTO_INCREMENT,
+	isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	isUnique boolean DEFAULT false,
 	PRIMARY KEY(id)
@@ -31,6 +32,7 @@ INSERT INTO TeamState(id, name) VALUES(5, 'ratingProblems');
 CREATE TABLE Rule
 (
 	id integer AUTO_INCREMENT,
+	isRemoved boolean DEFAULT 0,
 	description varchar (255),
 	heuristic_id integer NOT NULL,
 	PRIMARY KEY(id)
@@ -39,6 +41,7 @@ CREATE TABLE Rule
 CREATE TABLE ProblemRule
 (
 	id integer AUTO_INCREMENT,
+	isRemoved boolean DEFAULT 0,
 	problem_id integer NOT NULL,
 	rule_id integer NOT NULL,
 	PRIMARY KEY(id)
@@ -47,6 +50,7 @@ CREATE TABLE ProblemRule
 CREATE TABLE Rating
 (
 	id integer AUTO_INCREMENT,
+	isRemoved boolean DEFAULT 0,
 	value integer,
 	comment varchar (255),
 	problem_id integer NOT NULL,
@@ -57,6 +61,7 @@ CREATE TABLE Rating
 CREATE TABLE Team
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	report smallint,
 	systemName varchar (255),
@@ -72,9 +77,10 @@ CREATE TABLE Team
 CREATE TABLE User
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	password varchar (255),
-	isBlocked boolean,
+	isBlocked boolean DEFAULT 0,
 	lastLogon date,
 	email varchar (255),
 	company_id integer,
@@ -86,6 +92,7 @@ CREATE TABLE User
 CREATE TABLE Company
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	country varchar (255),
 	url varchar (255),
@@ -97,6 +104,7 @@ CREATE TABLE Company
 CREATE TABLE Task
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	description varchar (255),
 	number integer,
 	team_id integer NOT NULL,
@@ -106,6 +114,7 @@ CREATE TABLE Task
 CREATE TABLE EvaluatorProblem
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	evaluator_id integer NOT NULL,
 	problem_id integer NOT NULL,
 	PRIMARY KEY(id)
@@ -114,6 +123,7 @@ CREATE TABLE EvaluatorProblem
 CREATE TABLE EvaluatorTeam
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	state integer,
 	team_id integer NOT NULL,
 	evaluator_id integer NOT NULL,
@@ -123,6 +133,7 @@ CREATE TABLE EvaluatorTeam
 CREATE TABLE Problem
 (
 	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
 	description varchar (255),
 	location varchar (255),
 	photo smallint,
