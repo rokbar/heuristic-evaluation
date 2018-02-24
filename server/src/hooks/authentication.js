@@ -1,4 +1,4 @@
-module.exports = function (auth) {
+module.exports = function ({ auth }) {
   return function (app) {
     app.service('authentication').hooks({
       before: {

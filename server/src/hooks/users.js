@@ -1,11 +1,9 @@
-// const auth = require('@feathersjs/authentication');
 const authHooks = require('feathers-authentication-hooks');
-// const local = require('@feathersjs/authentication-local');
 
 module.exports = {
   // Add a hook to the user service that automatically replaces
   // the password with a hash of the password before saving it.
-  hookHashPassword: function(local) {
+  hookHashPassword: function({ local }) {
     return function (app) {
       app.service('users').hooks({
         before: {
@@ -17,7 +15,7 @@ module.exports = {
     }
   },
 
-  hookAuth: function (auth, local) {
+  hookAuth: function ({ auth, local }) {
     return function (app) {
       app.service('users').hooks({
         before: {

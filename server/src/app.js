@@ -19,6 +19,7 @@ const appHooks = require('./app.hooks');
 const usersHooks = require('./hooks/users');
 const authenticationHooks = require('./hooks/authentication');
 const channels = require('./channels');
+const initUser = require('./utils/initUser');
 
 const app = express(feathers());
 
@@ -38,14 +39,13 @@ app.use('/', express.static(app.get('public')));
 // Set up Plugins and providers
 app.configure(express.rest());
 
-// Configure other middleware (see `middleware/index.js`)
-// Set up our services (see `services/index.js`)
-app.configure(services);
-
 // Configure jwt authentication middlewares
 app.configure(auth({ secret: 'myverysupersecretstring' }));
 app.configure(local());
 app.configure(jwt());
+
+// Set up our services (see `services/index.js`)
+app.configure(services);
 
 // Set up event channels (see channels.js)
 app.configure(channels);
@@ -54,26 +54,17 @@ app.configure(channels);
 // app.use(express.notFound());
 app.use(express.errorHandler({ logger }));
 
-app.configure(authenticationHooks(auth));
-app.configure(usersHooks.hookHashPassword(local));
+// Our services' hooks
+app.configure(authenticationHooks({ auth }));
+app.configure(usersHooks.hookHashPassword({ local }));
 
 // This call must stay after hookHashPassword and before hookAuth.
-app.service('users').find()
-  .then((users) => {
-    if (!users.length) {
-      app.service('users').create({
-        name: 'sysadmin',
-        email: 'sysadmin@heuristic.heportal',
-        password: 'sysadmin',
-        systemAdmin_id: 1,
-        role: 'systemadmin',
-        lastLogon: new Date(),
-      });
-    }
-  });
+app.configure(initUser);
 
-app.configure(usersHooks.hookAuth(auth, local));
+app.configure(usersHooks.hookAuth({ auth, local }));
 app.hooks(appHooks);
+
+// Configure other middleware (see `middleware/index.js`)
 app.configure(middleware.catchAndLogErrors);
 
 module.exports = app;
