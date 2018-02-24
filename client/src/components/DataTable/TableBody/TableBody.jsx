@@ -1,4 +1,5 @@
 import React from 'react';
+import { map } from 'lodash';
 import {Table} from 'semantic-ui-react';
 
 export default function TableBody({data, headers}) {
@@ -6,8 +7,8 @@ export default function TableBody({data, headers}) {
     return data.map(item => {
       return (
         <Table.Row>
-          {headers.map(header => {
-            return <Table.Cell>{item[header]}</Table.Cell>
+          {map(headers, (value, key) => {
+            return <Table.Cell>{item[key]}</Table.Cell>
           })}
         </Table.Row>
       )

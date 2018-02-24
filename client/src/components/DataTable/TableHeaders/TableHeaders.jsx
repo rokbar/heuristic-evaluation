@@ -1,8 +1,9 @@
 import React from 'react';
+import { map } from 'lodash';
 import { Table } from 'semantic-ui-react';
 
 export default function TableHeaders({headers}) {
-  const renderHeaderRow = (headers) => headers.map(item => (
+  const renderHeaderRow = (headers) => map(headers, item => (
     <Table.HeaderCell>{item}</Table.HeaderCell>
   ));
 

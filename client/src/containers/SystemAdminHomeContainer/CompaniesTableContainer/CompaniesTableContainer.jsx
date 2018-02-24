@@ -3,41 +3,41 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import DataTable from 'components/DataTable';
-import AddUserButton from './AddUserButton';
-import { getUsers } from 'actions/users';
+import AddCompanyButton from './AddCompanyButton';
+import { getCompanies } from 'actions/companies';
 
 const propTypes = {
-  users: PropTypes.array,
+  companies: PropTypes.array,
 };
 
 const defaultProps = {
-  users: [],
+  companies: [],
 };
 
-class UsersTableContainer extends Component {
+class CompaniesTableContainer extends Component {
   componentDidMount() {
-    this.props.getUsers();
+    this.props.getCompanies();
   }
 
   getTableHeaders() {
     return {
       name: 'Vardas',
-      email: 'El. paštas',
-      lastLogon: 'Paskutinis prisijungimas',
-      company: 'Įmonė',
+      country: 'Šalis',
+      url: 'Svetainė',
+      address: 'Adresas',
       actions: 'Veiksmai',
     }
   }
 
   getTableData() {
-    return this.props.users.map(item => {
-      const { name, email, lastLogon, company } = item;
-      return { name, email, lastLogon, company };
+    return this.props.companies.map(item => {
+      const { name, country, url, address } = item;
+      return { name, country, url, address };
     })
   }
 
   renderTableActions() {
-    return <AddUserButton
+    return <AddCompanyButton
       pushHistory={this.props.pushHistory}
     />
   }
@@ -53,15 +53,15 @@ class UsersTableContainer extends Component {
   }
 }
 
-UsersTableContainer.propTypes = propTypes;
-UsersTableContainer.defaultProps = defaultProps;
+CompaniesTableContainer.propTypes = propTypes;
+CompaniesTableContainer.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
   return {
-    users: state.users,
+    companies: state.companies,
   }
 }
 
 export default connect(mapStateToProps, {
-  getUsers,
-})(UsersTableContainer);
+  getCompanies,
+})(CompaniesTableContainer);

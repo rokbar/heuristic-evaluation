@@ -1,9 +1,9 @@
-import { SET_USERS } from './types';
+import { SET_COMPANIES } from './types';
 import { getJwtToken} from "utils/localStorage";
 
-export function getUsers() {
+export function getCompanies() {
   return (dispatch) => {
-    return fetch('/users', {
+    return fetch('/companies', {
       headers: {
         'Authorization': getJwtToken(),
       },
@@ -12,10 +12,10 @@ export function getUsers() {
       .then(response => {
         return response.json()
       })
-      .then(users => {
+      .then(companies => {
         dispatch({
-          type: SET_USERS,
-          payload: { users }
+          type: SET_COMPANIES,
+          payload: { companies },
         });
       })
       .catch(error => {
@@ -24,17 +24,15 @@ export function getUsers() {
   }
 }
 
-export function addUser({ name, password, email, company, role }) {
+export function addCompany({ name, country, url, address }) {
   return (dispatch, getState) => {
     const { userId } = getState().auth;
-    return fetch('/users', {
+    return fetch('/companies', {
       body: JSON.stringify({
         name,
-        password,
-        email,
-        role,
-        lastLogon: new Date().toISOString().slice(0, 19).replace('T', ' '),
-        company_id: company,
+        country,
+        url,
+        address,
         systemAdmin_id: userId,
       }),
       headers: {
@@ -46,8 +44,8 @@ export function addUser({ name, password, email, company, role }) {
       .then(response => {
         return response.json();
       })
-      .then(users => {
-        console.log(users);
+      .then(companies => {
+        console.log(companies);
       })
       .catch(error => {
         console.log(error);

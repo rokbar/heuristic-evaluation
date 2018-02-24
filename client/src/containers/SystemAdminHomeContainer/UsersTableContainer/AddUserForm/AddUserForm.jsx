@@ -1,20 +1,53 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
+import { map } from 'lodash';
 import {
   Button,
   Form,
   Grid,
   Header,
-  Segment
+  Segment,
 } from 'semantic-ui-react'
 
 import { addUser } from 'actions/users';
+import { getCompanies } from 'actions/companies';
+import DropdownFormField from 'components/DropdownFormField';
 import './AddUserForm.css';
 
 class AddUserForm extends Component {
+  componentDidMount() {
+    this.props.getCompanies();
+  }
+
+  getCompanyOptions() {
+    return map(this.props.companies, (company) => ({
+      text: company.name,
+      value: company.id,
+    }));
+  };
+
+  getRoleOptions() {
+    return [
+      {
+        text: 'Vertintojas',
+        value: 'evaluator',
+      },
+      {
+        text: 'Įmonės administratorius',
+        value: 'companyadmin',
+      },
+      {
+        text: 'Sistemos administratorius',
+        value: 'systemadmin'
+      },
+    ]
+  };
+
   render() {
     const {handleSubmit, addUser } = this.props;
+    const companyOptions = this.getCompanyOptions();
+    const roleOptions = this.getRoleOptions();
 
     return (
       <div className="AddUserForm">
@@ -48,10 +81,23 @@ class AddUserForm extends Component {
                 <Field
                   name="password"
                   component={Form.Input}
+                  fluid
                   icon="lock"
                   iconPosition="left"
                   placeholder="Slaptažodis"
                   type="password"
+                />
+                <Field
+                  name="company"
+                  component={DropdownFormField}
+                  label="Įmonė"
+                  options={companyOptions}
+                />
+                <Field
+                  name="role"
+                  component={DropdownFormField}
+                  label="Rolė"
+                  options={roleOptions}
                 />
                 <Button
                   type="submit"
@@ -70,9 +116,15 @@ class AddUserForm extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    companies: state.companies,
+  };
+}
+
 AddUserForm = connect(
-  null,
-  { addUser },
+  mapStateToProps,
+  { addUser, getCompanies },
 )(AddUserForm);
 
 export default reduxForm({

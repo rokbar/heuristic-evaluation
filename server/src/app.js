@@ -16,8 +16,9 @@ const jwt = require('@feathersjs/authentication-jwt');
 const middleware = require('./middleware');
 const services = require('./services');
 const appHooks = require('./app.hooks');
-const usersHooks = require('./hooks/users');
 const authenticationHooks = require('./hooks/authentication');
+const usersHooks = require('./hooks/users');
+const companiesHooks = require('./hooks/companies');
 const channels = require('./channels');
 const initUser = require('./utils/initUser');
 
@@ -57,6 +58,7 @@ app.use(express.errorHandler({ logger }));
 // Our services' hooks
 app.configure(authenticationHooks({ auth }));
 app.configure(usersHooks.hookHashPassword({ local }));
+app.configure(companiesHooks({ auth }));
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

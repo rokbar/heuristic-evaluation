@@ -7,6 +7,8 @@ import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
 import UsersTableContainer from './UsersTableContainer';
 import AddUserForm from './UsersTableContainer/AddUserForm';
+import CompaniesTableContainer from './CompaniesTableContainer';
+import AddCompanyForm from './CompaniesTableContainer/AddCompanyForm';
 
 export default class SystemAdminHomeContainer extends Component {
   pushHistory(pathName) {
@@ -15,7 +17,7 @@ export default class SystemAdminHomeContainer extends Component {
 
   getTabs() {
     return [
-      {name: 'Vartotojai', pathName: '/systemadmin/users'},
+      {name: 'Naudotojai', pathName: '/systemadmin/users'},
       {name: 'Įmonės', pathName: '/systemadmin/companies'},
     ]
   }
@@ -54,8 +56,13 @@ export default class SystemAdminHomeContainer extends Component {
           component={() => this.renderArticleSegment(AddUserForm)}
         />
         <Route
+          exact
           path='/systemadmin/companies'
-          component={() => <div>Not Implemented</div>}
+          component={() => this.renderArticleSegment(CompaniesTableContainer)}
+        />
+        <Route
+          path='/systemadmin/companies/add'
+          component={() => this.renderArticleSegment(AddCompanyForm)}
         />
       </Switch>,
     ]
