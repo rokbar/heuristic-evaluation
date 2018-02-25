@@ -19,6 +19,8 @@ const appHooks = require('./app.hooks');
 const authenticationHooks = require('./hooks/authentication');
 const usersHooks = require('./hooks/users');
 const companiesHooks = require('./hooks/companies');
+const teamsHooks = require('./hooks/teams');
+const teamStatesHooks = require('./hooks/teamStates');
 const channels = require('./channels');
 const initUser = require('./utils/initUser');
 
@@ -59,6 +61,8 @@ app.use(express.errorHandler({ logger }));
 app.configure(authenticationHooks({ auth }));
 app.configure(usersHooks.hookHashPassword({ local }));
 app.configure(companiesHooks({ auth }));
+app.configure(teamsHooks({ auth }));
+app.configure(teamStatesHooks({ auth }));
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

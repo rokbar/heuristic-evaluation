@@ -7,6 +7,7 @@ export default function DropdownFormField(props) {
       <Dropdown
         {...props.input}
         selection
+        search={props.search}
         value={props.input.value}
         onChange={(param, data) => props.input.onChange(data.value)}
         placeholder={props.label}

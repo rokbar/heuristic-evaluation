@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
+import { map } from 'lodash';
 import {
   Button,
   Form,
@@ -9,17 +10,32 @@ import {
   Segment,
 } from 'semantic-ui-react'
 
+import { getUsersByCompanyId } from 'actions/users';
 import { getTeamById, editTeam } from 'actions/teams';
+import { destroyFormState } from 'actions/editForm';
+import DropdownFormField from 'components/DropdownFormField';
 
 class EditTeamForm extends Component {
   componentDidMount() {
+    this.props.getUsersByCompanyId();
     this.props.getTeamById({ teamId: this.props.match.params.teamId });
-    // Dispatch redux-form action to initialize form values from redux-form state
-    this.props.initialize();
   }
+
+  componentWillUnmount() {
+    this.props.destroy('editTeam');
+    this.props.destroyFormState();
+  }
+
+  getLeaderOptions() {
+    return map(this.props.users, (user) => ({
+      text: user.email,
+      value: user.id,
+    }));
+  };
 
   render() {
     const {handleSubmit, editTeam } = this.props;
+    const leaderOptions = this.getLeaderOptions();
 
     return (
       <div className="EditTeamForm">
@@ -41,6 +57,13 @@ class EditTeamForm extends Component {
                   icon="group"
                   iconPosition="left"
                   placeholder="Pavadinimas"
+                />
+                <Field
+                  name="leader_id"
+                  component={DropdownFormField}
+                  search
+                  label="Komandos lyderis"
+                  options={leaderOptions}
                 />
                 <Field
                   name="systemName"
@@ -85,6 +108,7 @@ class EditTeamForm extends Component {
 
 function mapStateToProps(state) {
   return {
+    users: state.users,
     // redux-form prop which lets to initialize form data
     initialValues: state.editForm.data,
   };
@@ -96,7 +120,12 @@ EditTeamForm = reduxForm({
 
 EditTeamForm = connect(
   mapStateToProps,
-  { getTeamById, editTeam },
+  {
+    getUsersByCompanyId,
+    getTeamById,
+    editTeam,
+    destroyFormState
+  },
 )(EditTeamForm);
 
 export default EditTeamForm;

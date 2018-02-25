@@ -23,8 +23,9 @@ module.exports = {
             auth.hooks.authenticate('jwt'),
           ],
           find: [
+            // TODO - let companyadmin to do only specific queries
             authHooks.restrictToRoles({
-              roles: ['systemadmin'],
+              roles: ['systemadmin', 'companyadmin'],
               fieldName: 'role',
               idField: 'id',
             }),

@@ -6,6 +6,7 @@ import editFormReducer from './editFormReducer';
 import usersReducer from './usersReducer';
 import companiesReducer from './companiesReducer';
 import teamsReducer from "./teamsReducer";
+import teamStatesReducer from './teamStatesReducer';
 
 const appReducer = combineReducers({
   router: routerReducer,
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
   users: usersReducer,
   companies: companiesReducer,
   teams: teamsReducer,
+  teamStates: teamStatesReducer,
 });
 
 export default appReducer;

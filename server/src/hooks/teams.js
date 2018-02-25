@@ -1,7 +1,7 @@
 const authHooks = require('feathers-authentication-hooks');
 
 // TODO - adjust restriction (separate leaders from evaluators)
-module.exports = function ({auth}) {
+module.exports = function ({ auth }) {
   return function (app) {
     app.service('teams').hooks({
       before: {

@@ -11,6 +11,7 @@ import {
 } from 'semantic-ui-react'
 
 import { getUserById, editUser } from 'actions/users';
+import { destroyFormState } from 'actions/editForm';
 import { getCompanies } from 'actions/companies';
 import DropdownFormField from 'components/DropdownFormField';
 
@@ -18,8 +19,11 @@ class EditUserForm extends Component {
   componentDidMount() {
     this.props.getUserById({ userId: this.props.match.params.userId });
     this.props.getCompanies();
-    // Dispatch redux-form action to initialize form values from redux-form state
-    this.props.initialize();
+  }
+
+  componentWillUnmount() {
+    this.props.destroy('editUser');
+    this.props.destroyFormState();
   }
 
   getCompanyOptions() {
@@ -123,7 +127,7 @@ EditUserForm = reduxForm({
 
 EditUserForm = connect(
   mapStateToProps,
-  { getUserById, editUser, getCompanies },
+  { getUserById, editUser, getCompanies, destroyFormState },
 )(EditUserForm);
 
 export default EditUserForm;

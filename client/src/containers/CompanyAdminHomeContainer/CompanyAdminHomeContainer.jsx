@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
 
@@ -8,8 +9,13 @@ import SharedMenuContainer from 'containers/SharedMenuContainer';
 import TeamsTableContainer from './TeamsTableContainer';
 import AddTeamForm from './TeamsTableContainer/AddTeamForm';
 import EditTeamForm from './TeamsTableContainer/EditTeamForm';
+import { getTeamStates } from 'actions/teamStates';
 
-export default class CompanyAdminHomeContainer extends Component {
+class CompanyAdminHomeContainer extends Component {
+  componentDidMount() {
+    this.props.getTeamStates();
+  }
+
   pushHistory(pathName) {
     this.props.history.push(pathName);
   };
@@ -72,3 +78,8 @@ export default class CompanyAdminHomeContainer extends Component {
     )
   }
 }
+
+export default connect(
+  (state) => ({ teamStates: state.teamStates }),
+  { getTeamStates },
+)(CompanyAdminHomeContainer);

@@ -20,7 +20,7 @@ export function getUsers() {
         dispatch({
           type: SET_USERS,
           payload: { users },
-        })
+        });
         console.log(users);
       })
       .catch(error => {
@@ -45,6 +45,31 @@ export function getUserById({ userId }) {
           type: EDIT_FORM,
           payload: { ...users[0] }
         });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+}
+
+export function getUsersByCompanyId() {
+  return (dispatch, getState) => {
+    const { companyId } = getState().auth;
+    return fetch(`/users?company_id=${companyId}`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(users => {
+        dispatch({
+          type: SET_USERS,
+          payload: { users },
+        });
+        console.log(users);
       })
       .catch(error => {
         console.log(error);
