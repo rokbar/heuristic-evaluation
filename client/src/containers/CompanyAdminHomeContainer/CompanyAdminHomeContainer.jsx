@@ -1,11 +1,74 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { Segment } from 'semantic-ui-react';
+
+import Layout from 'components/Layout';
+import Tabs from 'components/Tabs';
+import SharedMenuContainer from 'containers/SharedMenuContainer';
+import TeamsTableContainer from './TeamsTableContainer';
+import AddTeamForm from './TeamsTableContainer/AddTeamForm';
+import EditTeamForm from './TeamsTableContainer/EditTeamForm';
 
 export default class CompanyAdminHomeContainer extends Component {
+  pushHistory(pathName) {
+    this.props.history.push(pathName);
+  };
+
+  getTabs() {
+    return [
+      {name: 'Komandos', pathName: '/companyadmin/teams'},
+    ]
+  }
+
+  renderAsideContent() {
+    return (
+      <div>Not Implemented</div>
+    )
+  }
+
+  renderArticleSegment(Component, props) {
+    return (
+      <Segment attached="bottom">
+        <Component
+          {...props}
+          pushHistory={(pathName) => this.pushHistory(pathName)}
+        />
+      </Segment>
+    )
+  }
+
+  renderArticleContent() {
+    const { location } = this.props;
+    return [
+      <Tabs
+        panes={this.getTabs()}
+        currentLocation={location.pathname}
+      />,
+      <Switch>
+        <Route
+          exact
+          path='/companyadmin/teams'
+          component={() => this.renderArticleSegment(TeamsTableContainer)}
+        />
+        <Route
+          path='/companyadmin/teams/add'
+          component={() => this.renderArticleSegment(AddTeamForm)}
+        />
+        <Route
+          path='/companyadmin/teams/edit/:teamId'
+          component={(props) => this.renderArticleSegment(EditTeamForm, props)}
+        />
+      </Switch>,
+    ]
+  }
+
   render() {
     return (
-      <div>
-        Company Admin Home
-      </div>
+      <Layout
+        header={SharedMenuContainer}
+        article={this.renderArticleContent()}
+        aside={this.renderAsideContent()}
+      />
     )
   }
 }

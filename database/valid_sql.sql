@@ -7,15 +7,15 @@ CREATE TABLE Heuristic
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE ExpertTeamState
+CREATE TABLE EvaluatorTeamState
 (
 	id integer AUTO_INCREMENT,
 	name char (18) NOT NULL,
 	PRIMARY KEY(id)
 );
-INSERT INTO ExpertTeamState(id, name) VALUES(1, 'evaluationFinished');
-INSERT INTO ExpertTeamState(id, name) VALUES(2, 'evaluationStarted');
-INSERT INTO ExpertTeamState(id, name) VALUES(3, 'ratingProblems');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(1, 'evaluationStarted');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(2, 'ratingProblems');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(3, 'evaluationFinished');
 
 CREATE TABLE TeamState
 (
@@ -23,11 +23,11 @@ CREATE TABLE TeamState
 	name char (18) NOT NULL,
 	PRIMARY KEY(id)
 );
-INSERT INTO TeamState(id, name) VALUES(1, 'evaluationFinished');
+INSERT INTO TeamState(id, name) VALUES(1, 'new');
 INSERT INTO TeamState(id, name) VALUES(2, 'evaluationStarted');
 INSERT INTO TeamState(id, name) VALUES(3, 'generalization');
-INSERT INTO TeamState(id, name) VALUES(4, 'new');
-INSERT INTO TeamState(id, name) VALUES(5, 'ratingProblems');
+INSERT INTO TeamState(id, name) VALUES(4, 'ratingProblems');
+INSERT INTO TeamState(id, name) VALUES(5, 'evaluationFinished');
 
 CREATE TABLE Rule
 (
@@ -67,10 +67,10 @@ CREATE TABLE Team
 	systemName varchar (255),
 	systemUrl varchar (255),
 	systemContacts varchar (255),
-	state integer,
+	state integer DEFAULT 1,
 	companyAdmin_id integer NOT NULL,
-	leader_id integer NOT NULL,
-	heuristic_id integer NOT NULL,
+	leader_id integer,
+	heuristic_id integer,
 	PRIMARY KEY(id)
 );
 
@@ -175,7 +175,7 @@ ALTER TABLE EvaluatorProblem
 	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE;
     
 ALTER TABLE EvaluatorTeam
-	ADD FOREIGN KEY(state) REFERENCES ExpertTeamState (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(state) REFERENCES EvaluatorTeamState (id) ON DELETE CASCADE,
 	ADD FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE,
 	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE;
     

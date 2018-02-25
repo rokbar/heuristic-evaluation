@@ -33,8 +33,8 @@ class UsersTableContainer extends Component {
     }
   }
 
-  getCompanyName(id) {
-    const obj = find(this.props.companies, (item) => (item.id === id));
+  getCompanyName(companyId) {
+    const obj = find(this.props.companies, (item) => (item.id === companyId));
     return obj && obj.name;
   }
 
@@ -48,7 +48,7 @@ class UsersTableContainer extends Component {
         name,
         email,
         lastLogon,
-        company: this.getCompanyName(id),
+        company: this.getCompanyName(company_id),
         actions: this.renderRowActions(id),
       };
     })

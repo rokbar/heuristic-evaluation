@@ -6,17 +6,17 @@ import {
   Form,
   Grid,
   Header,
-  Segment
+  Segment,
 } from 'semantic-ui-react'
 
-import { addCompany } from 'actions/companies';
+import { addTeam } from 'actions/teams';
 
-class AddCompanyForm extends Component {
+class AddTeamForm extends Component {
   render() {
-    const {handleSubmit, addCompany } = this.props;
+    const {handleSubmit, addTeam } = this.props;
 
     return (
-      <div className="AddCompanyForm">
+      <div className="AddTeamForm">
         <Grid
           textAlign="center"
           style={{height: "100%"}}
@@ -24,31 +24,41 @@ class AddCompanyForm extends Component {
         >
           <Grid.Column style={{maxWidth: 450}}>
             <Header as="h2" color="teal" textAlign="center">
-              Sukurti naują įmonę
+              Sukurti naują komandą
             </Header>
-            <Form onSubmit={handleSubmit(addCompany)} size="large">
+            <Form onSubmit={handleSubmit(addTeam)} size="large">
               <Segment stacked>
                 <Field
                   name="name"
                   component={Form.Input}
                   fluid
+                  icon="group"
+                  iconPosition="left"
                   placeholder="Pavadinimas"
                 />
                 <Field
-                  name="country"
+                  name="systemName"
                   component={Form.Input}
                   fluid
-                  placeholder="Šalis"
+                  icon="server"
+                  iconPosition="left"
+                  placeholder="Vertinamos sistemos pavadinimas"
                 />
                 <Field
-                  name="url"
+                  name="systemUrl"
                   component={Form.Input}
-                  placeholder="Svetainė"
+                  fluid
+                  icon="browser"
+                  iconPosition="left"
+                  placeholder="Sistemos adresas"
                 />
                 <Field
-                  name="address"
+                  name="systemContacts"
                   component={Form.Input}
-                  placeholder="Adresas"
+                  fluid
+                  icon="phone"
+                  iconPosition="left"
+                  placeholder="Sistemos savininkų kontaktai"
                 />
                 <Button
                   type="submit"
@@ -67,11 +77,18 @@ class AddCompanyForm extends Component {
   }
 }
 
-AddCompanyForm = connect(
-  null,
-  { addCompany },
-)(AddCompanyForm);
+function mapStateToProps(state) {
+  return {
+  };
+}
 
-export default reduxForm({
-  form: 'addCompany',
-})(AddCompanyForm);
+AddTeamForm = reduxForm({
+  form: 'addTeam',
+})(AddTeamForm);
+
+AddTeamForm = connect(
+  mapStateToProps,
+  { addTeam },
+)(AddTeamForm);
+
+export default AddTeamForm;

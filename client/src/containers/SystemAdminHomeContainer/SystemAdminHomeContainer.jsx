@@ -41,7 +41,7 @@ export default class SystemAdminHomeContainer extends Component {
   }
 
   renderArticleContent() {
-    const { location, addUser } = this.props;
+    const { location } = this.props;
     return [
       <Tabs
         panes={this.getTabs()}

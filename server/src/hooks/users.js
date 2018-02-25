@@ -29,13 +29,43 @@ module.exports = {
               idField: 'id',
             }),
           ],
+          get: [
+            authHooks.restrictToRoles({
+              roles: ['systemadmin'],
+              fieldName: 'role',
+              idField: 'id',
+              ownerField: 'id',
+              owner: true,
+            }),
+          ],
           create: [
             authHooks.restrictToRoles({
               roles: ['systemadmin'],
               fieldName: 'role',
               idField: 'id',
             }),
-          ]
+          ],
+          update: [
+            authHooks.restrictToRoles({
+              roles: ['systemadmin'],
+              fieldName: 'role',
+              idField: 'id',
+            }),
+          ],
+          patch: [
+            authHooks.restrictToRoles({
+              roles: ['systemadmin'],
+              fieldName: 'role',
+              idField: 'id',
+            }),
+          ],
+          remove: [
+            authHooks.restrictToRoles({
+              roles: ['systemadmin'],
+              fieldName: 'role',
+              idField: 'id',
+            }),
+          ],
         },
         // Make sure `password` never gets sent to the client
         after: local.hooks.protect('password'),

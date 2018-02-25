@@ -13,7 +13,6 @@ import {
 import { addUser } from 'actions/users';
 import { getCompanies } from 'actions/companies';
 import DropdownFormField from 'components/DropdownFormField';
-import './AddUserForm.css';
 
 class AddUserForm extends Component {
   componentDidMount() {

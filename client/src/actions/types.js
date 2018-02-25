@@ -9,3 +9,5 @@ export const SET_USERS = 'set-users';
 export const DELETE_USER = 'delete-user';
 
 export const SET_COMPANIES = 'set-companies';
+
+export const SET_TEAMS = 'set-teams';
