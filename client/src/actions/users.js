@@ -1,4 +1,8 @@
-import { SET_USERS } from './types';
+import {
+  SET_USERS,
+  DELETE_USER,
+  EDIT_FORM
+} from './types';
 import { getJwtToken} from "utils/localStorage";
 
 export function getUsers() {
@@ -15,7 +19,31 @@ export function getUsers() {
       .then(users => {
         dispatch({
           type: SET_USERS,
-          payload: { users }
+          payload: { users },
+        })
+        console.log(users);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+}
+
+export function getUserById({ userId }) {
+  return (dispatch) => {
+    return fetch(`/users?id=${userId}`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(users => {
+        users.length && dispatch({
+          type: EDIT_FORM,
+          payload: { ...users[0] }
         });
       })
       .catch(error => {
@@ -48,6 +76,57 @@ export function addUser({ name, password, email, company, role }) {
       })
       .then(users => {
         console.log(users);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}
+
+export function editUser({ id, name, email, company_id, role }) {
+  return (dispatch) => {
+    return fetch(`/users?id=${id}`, {
+      body: JSON.stringify({
+        name,
+        email,
+        role,
+        company_id,
+      }),
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(users => {
+        console.log(users);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}
+
+export function removeUser(id) {
+  return (dispatch) => {
+    return fetch(`/users?id=${id}`, {
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(users => {
+        users.length && dispatch({
+          type: DELETE_USER,
+          payload: users[0],
+        });
       })
       .catch(error => {
         console.log(error);

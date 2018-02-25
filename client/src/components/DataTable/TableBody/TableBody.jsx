@@ -2,7 +2,7 @@ import React from 'react';
 import { map } from 'lodash';
 import {Table} from 'semantic-ui-react';
 
-export default function TableBody({data, headers}) {
+export default function TableBody({ data, headers }) {
   const renderDataRow = (data, headers) => {
     return data.map(item => {
       return (

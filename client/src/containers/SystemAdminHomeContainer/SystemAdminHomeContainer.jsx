@@ -7,6 +7,7 @@ import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
 import UsersTableContainer from './UsersTableContainer';
 import AddUserForm from './UsersTableContainer/AddUserForm';
+import EditUserForm from './UsersTableContainer/EditUserForm';
 import CompaniesTableContainer from './CompaniesTableContainer';
 import AddCompanyForm from './CompaniesTableContainer/AddCompanyForm';
 
@@ -28,10 +29,11 @@ export default class SystemAdminHomeContainer extends Component {
     )
   }
 
-  renderArticleSegment(Component) {
+  renderArticleSegment(Component, props) {
     return (
       <Segment attached="bottom">
         <Component
+          {...props}
           pushHistory={(pathName) => this.pushHistory(pathName)}
         />
       </Segment>
@@ -54,6 +56,10 @@ export default class SystemAdminHomeContainer extends Component {
         <Route
           path='/systemadmin/users/add'
           component={() => this.renderArticleSegment(AddUserForm)}
+        />
+        <Route
+          path='/systemadmin/users/edit/:userId'
+          component={(props) => this.renderArticleSegment(EditUserForm, props)}
         />
         <Route
           exact

@@ -10,14 +10,16 @@ import {
   Segment,
 } from 'semantic-ui-react'
 
-import { addUser } from 'actions/users';
+import { getUserById, editUser } from 'actions/users';
 import { getCompanies } from 'actions/companies';
 import DropdownFormField from 'components/DropdownFormField';
-import './AddUserForm.css';
 
-class AddUserForm extends Component {
+class EditUserForm extends Component {
   componentDidMount() {
+    this.props.getUserById({ userId: this.props.match.params.userId });
     this.props.getCompanies();
+    // Dispatch redux-form action to initialize form values from redux-form state
+    this.props.initialize();
   }
 
   getCompanyOptions() {
@@ -45,12 +47,12 @@ class AddUserForm extends Component {
   };
 
   render() {
-    const {handleSubmit, addUser } = this.props;
+    const {handleSubmit, editUser } = this.props;
     const companyOptions = this.getCompanyOptions();
     const roleOptions = this.getRoleOptions();
 
     return (
-      <div className="AddUserForm">
+      <div className="EditUserForm">
         <Grid
           textAlign="center"
           style={{height: "100%"}}
@@ -58,9 +60,9 @@ class AddUserForm extends Component {
         >
           <Grid.Column style={{maxWidth: 450}}>
             <Header as="h2" color="teal" textAlign="center">
-              Sukurti naują naudotoją
+              Redaguoti naudotoją
             </Header>
-            <Form onSubmit={handleSubmit(addUser)} size="large">
+            <Form onSubmit={handleSubmit(editUser)} size="large">
               <Segment stacked>
                 <Field
                   name="name"
@@ -79,16 +81,7 @@ class AddUserForm extends Component {
                   placeholder="El. paštas"
                 />
                 <Field
-                  name="password"
-                  component={Form.Input}
-                  fluid
-                  icon="lock"
-                  iconPosition="left"
-                  placeholder="Slaptažodis"
-                  type="password"
-                />
-                <Field
-                  name="company"
+                  name="company_id"
                   component={DropdownFormField}
                   label="Įmonė"
                   options={companyOptions}
@@ -105,7 +98,7 @@ class AddUserForm extends Component {
                   fluid
                   size="large"
                 >
-                  Pridėti
+                  Redaguoti
                 </Button>
               </Segment>
             </Form>
@@ -118,15 +111,19 @@ class AddUserForm extends Component {
 
 function mapStateToProps(state) {
   return {
+    // redux-form prop which lets to initialize form data
+    initialValues: state.editForm.data,
     companies: state.companies,
   };
 }
 
-AddUserForm = connect(
-  mapStateToProps,
-  { addUser, getCompanies },
-)(AddUserForm);
+EditUserForm = reduxForm({
+  form: 'editUser',
+})(EditUserForm);
 
-export default reduxForm({
-  form: 'addUser',
-})(AddUserForm);
+EditUserForm = connect(
+  mapStateToProps,
+  { getUserById, editUser, getCompanies },
+)(EditUserForm);
+
+export default EditUserForm;

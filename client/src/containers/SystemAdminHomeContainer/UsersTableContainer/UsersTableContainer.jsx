@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { find } from 'lodash';
 
 import DataTable from 'components/DataTable';
 import AddUserButton from './AddUserButton';
-import { getUsers } from 'actions/users';
+import UserRowActions from './UserRowActions';
+import { getUsers, removeUser } from 'actions/users';
+import { getCompanies } from 'actions/companies';
 
 const propTypes = {
   users: PropTypes.array,
@@ -17,6 +20,7 @@ const defaultProps = {
 class UsersTableContainer extends Component {
   componentDidMount() {
     this.props.getUsers();
+    this.props.getCompanies();
   }
 
   getTableHeaders() {
@@ -29,11 +33,32 @@ class UsersTableContainer extends Component {
     }
   }
 
+  getCompanyName(id) {
+    const obj = find(this.props.companies, (item) => (item.id === id));
+    return obj && obj.name;
+  }
+
   getTableData() {
     return this.props.users.map(item => {
-      const { name, email, lastLogon, company } = item;
-      return { name, email, lastLogon, company };
+      const { id, name, email, company_id } = item;
+      const date = new Date(item.lastLogon);
+      const lastLogon =
+        `${date.getFullYear()}-${(((date.getMonth() + 1) < 10) ? '0' : '') + (date.getMonth() + 1)}-${((date.getDate() < 10) ? '0' : '') + date.getDate()}`;
+      return {
+        name,
+        email,
+        lastLogon,
+        company: this.getCompanyName(id),
+        actions: this.renderRowActions(id),
+      };
     })
+  }
+
+  renderRowActions(userId) {
+    return <UserRowActions
+      userId={userId}
+      removeUser={this.props.removeUser}
+    />
   }
 
   renderTableActions() {
@@ -59,9 +84,12 @@ UsersTableContainer.defaultProps = defaultProps;
 function mapStateToProps(state) {
   return {
     users: state.users,
+    companies: state.companies,
   }
 }
 
 export default connect(mapStateToProps, {
   getUsers,
+  getCompanies,
+  removeUser,
 })(UsersTableContainer);

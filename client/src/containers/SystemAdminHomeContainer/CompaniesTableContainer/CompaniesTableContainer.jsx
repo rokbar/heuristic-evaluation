@@ -25,7 +25,6 @@ class CompaniesTableContainer extends Component {
       country: 'Šalis',
       url: 'Svetainė',
       address: 'Adresas',
-      actions: 'Veiksmai',
     }
   }
 
