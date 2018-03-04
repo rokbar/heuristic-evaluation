@@ -107,3 +107,22 @@ export function editTeam({ id, name, systemName, systemUrl, systemContacts, lead
       });
   }
 }
+
+export function getUsersByTeam({ teamId }) {
+  return fetch(`/teams/${teamId}/users`, {
+    headers: {
+      'Authorization': getJwtToken(),
+    },
+    method: 'GET',
+  })
+    .then(response => {
+      return response.json()
+    })
+    .then(users => {
+      console.log(users);
+      return users;
+    })
+    .catch(error => {
+      console.log(error);
+    })
+}

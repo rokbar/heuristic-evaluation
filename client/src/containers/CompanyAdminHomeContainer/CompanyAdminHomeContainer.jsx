@@ -8,7 +8,7 @@ import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
 import TeamsTableContainer from './TeamsTableContainer';
 import AddTeamForm from './TeamsTableContainer/AddTeamForm';
-import EditTeamForm from './TeamsTableContainer/EditTeamForm';
+import EditTeamTab from './TeamsTableContainer/EditTeamTab';
 import { getTeamStates } from 'actions/teamStates';
 
 class CompanyAdminHomeContainer extends Component {
@@ -62,7 +62,7 @@ class CompanyAdminHomeContainer extends Component {
         />
         <Route
           path='/companyadmin/teams/edit/:teamId'
-          component={(props) => this.renderArticleSegment(EditTeamForm, props)}
+          component={(props) => this.renderArticleSegment(EditTeamTab, props)}
         />
       </Switch>,
     ]
