@@ -25,7 +25,7 @@ class AddUserToTeamForm extends Component {
   };
 
   render() {
-    const {handleSubmit, addUserToTeam, teamId } = this.props;
+    const {handleSubmit, addUserToTeam } = this.props;
     const userOptions = this.getUserOptions();
 
     return [

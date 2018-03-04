@@ -7,6 +7,7 @@ export const EDIT_FORM = 'edit-form';
 export const DESTROY_FORM = 'destroy-form';
 
 export const SET_USERS = 'set-users';
+export const ADD_USER = 'add-user';
 export const DELETE_USER = 'delete-user';
 
 export const SET_COMPANIES = 'set-companies';

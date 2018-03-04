@@ -19,7 +19,10 @@ export function getUsers() {
       .then(users => {
         dispatch({
           type: SET_USERS,
-          payload: { users },
+          payload: {
+            usersType: 'all',
+            users,
+          },
         });
         console.log(users);
       })
@@ -67,7 +70,10 @@ export function getUsersByCompanyId() {
       .then(users => {
         dispatch({
           type: SET_USERS,
-          payload: { users },
+          payload: {
+            usersType: 'companyUsers',
+            users,
+          },
         });
         console.log(users);
       })
@@ -150,7 +156,10 @@ export function removeUser(id) {
       .then(users => {
         users.length && dispatch({
           type: DELETE_USER,
-          payload: users[0],
+          payload: {
+            usersType: 'all',
+            userId: users[0] && users[0].id,
+          },
         });
       })
       .catch(error => {

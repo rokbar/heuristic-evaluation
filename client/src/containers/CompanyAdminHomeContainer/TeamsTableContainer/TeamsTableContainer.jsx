@@ -85,7 +85,7 @@ TeamsTableContainer.defaultProps = defaultProps;
 function mapStateToProps(state) {
   return {
     teams: state.teams,
-    users: state.users,
+    users: state.users.companyUsers,
   }
 }
 

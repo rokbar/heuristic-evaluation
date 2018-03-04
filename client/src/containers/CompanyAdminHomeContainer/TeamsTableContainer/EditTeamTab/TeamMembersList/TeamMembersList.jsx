@@ -8,13 +8,13 @@ export default function TeamMembersList(props) {
     return map(teamUsers, (user) => (
       <List.Item>
         <List.Content floated="right">
-          <Button onClick={() => removeUserFromTeam(user.userId, teamId)}>
+          <Button onClick={() => removeUserFromTeam({ userId: user.id, teamId })}>
             <Icon name="trash" />
           </Button>
         </List.Content>
         <List.Icon name='user circle' size='large' verticalAlign='middle' />
         <List.Content>
-          <List.Header floated="left">{user.name}</List.Header>
+          <List.Header style={{textAlign: 'left'}}>{user.name}</List.Header>
           <List.Description>{user.email}</List.Description>
         </List.Content>
       </List.Item>

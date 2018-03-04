@@ -83,7 +83,7 @@ UsersTableContainer.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
   return {
-    users: state.users,
+    users: state.users.all,
     companies: state.companies,
   }
 }

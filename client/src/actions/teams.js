@@ -1,5 +1,6 @@
 import {
   SET_TEAMS,
+  SET_USERS,
   EDIT_FORM,
 } from './types';
 import { getJwtToken} from "utils/localStorage";
@@ -109,20 +110,27 @@ export function editTeam({ id, name, systemName, systemUrl, systemContacts, lead
 }
 
 export function getUsersByTeam({ teamId }) {
-  return fetch(`/teams/${teamId}/users`, {
-    headers: {
-      'Authorization': getJwtToken(),
-    },
-    method: 'GET',
-  })
-    .then(response => {
-      return response.json()
+  return (dispatch) => {
+    return fetch(`/teams/${teamId}/users`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
     })
-    .then(users => {
-      console.log(users);
-      return users;
-    })
-    .catch(error => {
-      console.log(error);
-    })
+      .then(response => {
+        return response.json()
+      })
+      .then(users => {
+        dispatch({
+          type: SET_USERS,
+          payload: {
+            usersType: 'teamUsers',
+            users,
+          }
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
 }

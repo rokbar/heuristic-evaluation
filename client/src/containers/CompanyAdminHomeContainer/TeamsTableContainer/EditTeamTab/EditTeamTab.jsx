@@ -11,32 +11,15 @@ import { getUsersByCompanyId } from 'actions/users';
 import { getUsersByTeam } from 'actions/teams';
 import { removeUserFromTeam } from 'actions/evaluatorTeam';
 
-const initialState = {
-  teamUsers: [],
-  teamId: null,
-};
-
 class EditTeamTab extends Component {
-  constructor(props) {
-    super(props);
-    this.state = initialState;
-  }
-
   componentDidMount() {
     const { teamId } = this.props.match.params;
-    let newState = initialState;
-
     this.props.getUsersByCompanyId();
-    getUsersByTeam({ teamId })
-      .then(users => {
-        newState.teamUsers = users;
-        newState.teamId = teamId;
-      });
-
-    this.setState({ ...newState });
+    this.props.getUsersByTeam({ teamId });
   }
 
   render() {
+    const { teamId } = this.props.match.params;
     return (
       <div className="EditTeamTab">
         <Grid
@@ -46,17 +29,17 @@ class EditTeamTab extends Component {
         >
           <Grid.Column className="EditTeamForm" style={{maxWidth: 450}}>
             <EditTeamForm
-              teamUsers={this.state.teamUsers}
-              teamId={this.state.teamId}
+              teamUsers={this.props.teamUsers}
+              teamId={teamId}
             />
             <TeamMembersList
-              teamUsers={this.state.teamUsers}
+              teamUsers={this.props.teamUsers}
               removeUserFromTeam={this.props.removeUserFromTeam}
-              teamId={this.state.teamId}
+              teamId={teamId}
             />
             <AddUserToTeamForm
               companyUsers={this.props.companyUsers}
-              teamId={this.state.teamId}
+              teamId={teamId}
             />
           </Grid.Column>
         </Grid>
@@ -67,11 +50,12 @@ class EditTeamTab extends Component {
 
 function mapDispatchToProps(state) {
   return {
-    companyUsers: state.users,
+    companyUsers: state.users.companyUsers,
+    teamUsers: state.users.teamUsers,
   };
 }
 
 export default connect(
   mapDispatchToProps,
-  { getUsersByCompanyId, removeUserFromTeam }
+  { getUsersByCompanyId, getUsersByTeam, removeUserFromTeam }
 )(EditTeamTab);

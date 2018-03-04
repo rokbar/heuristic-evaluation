@@ -51,6 +51,22 @@ module.exports = function ({ auth }) {
           }),
         ],
       },
+      after: {
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              hook.app.service('users')
+                .get(hook.data.evaluator_id)
+                .then(result => {
+                  const { password, ...userData } = result;
+                  hook.result.user = userData;
+                  resolve(hook);
+                })
+                .catch(reject);
+            });
+          }
+        ]
+      }
     });
   }
 };
