@@ -8,7 +8,7 @@ import SystemAdminHomeContainer from './containers/SystemAdminHomeContainer';
 import CompanyAdminHomeContainer from './containers/CompanyAdminHomeContainer';
 import UserHomeContainer from './containers/UserHomeContainer';
 
-const UserRoutes = AuthorizationHOC(['user', 'leader']);
+const UserRoutes = AuthorizationHOC(['evaluator', 'leader']);
 const LeaderRoutes = AuthorizationHOC(['leader']);
 const TeamAdminRoutes = AuthorizationHOC(['leader', 'companyadmin'])
 const CompanyAdminRoutes = AuthorizationHOC(['companyadmin']);
@@ -25,5 +25,5 @@ export default ({childProps}) =>
     <Route path="/" exact component={SignInContainer} props={childProps} />
     <Route path="/systemadmin" component={SystemAdminRoutes(SystemAdminHomeContainer)} props={childProps} />
     <Route path="/companyadmin" component={CompanyAdminRoutes(CompanyAdminHomeContainer)} props={childProps} />
-    <Route path="/user" component={UserRoutes(UserHomeContainer)} props={childProps} />
+    <Route path="/evaluator" component={UserRoutes(UserHomeContainer)} props={childProps} />
   </Switch>

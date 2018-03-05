@@ -71,6 +71,22 @@ module.exports = {
         // Make sure `password` never gets sent to the client
         after: local.hooks.protect('password'),
       });
+
+      app.service('users/:userId/teams').hooks({
+        before: {
+          all: [
+            auth.hooks.authenticate('jwt'),
+          ],
+          find: [
+            authHooks.restrictToRoles({
+              roles: ['evaluator'],
+              fieldName: 'role',
+              idField: 'id',
+            }),
+          ],
+        },
+        after: local.hooks.protect('password'),
+      });
     }
   }
 };

@@ -1,7 +1,8 @@
 import {
   SET_USERS,
   DELETE_USER,
-  EDIT_FORM
+  EDIT_FORM,
+  SET_TEAMS,
 } from './types';
 import { getJwtToken} from "utils/localStorage";
 
@@ -165,5 +166,29 @@ export function removeUser(id) {
       .catch(error => {
         console.log(error);
       });
+  }
+}
+
+export function getTeamsByUser() {
+  return (dispatch, getState) => {
+    const { userId } = getState().auth;
+    return fetch(`/users/${userId}/teams`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(teams => {
+        dispatch({
+          type: SET_TEAMS,
+          payload: { teams }
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 }
