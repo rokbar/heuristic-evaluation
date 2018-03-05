@@ -1,15 +1,28 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { connect } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
 
 import Layout from 'components/Layout';
+import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
-import UserTeamTableContainer from './UserTeamsTableContainer';
-import UserTeamContainer from './UserTeamContainer';
+import UserTeamsTableContainer from '../UserTeamsTableContainer';
+import UserTeamInfoTab from './UserTeamInfoTab';
+import { getTeamStates } from 'actions/teamStates';
 
-class UserHomeContainer extends Component {
+class UserTeamContainer extends Component {
+  componentDidMount() {
+    this.props.getTeamStates();
+  }
+
   pushHistory(pathName) {
     this.props.history.push(pathName);
+  };
+
+  getTabs() {
+    return [
+      {name: 'Komandos', pathName: '/evaluator/teams'},
+    ]
   }
 
   renderAsideContent() {
@@ -29,22 +42,6 @@ class UserHomeContainer extends Component {
     )
   }
 
-  renderArticleContent() {
-    return [
-      <Switch>
-        <Route
-          exact
-          path='/evaluator'
-          component={() => this.renderArticleSegment(UserTeamTableContainer)}
-        />
-        <Route
-          path='/evaluator/teams/:teamId'
-          component={(props) => this.renderArticleSegment(UserTeamContainer, props)}
-        />
-      </Switch>,
-    ]
-  }
-
   render() {
     return (
       <Layout
@@ -56,4 +53,7 @@ class UserHomeContainer extends Component {
   }
 }
 
-export default UserHomeContainer;
+export default connect(
+  (state) => ({ teamStates: state.teamStates }),
+  { getTeamStates },
+)(UserTeamContainer);

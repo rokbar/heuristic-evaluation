@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { find } from 'lodash';
 
 import { getTeamsByUser } from 'actions/users';
 import { teamState } from 'utils/enums';
-import DataTable from 'components/DataTable';
-import UserTeamRowActions from './UserTeamRowActions';
+import DataTable from 'components/DataTable/index';
+import UserTeamRowActions from './UserTeamRowActions/index';
 
 const propTypes = {
   teams: PropTypes.array,
