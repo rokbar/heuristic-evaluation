@@ -124,7 +124,7 @@ CREATE TABLE EvaluatorTeam
 (
 	id integer AUTO_INCREMENT,
   isRemoved boolean DEFAULT 0,
-	state integer,
+	state integer DEFAULT 1,
 	team_id integer NOT NULL,
 	evaluator_id integer NOT NULL,
 	PRIMARY KEY(id)

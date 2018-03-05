@@ -5,9 +5,10 @@ import {
 } from './types';
 import { getJwtToken} from "utils/localStorage";
 
-export function getTeams() {
-  return (dispatch) => {
-    return fetch('/teams', {
+export function getTeamsByCompanyAdmin() {
+  return (dispatch, getState) => {
+    const { userId } = getState().auth;
+    return fetch(`/teams?companyAdmin_id=${userId}`, {
       headers: {
         'Authorization': getJwtToken(),
       },

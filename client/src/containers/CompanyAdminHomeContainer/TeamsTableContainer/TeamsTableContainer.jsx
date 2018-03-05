@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { find } from 'lodash';
 
-import { getTeams } from 'actions/teams';
+import { getTeamsByCompanyAdmin } from 'actions/teams';
 import { getUsersByCompanyId } from "actions/users";
 import { teamState } from 'utils/enums';
 import DataTable from 'components/DataTable';
@@ -21,7 +21,7 @@ const defaultProps = {
 class TeamsTableContainer extends Component {
   componentDidMount() {
     this.props.getUsersByCompanyId();
-    this.props.getTeams();
+    this.props.getTeamsByCompanyAdmin();
   }
 
   getTableHeaders() {
@@ -90,6 +90,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  getTeams,
+  getTeamsByCompanyAdmin,
   getUsersByCompanyId,
 })(TeamsTableContainer);
