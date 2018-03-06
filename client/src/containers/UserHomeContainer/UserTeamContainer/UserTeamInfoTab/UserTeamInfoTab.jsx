@@ -19,6 +19,7 @@ class UserTeamInfoTab extends Component {
           style={{height: "100%"}}
           verticalAlign="middle"
         >
+          Info
         </Grid>
       </div>
     )

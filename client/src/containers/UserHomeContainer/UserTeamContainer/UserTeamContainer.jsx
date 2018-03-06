@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
 
-import Layout from 'components/Layout';
 import Tabs from 'components/Tabs';
-import SharedMenuContainer from 'containers/SharedMenuContainer';
-import UserTeamsTableContainer from '../UserTeamsTableContainer';
 import UserTeamInfoTab from './UserTeamInfoTab';
+import UserProblemsTableTab from './UserProblemsTableTab';
+import UserTeamHeuristicsTab from './UserTeamHeuristicsTab';
+import UserTeamPlanTab from './UserTeamPlanTab';
+import UserTeamEvaluatorsListTab from './UserTeamEvaluatorsListTab';
+
 import { getTeamStates } from 'actions/teamStates';
 
 class UserTeamContainer extends Component {
@@ -20,15 +22,14 @@ class UserTeamContainer extends Component {
   };
 
   getTabs() {
+    const { teamId } = this.props.match.params;
     return [
-      {name: 'Komandos', pathName: '/evaluator/teams'},
+      {name: 'Informacija', pathName: `/evaluator/teams/${teamId}/info`},
+      {name: 'Problemos', pathName: `/evaluator/teams/${teamId}/problems`},
+      {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`},
+      {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`},
+      {name: 'Vertintojai', pathName: `/evaluator/teams/${teamId}/evaluators`},
     ]
-  }
-
-  renderAsideContent() {
-    return (
-      <div>Not Implemented</div>
-    )
   }
 
   renderArticleSegment(Component, props) {
@@ -43,13 +44,35 @@ class UserTeamContainer extends Component {
   }
 
   render() {
-    return (
-      <Layout
-        header={SharedMenuContainer}
-        article={this.renderArticleContent()}
-        aside={this.renderAsideContent()}
-      />
-    )
+    const { location } = this.props;
+    return [
+      <Tabs
+        panes={this.getTabs()}
+        currentLocation={location.pathname}
+      />,
+      <Switch>
+        <Route
+          path='/evaluator/teams/:teamId/info'
+          component={(props) => this.renderArticleSegment(UserTeamInfoTab, props)}
+        />
+        <Route
+          path='/evaluator/teams/:teamId/problems'
+          component={() => this.renderArticleSegment(UserProblemsTableTab)}
+        />
+        <Route
+          path='/evaluator/teams/:teamId/heuristics'
+          component={() => this.renderArticleSegment(UserTeamHeuristicsTab)}
+        />
+        <Route
+          path='/evaluator/teams/:teamId/plan'
+          component={(props) => this.renderArticleSegment(UserTeamPlanTab)}
+        />
+        <Route
+          path='/evaluator/teams/:teamId/evaluators'
+          component={() => this.renderArticleSegment(UserTeamEvaluatorsListTab)}
+        />
+      </Switch>,
+    ]
   }
 }
 

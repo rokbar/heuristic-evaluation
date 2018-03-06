@@ -5,7 +5,7 @@ import { Button, Icon } from 'semantic-ui-react';
 export default function UserTeamRowActions(props) {
   return (
     <Button.Group>
-      <Link to={`/evaluator/teams/${props.teamId}`}>
+      <Link to={`/evaluator/teams/${props.teamId}/info`}>
         <Button>
           <Icon name="edit"/>
         </Button>
