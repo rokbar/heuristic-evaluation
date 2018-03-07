@@ -14,3 +14,5 @@ export const SET_COMPANIES = 'set-companies';
 
 export const SET_TEAM_STATES = 'set-team-states';
 export const SET_TEAMS = 'set-teams';
+
+export const SET_HEURISTICS = 'set-heuristics';

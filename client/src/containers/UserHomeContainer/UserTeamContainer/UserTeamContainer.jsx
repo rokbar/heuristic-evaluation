@@ -25,6 +25,7 @@ class UserTeamContainer extends Component {
     const { teamId } = this.props.match.params;
     return [
       {name: 'Informacija', pathName: `/evaluator/teams/${teamId}/info`},
+      {name: 'Vertinimas', pathName: `/evaluator/teams/${teamId}/evaluation`},
       {name: 'Problemos', pathName: `/evaluator/teams/${teamId}/problems`},
       {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`},
       {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`},
@@ -54,6 +55,10 @@ class UserTeamContainer extends Component {
         <Route
           path='/evaluator/teams/:teamId/info'
           component={(props) => this.renderArticleSegment(UserTeamInfoTab, props)}
+        />
+        <Route
+          path='/evaluator/teams/:teamId/evaluation'
+          component={(props) => this.renderArticleSegment(UserTeamEvaluationTab, props)}
         />
         <Route
           path='/evaluator/teams/:teamId/problems'
