@@ -19,8 +19,8 @@ module.exports = function (app) {
           .then(() => {
             const mappedHeuristics = heuristics.map((heuristic) => {
               if (!heuristic.isUnique) {
-                const mappedRules = rules.map((rule) => {
-                  return rule.heuristic_id === heuristic.id ? rule : undefined;
+                const mappedRules = rules.filter((rule) => {
+                  return rule.heuristic_id === heuristic.id;
                 });
                 return {...heuristic, rules: mappedRules};
               }

@@ -1,4 +1,5 @@
 import { SET_HEURISTICS } from "./types";
+import { getJwtToken} from "utils/localStorage";
 
 export function getSharedHeuristics() {
   return (dispatch) => {

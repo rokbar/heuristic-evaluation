@@ -26,12 +26,12 @@ class UserTeamInfoTab extends Component {
   }
 }
 
-function mapDispatchToProps(state) {
+function mapStateToProps(state) {
   return {
 
   };
 }
 
 export default connect(
-  mapDispatchToProps,
+  mapStateToProps,
 )(UserTeamInfoTab);

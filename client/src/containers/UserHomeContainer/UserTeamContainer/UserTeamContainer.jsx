@@ -5,6 +5,7 @@ import { Segment } from 'semantic-ui-react';
 
 import Tabs from 'components/Tabs';
 import UserTeamInfoTab from './UserTeamInfoTab';
+import UserTeamEvaluationTab from './UserTeamEvaluationTab';
 import UserProblemsTableTab from './UserProblemsTableTab';
 import UserTeamHeuristicsTab from './UserTeamHeuristicsTab';
 import UserTeamPlanTab from './UserTeamPlanTab';

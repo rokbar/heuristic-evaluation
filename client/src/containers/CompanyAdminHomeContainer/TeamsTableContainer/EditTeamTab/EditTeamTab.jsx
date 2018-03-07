@@ -48,7 +48,7 @@ class EditTeamTab extends Component {
   }
 }
 
-function mapDispatchToProps(state) {
+function mapStateToProps(state) {
   return {
     companyUsers: state.users.companyUsers,
     teamUsers: state.users.teamUsers,
@@ -56,6 +56,6 @@ function mapDispatchToProps(state) {
 }
 
 export default connect(
-  mapDispatchToProps,
+  mapStateToProps,
   { getUsersByCompanyId, getUsersByTeam, removeUserFromTeam }
 )(EditTeamTab);

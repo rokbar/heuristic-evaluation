@@ -136,3 +136,8 @@ export function getUsersByTeam({ teamId }) {
   }
 }
 
+export function startEvaluation() {
+  return (dispatch) => {
+    return null;
+  }
+}

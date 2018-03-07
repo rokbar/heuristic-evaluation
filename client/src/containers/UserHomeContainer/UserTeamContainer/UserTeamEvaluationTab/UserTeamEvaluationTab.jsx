@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Grid } from 'semantic-ui-react';
 
 import { getSharedHeuristics } from 'actions/heuristics'
+import StartEvaluationForm from './StartEvaluationForm';
 
 class UserTeamEvaluationTab extends Component {
   componentDidMount() {
@@ -16,8 +18,10 @@ class UserTeamEvaluationTab extends Component {
           style={{height: "100%"}}
           verticalAlign="middle"
         >
-          <Grid.Column className="StartEvaluationForm" style={{maxWidth: 450}}>
-
+          <Grid.Column className="StartEvaluationForm">
+            <StartEvaluationForm
+              heuristics={this.props.heuristics}
+            />
           </Grid.Column>
         </Grid>
       </div>
@@ -25,11 +29,11 @@ class UserTeamEvaluationTab extends Component {
   }
 }
 
-function mapDispatchToProps(state) {
+function mapStateToProps(state) {
   return { heuristics: state.heuristics };
 }
 
 export default connect(
-  mapDispatchToProps,
+  mapStateToProps,
   { getSharedHeuristics }
 )(UserTeamEvaluationTab);
