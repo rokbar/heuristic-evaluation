@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {Field, reduxForm} from 'redux-form';
-import { map } from 'lodash';
+import { Field, reduxForm } from 'redux-form';
 import {
-  Button,
   Form,
   Header,
   Segment,
-  Accordion,
-  Checkbox,
-  Icon,
 } from 'semantic-ui-react';
 
 import { startEvaluation } from 'actions/teams';
+import HeuristicSelect from './HeuristicSelect';
+import PlanList from './PlanList';
 
 class StartEvaluationForm extends Component {
   constructor(props) {
@@ -22,7 +19,7 @@ class StartEvaluationForm extends Component {
     }
   }
 
-  handleClick = (e, titleProps) => {
+  handleHeuristicClick = (e, titleProps) => {
     const {index} = titleProps;
     const {checkedHeuristic} = this.state;
     const newIndex = checkedHeuristic === index ? -1 : index;
@@ -30,29 +27,9 @@ class StartEvaluationForm extends Component {
     this.setState({ checkedHeuristic: newIndex });
   };
 
-  renderAccordionRow({ id, name, rules }) {
-    const { checkedHeuristic } = this.state;
-    return [
-      <Accordion.Title active={checkedHeuristic === id} index={id} onClick={this.handleClick}>
-        <Checkbox />
-        <Icon name="dropdown" />
-        {name}
-      </Accordion.Title>,
-      <Accordion.Content active={checkedHeuristic === id}>
-        {map(rules, (item, key) => <p>{key + 1}. {item && item.description}</p>)}
-      </Accordion.Content>
-    ]
-  }
-
-  renderAccordionContent(heuristics) {
-    return map(heuristics, item => {
-      const { id, name, rules } = item;
-      return this.renderAccordionRow({ id, name, rules });
-    });
-  }
-
   render() {
-    const { handleSubmit, startEvaluation, heuristics }  = this.props;
+    const { handleSubmit, startEvaluation, heuristics } = this.props;
+    const { checkedHeuristic } = this.state;
 
     return [
       <Header as="h2" color="teal" textAlign="center">
@@ -60,10 +37,13 @@ class StartEvaluationForm extends Component {
       </Header>,
       <Form onSubmit={handleSubmit(startEvaluation)} size="large">
         <Segment stacked>
-          <Header size='medium'>Vertinimo euristikos</Header>
-          <Accordion styled style={{ textAlign: 'left' }}>
-            {this.renderAccordionContent(heuristics)}
-          </Accordion>
+          <HeuristicSelect
+            heuristics={heuristics}
+            checkedHeuristic={checkedHeuristic}
+            handleHeuristicClick={this.handleHeuristicClick}
+          />
+          <PlanList
+          />
         </Segment>
       </Form>
     ]

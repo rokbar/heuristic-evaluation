@@ -1,0 +1,13 @@
+.RulesList {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.RulesList__item {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.RulesList__rule {
+  flex-grow: 1;
+}
