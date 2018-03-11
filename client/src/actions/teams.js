@@ -136,8 +136,29 @@ export function getUsersByTeam({ teamId }) {
   }
 }
 
-export function startEvaluation() {
+export function startEvaluation({ plan = '', heuristicName, rules = null, heuristicId = null, teamId }) {
   return (dispatch) => {
-    return null;
+    return fetch(`/teams/${teamId}/startEvaluation`, {
+      body: JSON.stringify({
+        plan,
+        heuristicName,
+        customHeuristics: rules,
+        heuristicId,
+      }),
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(teams => {
+        console.log(teams);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 }

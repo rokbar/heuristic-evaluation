@@ -1,4 +1,7 @@
 const authHooks = require('feathers-authentication-hooks');
+const { hooks: knexHooks } = require('feathers-knex');
+
+const { transaction } = knexHooks;
 
 // TODO - adjust restriction (separate leaders from evaluators)
 module.exports = function ({ auth, local }) {
@@ -67,6 +70,26 @@ module.exports = function ({ auth, local }) {
         ],
       },
       after: local.hooks.protect('password'),
+    });
+
+    // TODO - add restriction, only available to group leader
+    app.service('teams/:teamId/startEvaluation').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
     });
   }
 };

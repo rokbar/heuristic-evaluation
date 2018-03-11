@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import {
   Form,
   Header,
   Segment,
+  Button,
 } from 'semantic-ui-react';
 
 import { startEvaluation } from 'actions/teams';
@@ -17,6 +18,10 @@ class StartEvaluationForm extends Component {
     this.state = {
       checkedHeuristic: null,
     }
+  }
+
+  componentDidMount() {
+    this.props.initialize({ teamId: this.props.teamId });
   }
 
   handleHeuristicClick = (e, titleProps) => {
@@ -36,14 +41,21 @@ class StartEvaluationForm extends Component {
         Pradėti vertinimą
       </Header>,
       <Form onSubmit={handleSubmit(startEvaluation)} size="large">
-        <Segment stacked>
+        <Segment>
           <HeuristicSelect
             heuristics={heuristics}
             checkedHeuristic={checkedHeuristic}
             handleHeuristicClick={this.handleHeuristicClick}
           />
-          <PlanList
-          />
+          <PlanList />
+          <Button
+            type="submit"
+            color="teal"
+            fluid
+            size="large"
+          >
+            Pradėti
+          </Button>
         </Segment>
       </Form>
     ]

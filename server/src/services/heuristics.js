@@ -36,12 +36,33 @@ module.exports = function (app) {
     }
   });
 
+  app.use('/rules/createBatch', {
+    create(data) {
+      return new Promise((resolve, reject) => {
+        const { rules, heuristicId } = data;
+        const rowsToInsert = rules.map((item) => {
+          return { description: item, heuristicId }
+        });
+
+        db.insert(...rowsToInsert).into('rule')
+          .then(response => resolve(response))
+          .catch(err => console.log(err));
+      })
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
+
+  // TODO - adjust role access and limit REST options
   app.use('/heuristics', knex({
     Model: db,
     name: 'heuristic',
     id: 'id',
   }));
 
+  // TODO - adjust role access and limit REST options
   app.use('/rules', knex({
     Model: db,
     name: 'rule',

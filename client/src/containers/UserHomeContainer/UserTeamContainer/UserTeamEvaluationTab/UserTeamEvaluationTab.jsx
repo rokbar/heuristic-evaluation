@@ -11,6 +11,7 @@ class UserTeamEvaluationTab extends Component {
   }
 
   render() {
+    const { teamId } = this.props.match.params;
     return(
       <div className="UserTeamEvaluationTab">
         <Grid
@@ -21,6 +22,7 @@ class UserTeamEvaluationTab extends Component {
           <Grid.Column className="StartEvaluationForm">
             <StartEvaluationForm
               heuristics={this.props.heuristics}
+              teamId={teamId}
             />
           </Grid.Column>
         </Grid>

@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+import { Field } from 'redux-form';
 import { map } from 'lodash';
 import {
   Button,
   Header,
   Accordion,
-  Checkbox,
+  Radio,
   Icon,
 } from 'semantic-ui-react';
 
+import RadioFormField from 'components/RadioFormField';
 import CustomHeuristicRow from './CustomHeuristicRow';
+import './HeuristicSelect.css';
 
 class HeuristicSelect extends Component {
   renderAddHeuristicRow() {
@@ -16,7 +19,7 @@ class HeuristicSelect extends Component {
 
     return [
       <Accordion.Title active={checkedHeuristic === 'custom'} index={'custom'} onClick={handleHeuristicClick}>
-        <Checkbox checked={checkedHeuristic === 'custom'}/>
+        <Radio checked={checkedHeuristic === 'custom'}/>
         <Icon name="dropdown"/>
         Sukurti naujas euristikas
       </Accordion.Title>,
@@ -29,8 +32,19 @@ class HeuristicSelect extends Component {
   renderAccordionRow({ id, name, rules }) {
     const { checkedHeuristic, handleHeuristicClick } = this.props;
     return [
-      <Accordion.Title active={checkedHeuristic === id} index={id} onClick={handleHeuristicClick}>
-        <Checkbox checked={checkedHeuristic === id} />
+      <Accordion.Title
+        className="HeuristicRow"
+        active={checkedHeuristic === id}
+        index={id}
+        onClick={handleHeuristicClick}
+      >
+        <Field
+          name="heuristicId"
+          component={RadioFormField}
+          checked={checkedHeuristic === id}
+          type="radio"
+          value={id}
+        />
         <Icon name="dropdown" />
         {name}
       </Accordion.Title>,
@@ -53,6 +67,7 @@ class HeuristicSelect extends Component {
     } else {
       heuristicsAccordion.push(
         <Button
+          type="button"
           floated="right"
           positive
           onClick={(e) => handleHeuristicClick(e, {index: 'custom'})}

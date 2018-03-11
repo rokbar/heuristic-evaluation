@@ -1,20 +1,20 @@
 import React from 'react';
 import { Field, FieldArray } from 'redux-form';
-import { map } from 'lodash';
 import { Form, Button, Icon } from 'semantic-ui-react';
 
 import './CustomHeuristicRow.css';
 
 const renderRules = ({ fields, meta: { error } }) => {
   return [
-      <div className="RulesList">
-      {map(fields, (rule, index) => (
+    <div className="RulesList">
+      {fields.map((rule, index) => (
         <div className="RulesList__item">
           <div className="RulesList__rule">
             <Field
               size="mini"
               name={rule}
               component={Form.Input}
+              type="text"
               placeholder="Euristika"
             />
           </div>
@@ -29,12 +29,13 @@ const renderRules = ({ fields, meta: { error } }) => {
       ))}
     </div>,
     <Button
+      type="button"
       size="mini"
       positive
       compact
-      onClick={() => fields.push({})}
+      onClick={() => fields.push()}
     >
-      <Icon name="add circle" /> Pridėti
+      <Icon name="add circle"/> Pridėti
     </Button>
   ];
 };

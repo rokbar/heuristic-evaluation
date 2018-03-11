@@ -10,6 +10,14 @@ module.exports = function () {
       },
     });
 
+    app.service('rules/createBatch').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ]
+      }
+    });
+
     app.service('rules').hooks({
       before: {
         all: [
