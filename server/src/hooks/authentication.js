@@ -6,7 +6,7 @@ module.exports = function ({ auth }) {
           auth.hooks.authenticate(['jwt', 'local']),
           context => {
             const {email, name, isBlocked} = context.params.user;
-            const companyId = context.params.user['company_id'];
+            const companyId = context.params.user['companyId'];
             const role = context.params.user.role;
             context.params.payload = context.params.payload || {};
             Object.assign(context.params.payload, {

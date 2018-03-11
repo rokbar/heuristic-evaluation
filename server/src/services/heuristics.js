@@ -20,7 +20,7 @@ module.exports = function (app) {
             const mappedHeuristics = heuristics.map((heuristic) => {
               if (!heuristic.isUnique) {
                 const mappedRules = rules.filter((rule) => {
-                  return rule.heuristic_id === heuristic.id;
+                  return rule.heuristicId === heuristic.id;
                 });
                 return {...heuristic, rules: mappedRules};
               }

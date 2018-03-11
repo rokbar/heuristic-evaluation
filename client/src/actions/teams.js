@@ -8,7 +8,7 @@ import { getJwtToken} from "utils/localStorage";
 export function getTeamsByCompanyAdmin() {
   return (dispatch, getState) => {
     const { userId } = getState().auth;
-    return fetch(`/teams?companyAdmin_id=${userId}`, {
+    return fetch(`/teams?companyAdminId=${userId}`, {
       headers: {
         'Authorization': getJwtToken(),
       },
@@ -62,7 +62,7 @@ export function addTeam({ name, systemName, systemUrl, systemContacts }) {
         systemName,
         systemUrl,
         systemContacts,
-        companyAdmin_id: userId,
+        companyAdminId: userId,
       }),
       headers: {
         'Authorization': getJwtToken(),
@@ -82,7 +82,7 @@ export function addTeam({ name, systemName, systemUrl, systemContacts }) {
   }
 }
 
-export function editTeam({ id, name, systemName, systemUrl, systemContacts, leader_id }) {
+export function editTeam({ id, name, systemName, systemUrl, systemContacts, leaderId }) {
   return (dispatch) => {
     return fetch(`/teams?id=${id}`, {
       body: JSON.stringify({
@@ -90,7 +90,7 @@ export function editTeam({ id, name, systemName, systemUrl, systemContacts, lead
         systemName,
         systemUrl,
         systemContacts,
-        leader_id,
+        leaderId,
       }),
       headers: {
         'Authorization': getJwtToken(),

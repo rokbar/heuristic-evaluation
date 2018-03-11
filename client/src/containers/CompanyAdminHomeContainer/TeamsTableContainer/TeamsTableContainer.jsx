@@ -43,14 +43,14 @@ class TeamsTableContainer extends Component {
 
   getTableData() {
     return this.props.teams.map(item => {
-      const { id, name, systemName, systemUrl, systemContacts, leader_id, state } = item;
+      const { id, name, systemName, systemUrl, systemContacts, leaderId, state } = item;
       return {
         name,
         systemName,
         systemUrl,
         systemContacts,
         state: teamState[state],
-        leader: this.getLeaderEmail(leader_id),
+        leader: this.getLeaderEmail(leaderId),
         actions: this.renderRowActions(id),
       };
     })

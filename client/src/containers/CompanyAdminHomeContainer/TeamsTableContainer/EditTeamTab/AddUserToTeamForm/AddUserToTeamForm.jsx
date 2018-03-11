@@ -14,7 +14,7 @@ import { addUserToTeam } from 'actions/evaluatorTeam';
 
 class AddUserToTeamForm extends Component {
   componentDidMount() {
-    this.props.initialize({ team_id: this.props.teamId });
+    this.props.initialize({ teamId: this.props.teamId });
   }
 
   getUserOptions() {
@@ -35,7 +35,7 @@ class AddUserToTeamForm extends Component {
       <Form onSubmit={handleSubmit(addUserToTeam)} className="AddUserToTeamForm" size="large">
         <Segment stacked>
           <Field
-            name="evaluator_id"
+            name="evaluatorId"
             component={DropdownFormField}
             search
             label="Vertintojai"

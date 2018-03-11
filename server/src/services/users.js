@@ -19,15 +19,15 @@ module.exports = function (app) {
         'team.systemUrl',
         'team.systemContacts',
         'team.state',
-        'team.leader_id',
+        'team.leaderId',
         'user.email as leaderEmail',
         'user.name as leaderName',
-        'team.heuristic_id'
+        'team.heuristicId'
       )
         .from('team', 'user')
-        .leftJoin('user', 'user.id', '=', 'team.leader_id')
-        .innerJoin('evaluatorteam', 'team.id', '=', 'evaluatorteam.team_id')
-        .where('evaluatorteam.evaluator_id', userId)
+        .leftJoin('user', 'user.id', '=', 'team.leaderId')
+        .innerJoin('evaluatorteam', 'team.id', '=', 'evaluatorteam.teamId')
+        .where('evaluatorteam.evaluatorId', userId)
         .then(response => {
           return response;
         })

@@ -1,12 +1,12 @@
 import {ADD_USER, DELETE_USER} from './types';
 import { getJwtToken } from 'utils/localStorage';
 
-export function addUserToTeam({ evaluator_id: userId, team_id: teamId }) {
+export function addUserToTeam({ evaluatorId: userId, teamId: teamId }) {
   return (dispatch) => {
     return fetch('/evaluatorteam', {
       body: JSON.stringify({
-        evaluator_id: userId,
-        team_id: teamId,
+        evaluatorId: userId,
+        teamId: teamId,
       }),
       headers: {
         'Authorization': getJwtToken(),
@@ -36,7 +36,7 @@ export function addUserToTeam({ evaluator_id: userId, team_id: teamId }) {
 
 export function removeUserFromTeam({ userId, teamId }) {
   return (dispatch) => {
-    return fetch(`/evaluatorteam?evaluator_id=${userId}&team_id=${teamId}`, {
+    return fetch(`/evaluatorteam?evaluatorId=${userId}&teamId=${teamId}`, {
       headers: {
         'Authorization': getJwtToken(),
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export function removeUserFromTeam({ userId, teamId }) {
           type: DELETE_USER,
           payload: {
             usersType: 'teamUsers',
-            userId: userTeam[0] && userTeam[0].evaluator_id,
+            userId: userTeam[0] && userTeam[0].evaluatorId,
           }
         })
       })

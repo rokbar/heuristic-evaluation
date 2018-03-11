@@ -50,7 +50,7 @@ class EditTeamForm extends Component {
             placeholder="Pavadinimas"
           />
           <Field
-            name="leader_id"
+            name="leaderId"
             component={DropdownFormField}
             search
             label="Komandos lyderis"

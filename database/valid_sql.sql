@@ -34,7 +34,7 @@ CREATE TABLE Rule
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
 	description varchar (255),
-	heuristic_id integer NOT NULL,
+	heuristicId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -42,8 +42,8 @@ CREATE TABLE ProblemRule
 (
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
-	problem_id integer NOT NULL,
-	rule_id integer NOT NULL,
+	problemId integer NOT NULL,
+	ruleId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -53,8 +53,8 @@ CREATE TABLE Rating
 	isRemoved boolean DEFAULT 0,
 	value integer,
 	comment varchar (255),
-	problem_id integer NOT NULL,
-	evaluator_id integer NOT NULL,
+	problemId integer NOT NULL,
+	evaluatorId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -68,9 +68,9 @@ CREATE TABLE Team
 	systemUrl varchar (255),
 	systemContacts varchar (255),
 	state integer DEFAULT 1,
-	companyAdmin_id integer NOT NULL,
-	leader_id integer,
-	heuristic_id integer,
+	companyAdminId integer NOT NULL,
+	leaderId integer,
+	heuristicId integer,
 	PRIMARY KEY(id)
 );
 
@@ -83,8 +83,8 @@ CREATE TABLE User
 	isBlocked boolean DEFAULT 0,
 	lastLogon date,
 	email varchar (255),
-	company_id integer,
-	systemAdmin_id integer NOT NULL,
+	companyId integer,
+	systemAdminId integer NOT NULL,
 	role char (255),
 	PRIMARY KEY(id)
 );
@@ -97,7 +97,7 @@ CREATE TABLE Company
 	country varchar (255),
 	url varchar (255),
 	address varchar (255),
-	systemAdmin_id integer NOT NULL,
+	systemAdminId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -107,7 +107,7 @@ CREATE TABLE Task
   isRemoved boolean DEFAULT 0,
 	description varchar (255),
 	number integer,
-	team_id integer NOT NULL,
+	teamId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -115,8 +115,8 @@ CREATE TABLE EvaluatorProblem
 (
 	id integer AUTO_INCREMENT,
   isRemoved boolean DEFAULT 0,
-	evaluator_id integer NOT NULL,
-	problem_id integer NOT NULL,
+	evaluatorId integer NOT NULL,
+	problemId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -125,8 +125,8 @@ CREATE TABLE EvaluatorTeam
 	id integer AUTO_INCREMENT,
   isRemoved boolean DEFAULT 0,
 	state integer DEFAULT 1,
-	team_id integer NOT NULL,
-	evaluator_id integer NOT NULL,
+	teamId integer NOT NULL,
+	evaluatorId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -139,47 +139,47 @@ CREATE TABLE Problem
 	photo smallint,
 	ratingsAverage float,
 	isCombined boolean DEFAULT false,
-	team_id integer NOT NULL,
+	teamId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
 ALTER TABLE Rule
-	ADD CONSTRAINT consists_of FOREIGN KEY(heuristic_id) REFERENCES Heuristic (id) ON DELETE CASCADE;
+	ADD CONSTRAINT consists_of FOREIGN KEY(heuristicId) REFERENCES Heuristic (id) ON DELETE CASCADE;
 
 ALTER TABLE ProblemRule
-	ADD CONSTRAINT violates FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE,
-    ADD FOREIGN KEY(rule_id) REFERENCES Rule (id) ON DELETE CASCADE;
+	ADD CONSTRAINT violates FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE,
+    ADD FOREIGN KEY(ruleId) REFERENCES Rule (id) ON DELETE CASCADE;
     
 ALTER TABLE Rating
-	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE;
+	ADD FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE;
 
 ALTER TABLE Team
 	ADD FOREIGN KEY(state) REFERENCES TeamState (id) ON DELETE CASCADE,
-	ADD CONSTRAINT creates FOREIGN KEY(companyAdmin_id) REFERENCES User (id) ON DELETE CASCADE,
-	ADD CONSTRAINT manages FOREIGN KEY(leader_id) REFERENCES User (id) ON DELETE CASCADE,
-	ADD CONSTRAINT uses FOREIGN KEY(heuristic_id) REFERENCES Heuristic (id) ON DELETE CASCADE;
+	ADD CONSTRAINT creates FOREIGN KEY(companyAdminId) REFERENCES User (id) ON DELETE CASCADE,
+	ADD CONSTRAINT manages FOREIGN KEY(leaderId) REFERENCES User (id) ON DELETE CASCADE,
+	ADD CONSTRAINT uses FOREIGN KEY(heuristicId) REFERENCES Heuristic (id) ON DELETE CASCADE;
     
 ALTER TABLE User
-	ADD CONSTRAINT belongs_to FOREIGN KEY(company_id) REFERENCES Company (id) ON DELETE CASCADE,
-	ADD CONSTRAINT admin_creates FOREIGN KEY(systemAdmin_id) REFERENCES User (id) ON DELETE CASCADE;
+	ADD CONSTRAINT belongs_to FOREIGN KEY(companyId) REFERENCES Company (id) ON DELETE CASCADE,
+	ADD CONSTRAINT admin_creates FOREIGN KEY(systemAdminId) REFERENCES User (id) ON DELETE CASCADE;
     
 ALTER TABLE Company
-	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdmin_id) REFERENCES User (id) ON DELETE CASCADE;
+	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdminId) REFERENCES User (id) ON DELETE CASCADE;
     
 ALTER TABLE Task
-	ADD CONSTRAINT has FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE;
+	ADD CONSTRAINT has FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE;
     
 ALTER TABLE EvaluatorProblem
-	ADD CONSTRAINT detected FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(problem_id) REFERENCES Problem (id) ON DELETE CASCADE;
+	ADD CONSTRAINT detected FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE;
     
 ALTER TABLE EvaluatorTeam
 	ADD FOREIGN KEY(state) REFERENCES EvaluatorTeamState (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(evaluator_id) REFERENCES User (id) ON DELETE CASCADE;
+	ADD FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE;
     
 ALTER TABLE Problem
-	ADD CONSTRAINT finds FOREIGN KEY(team_id) REFERENCES Team (id) ON DELETE CASCADE;
+	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE;
 
 ALTER TABLE user AUTO_INCREMENT = 1

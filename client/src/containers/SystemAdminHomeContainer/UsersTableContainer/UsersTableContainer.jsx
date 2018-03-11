@@ -40,7 +40,7 @@ class UsersTableContainer extends Component {
 
   getTableData() {
     return this.props.users.map(item => {
-      const { id, name, email, company_id } = item;
+      const { id, name, email, companyId } = item;
       const date = new Date(item.lastLogon);
       const lastLogon =
         `${date.getFullYear()}-${(((date.getMonth() + 1) < 10) ? '0' : '') + (date.getMonth() + 1)}-${((date.getDate() < 10) ? '0' : '') + date.getDate()}`;
@@ -48,7 +48,7 @@ class UsersTableContainer extends Component {
         name,
         email,
         lastLogon,
-        company: this.getCompanyName(company_id),
+        company: this.getCompanyName(companyId),
         actions: this.renderRowActions(id),
       };
     })

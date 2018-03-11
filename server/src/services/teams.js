@@ -12,9 +12,9 @@ module.exports = function (app) {
   app.use('/teams/:teamId/users', {
     find(params) {
       const teamId = params.route.teamId;
-      return db.select('user.id', 'name', 'email', 'lastLogon', 'company_id', 'systemAdmin_id', 'role').from('user')
-        .innerJoin('evaluatorteam', 'user.id', '=', 'evaluatorteam.evaluator_id')
-        .where('evaluatorteam.team_id', teamId)
+      return db.select('user.id', 'name', 'email', 'lastLogon', 'companyId', 'systemAdminId', 'role').from('user')
+        .innerJoin('evaluatorteam', 'user.id', '=', 'evaluatorteam.evaluatorId')
+        .where('evaluatorteam.teamId', teamId)
         .then(response => {
           return response;
         });

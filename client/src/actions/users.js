@@ -59,7 +59,7 @@ export function getUserById({ userId }) {
 export function getUsersByCompanyId() {
   return (dispatch, getState) => {
     const { companyId } = getState().auth;
-    return fetch(`/users?company_id=${companyId}`, {
+    return fetch(`/users?companyId=${companyId}`, {
       headers: {
         'Authorization': getJwtToken(),
       },
@@ -94,8 +94,8 @@ export function addUser({ name, password, email, company, role }) {
         email,
         role,
         lastLogon: new Date().toISOString().slice(0, 19).replace('T', ' '),
-        company_id: company,
-        systemAdmin_id: userId,
+        companyId: company,
+        systemAdminId: userId,
       }),
       headers: {
         'Authorization': getJwtToken(),
@@ -115,14 +115,14 @@ export function addUser({ name, password, email, company, role }) {
   }
 }
 
-export function editUser({ id, name, email, company_id, role }) {
+export function editUser({ id, name, email, companyId, role }) {
   return (dispatch) => {
     return fetch(`/users?id=${id}`, {
       body: JSON.stringify({
         name,
         email,
         role,
-        company_id,
+        companyId,
       }),
       headers: {
         'Authorization': getJwtToken(),

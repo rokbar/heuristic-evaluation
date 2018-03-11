@@ -33,7 +33,7 @@ export function addCompany({ name, country, url, address }) {
         country,
         url,
         address,
-        systemAdmin_id: userId,
+        systemAdminId: userId,
       }),
       headers: {
         'Authorization': getJwtToken(),

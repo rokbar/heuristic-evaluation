@@ -85,7 +85,7 @@ class EditUserForm extends Component {
                   placeholder="El. paštas"
                 />
                 <Field
-                  name="company_id"
+                  name="companyId"
                   component={DropdownFormField}
                   label="Įmonė"
                   options={companyOptions}
