@@ -45,7 +45,10 @@ module.exports = function (app) {
         });
 
         db.insert(...rowsToInsert).into('rule')
-          .then(response => resolve(response))
+          .then(response => {
+            console.log(response);
+            resolve(response);
+          })
           .catch(err => console.log(err));
       })
     },

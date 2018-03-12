@@ -1,6 +1,7 @@
 const authHooks = require('feathers-authentication-hooks');
 const { hooks: knexHooks } = require('feathers-knex');
 
+const { teamState } = require('../utils/enums');
 const { transaction } = knexHooks;
 
 // TODO - adjust restriction (separate leaders from evaluators)
@@ -79,6 +80,58 @@ module.exports = function ({ auth, local }) {
           auth.hooks.authenticate('jwt'),
           transaction.start(),
         ],
+        create: [
+          (hook) => {
+            const {teamId} = hook.params.route;
+            const {heuristicName: name, customHeuristics, plan} = hook.data;
+            let { heuristicId } = hook.data;
+
+            return new Promise((resolve, reject) => {
+              if (customHeuristics && !heuristicId) {
+                hook.app.service('heuristics').create(
+                  {name, isUnique: 1},
+                  {transaction: hook.params.transaction},
+                )
+                  .then(result => {
+                    hook.result = result;
+                    heuristicId = result.id;
+                    // return hook.app.service('rules/createBatch').create(
+                    //   {rules: customHeuristics, heuristicId},
+                    //   {transaction: hook.params.transaction},
+                    // );
+                    return hook.app.service('rules').create(
+                      {description: customHeuristics[0].description, heuristicId},
+                      {transaction: hook.params.transaction},
+                    );
+                  })
+                  .then(result => {
+                    console.log(result);
+                    // reject('error');
+                    hook.app.service('teams').patch(
+                      teamId,
+                      {heuristicId, state: teamState.evaluationStarted},
+                      {transaction: hook.params.transaction},
+                    )
+                  })
+                  .then(result => {
+                    resolve(hook);
+                  })
+                  .catch(reject => {
+                    console.log('err');
+                    console.log(reject);
+                  });
+              } else {
+                hook.app.service('teams').patch(
+                  teamId,
+                  {heuristicId, state: teamState.evaluationStarted},
+                  {transaction: hook.params.transaction},
+                )
+                  .then(response => resolve(response))
+                  .catch(reject);
+              }
+            });
+          }
+        ]
       },
       after: {
         all: [
