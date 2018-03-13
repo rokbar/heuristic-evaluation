@@ -1,7 +1,15 @@
 const { disallow } = require('feathers-hooks-common');
 
-module.exports = function () {
+module.exports = function ({ auth }) {
   return function (app) {
+    app.service('sharedheuristics').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+        ]
+      }
+    });
+
     app.service('heuristics').hooks({
       before: {
         all: [
@@ -14,6 +22,13 @@ module.exports = function () {
       before: {
         all: [
           disallow('external'),
+        ],
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              resolve(hook);
+            })
+          }
         ]
       }
     });

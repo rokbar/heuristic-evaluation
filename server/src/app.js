@@ -66,7 +66,7 @@ app.configure(companiesHooks({ auth }));
 app.configure(teamsHooks({ auth, local }));
 app.configure(teamStatesHooks({ auth }));
 app.configure(evaluatorTeamHooks({ auth }));
-app.configure(heuristicsHooks());
+app.configure(heuristicsHooks({ auth }));
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

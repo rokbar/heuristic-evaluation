@@ -3,11 +3,11 @@ const knex = require('feathers-knex');
 const db = require('../database');
 
 module.exports = function (app) {
-  app.use('/heuristics/all', {
+  app.use('/sharedheuristics', {
     find() {
       return new Promise((resolve, reject) => {
-      let heuristics;
-      let rules;
+        let heuristics;
+        let rules;
         app.service('heuristics').find()
           .then(items => {
             heuristics = items;
@@ -17,14 +17,17 @@ module.exports = function (app) {
             rules = items;
           })
           .then(() => {
-            const mappedHeuristics = heuristics.map((heuristic) => {
+          // TODO - refactor to use query builder's join
+            let mappedHeuristics = [];
+            mappedHeuristics = heuristics.reduce((accumulator, heuristic) => {
               if (!heuristic.isUnique) {
                 const mappedRules = rules.filter((rule) => {
                   return rule.heuristicId === heuristic.id;
                 });
-                return {...heuristic, rules: mappedRules};
+                accumulator.push({...heuristic, rules: mappedRules});
               }
-            });
+              return accumulator;
+            }, []);
             resolve(mappedHeuristics);
           })
           .catch(reject);
@@ -37,19 +40,19 @@ module.exports = function (app) {
   });
 
   app.use('/rules/createBatch', {
-    create(data) {
+    create(data, params) {
       return new Promise((resolve, reject) => {
         const { rules, heuristicId } = data;
         const rowsToInsert = rules.map((item) => {
           return { description: item, heuristicId }
         });
 
-        db.insert(...rowsToInsert).into('rule')
+        db.transacting(params.transaction.trx)
+          .insert([...rowsToInsert]).into('rule')
           .then(response => {
-            console.log(response);
             resolve(response);
           })
-          .catch(err => console.log(err));
+          .catch();
       })
     },
 

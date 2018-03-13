@@ -95,19 +95,13 @@ module.exports = function ({ auth, local }) {
                   .then(result => {
                     hook.result = result;
                     heuristicId = result.id;
-                    // return hook.app.service('rules/createBatch').create(
-                    //   {rules: customHeuristics, heuristicId},
-                    //   {transaction: hook.params.transaction},
-                    // );
-                    return hook.app.service('rules').create(
-                      {description: customHeuristics[0].description, heuristicId},
+                    return hook.app.service('rules/createBatch').create(
+                      {rules: customHeuristics, heuristicId},
                       {transaction: hook.params.transaction},
                     );
                   })
                   .then(result => {
-                    console.log(result);
-                    // reject('error');
-                    hook.app.service('teams').patch(
+                    return hook.app.service('teams').patch(
                       teamId,
                       {heuristicId, state: teamState.evaluationStarted},
                       {transaction: hook.params.transaction},
@@ -116,9 +110,10 @@ module.exports = function ({ auth, local }) {
                   .then(result => {
                     resolve(hook);
                   })
-                  .catch(reject => {
+                  .catch(err => {
                     console.log('err');
-                    console.log(reject);
+                    console.log(err);
+                    reject(err);
                   });
               } else {
                 hook.app.service('teams').patch(
@@ -126,7 +121,10 @@ module.exports = function ({ auth, local }) {
                   {heuristicId, state: teamState.evaluationStarted},
                   {transaction: hook.params.transaction},
                 )
-                  .then(response => resolve(response))
+                  .then(result => {
+                    hook.result = result;
+                    resolve(hook)
+                  })
                   .catch(reject);
               }
             });

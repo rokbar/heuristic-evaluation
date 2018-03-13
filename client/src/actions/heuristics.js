@@ -3,7 +3,7 @@ import { getJwtToken} from "utils/localStorage";
 
 export function getSharedHeuristics() {
   return (dispatch) => {
-    return fetch(`/heuristics/all`, {
+    return fetch(`/sharedheuristics`, {
       headers: {
         'Authorization': getJwtToken(),
       },
