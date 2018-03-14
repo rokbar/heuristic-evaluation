@@ -3,7 +3,7 @@ const knex = require('feathers-knex');
 const db = require('../database');
 
 module.exports = function (app) {
-  app.use('/sharedheuristics', {
+  app.use('/heuristics/all', {
     find() {
       return new Promise((resolve, reject) => {
         let heuristics;
@@ -18,8 +18,7 @@ module.exports = function (app) {
           })
           .then(() => {
           // TODO - refactor to use query builder's join
-            let mappedHeuristics = [];
-            mappedHeuristics = heuristics.reduce((accumulator, heuristic) => {
+            const mappedHeuristics = heuristics.reduce((accumulator, heuristic) => {
               if (!heuristic.isUnique) {
                 const mappedRules = rules.filter((rule) => {
                   return rule.heuristicId === heuristic.id;

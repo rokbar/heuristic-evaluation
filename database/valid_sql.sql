@@ -2,7 +2,7 @@ CREATE TABLE Heuristic
 (
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
-	name varchar (255),
+	name TEXT,
 	isUnique boolean DEFAULT false,
 	PRIMARY KEY(id)
 );
@@ -52,7 +52,7 @@ CREATE TABLE Rating
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
 	value integer,
-	comment varchar (255),
+	comment TEXT,
 	problemId integer NOT NULL,
 	evaluatorId integer NOT NULL,
 	PRIMARY KEY(id)
@@ -63,7 +63,8 @@ CREATE TABLE Team
 	id integer AUTO_INCREMENT,
   isRemoved boolean DEFAULT 0,
 	name varchar (255),
-	report smallint,
+	report MEDIUMBLOB,
+	plan TEXT,
 	systemName varchar (255),
 	systemUrl varchar (255),
 	systemContacts varchar (255),
@@ -101,16 +102,6 @@ CREATE TABLE Company
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE Task
-(
-	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
-	description varchar (255),
-	number integer,
-	teamId integer NOT NULL,
-	PRIMARY KEY(id)
-);
-
 CREATE TABLE EvaluatorProblem
 (
 	id integer AUTO_INCREMENT,
@@ -134,9 +125,9 @@ CREATE TABLE Problem
 (
 	id integer AUTO_INCREMENT,
   isRemoved boolean DEFAULT 0,
-	description varchar (255),
+	description TEXT,
 	location varchar (255),
-	photo smallint,
+	photo BLOB,
 	ratingsAverage float,
 	isCombined boolean DEFAULT false,
 	teamId integer NOT NULL,
@@ -166,9 +157,6 @@ ALTER TABLE User
     
 ALTER TABLE Company
 	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdminId) REFERENCES User (id) ON DELETE CASCADE;
-    
-ALTER TABLE Task
-	ADD CONSTRAINT has FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE;
     
 ALTER TABLE EvaluatorProblem
 	ADD CONSTRAINT detected FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { reduxForm } from 'redux-form';
+import { reduxForm, reset } from 'redux-form';
 import {
   Form,
   Header,
@@ -25,6 +25,7 @@ class StartEvaluationForm extends Component {
   }
 
   handleHeuristicClick = (e, titleProps) => {
+    this.props.reset('startEvaluation');
     const {index} = titleProps;
     const {checkedHeuristic} = this.state;
     const newIndex = checkedHeuristic === index ? -1 : index;

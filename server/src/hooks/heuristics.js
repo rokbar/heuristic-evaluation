@@ -2,7 +2,7 @@ const { disallow } = require('feathers-hooks-common');
 
 module.exports = function ({ auth }) {
   return function (app) {
-    app.service('sharedheuristics').hooks({
+    app.service('heuristics/all').hooks({
       before: {
         all: [
           auth.hooks.authenticate('jwt'),
