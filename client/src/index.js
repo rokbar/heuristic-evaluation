@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import { createStore, applyMiddleware } from 'redux';
-import reduxThunk from 'redux-thunk';
+import thunk from 'redux-thunk';
 
 import './index.css';
 import 'semantic-ui-css/semantic.min.css';
@@ -17,9 +17,9 @@ import localStorageLoad from './middleware/localStorageLoad';
 const history = createHistory();
 // localStorageLoad - middleware to authenticate on app load (if token exists)
 const createStoreWithMiddleware = applyMiddleware(
+  routerMiddleware(history),
+  thunk,
   localStorageLoad,
-  reduxThunk,
-  routerMiddleware(history)
 )(createStore);
 const store = createStoreWithMiddleware(reducers);
 

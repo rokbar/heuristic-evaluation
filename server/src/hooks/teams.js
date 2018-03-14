@@ -64,7 +64,8 @@ module.exports = function ({ auth, local }) {
         ],
         find: [
           authHooks.restrictToRoles({
-            roles: ['companyadmin'],
+            // TODO - limit evaluator' access to only see same team users
+            roles: ['companyadmin', 'evaluator'],
             fieldName: 'role',
             idField: 'id',
           }),
@@ -103,7 +104,7 @@ module.exports = function ({ auth, local }) {
                   .then(result => {
                     return hook.app.service('teams').patch(
                       teamId,
-                      {heuristicId, state: teamState.evaluationStarted},
+                      {heuristicId, plan, state: teamState.evaluationStarted},
                       {transaction: hook.params.transaction},
                     )
                   })
@@ -118,7 +119,7 @@ module.exports = function ({ auth, local }) {
               } else {
                 hook.app.service('teams').patch(
                   teamId,
-                  {heuristicId, state: teamState.evaluationStarted},
+                  {heuristicId, plan, state: teamState.evaluationStarted},
                   {transaction: hook.params.transaction},
                 )
                   .then(result => {

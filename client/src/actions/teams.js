@@ -46,6 +46,7 @@ export function getTeamById({ teamId }) {
           type: EDIT_FORM,
           payload: { ...teams[0] }
         });
+        return teams[0];
       })
       .catch(error => {
         console.log(error);
