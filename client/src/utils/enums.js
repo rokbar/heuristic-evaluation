@@ -7,7 +7,8 @@ export const teamState = {
 };
 
 export const evaluatorTeamState = {
-  1: 'Registruoja problemas',
-  2: 'Vertina problemas',
-  3: 'Baigė vertinimą',
+  1: 'Nauja komanda',
+  2: 'Registruoja problemas',
+  3: 'Vertina problemas',
+  4: 'Baigė vertinimą',
 };

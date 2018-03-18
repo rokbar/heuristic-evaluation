@@ -1,52 +1,23 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+
 import {
   Grid,
   Header,
   Icon,
 } from 'semantic-ui-react'
-
-import { teamState } from 'utils/enums';
 import UserTeamMembersList from './UserTeamMembersList';
-import { getUsersByTeam, getTeamById } from 'actions/teams';
 
-const initialState = {
-  team: {
-    systemName: '',
-    systemUrl: '',
-    systemContacts: '',
-    state: '',
-    leaderId: null,
-  }
-};
+import { getUsersByTeam } from 'actions/teams';
 
 class UserTeamInfoTab extends Component {
-  constructor(props) {
-    super(props);
-    this.state = initialState;
-  }
-
   componentDidMount() {
     const { teamId } = this.props.match.params;
     this.props.getUsersByTeam({ teamId });
-    this.props.getTeamById({ teamId })
-      .then(team => {
-        const { systemName, systemUrl, systemContacts, state, leaderId } = team;
-        this.setState({
-          team: {
-            systemName,
-            systemUrl,
-            systemContacts,
-            state: teamState[state],
-            leaderId,
-          },
-        })
-      })
-      .catch();
   }
 
   render() {
-    const { team: { systemName, systemUrl, systemContacts, leaderId, state } } = this.state;
+    const { team: { systemName, systemUrl, systemContacts, leaderId, state } } = this.props;
     return (
       <div className="UserTeamInfoTab">
         <Grid
@@ -97,5 +68,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { getUsersByTeam, getTeamById }
+  { getUsersByTeam }
 )(UserTeamInfoTab);

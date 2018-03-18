@@ -7,7 +7,8 @@ exports.teamState = {
 };
 
 exports.evaluatorTeamState = {
-  evaluationStarted: 1,
-  ratingProblems: 2,
-  evaluationFinished: 3,
+  new: 1,
+  evaluationStarted: 2,
+  ratingProblems: 3,
+  evaluationFinished: 4,
 };
