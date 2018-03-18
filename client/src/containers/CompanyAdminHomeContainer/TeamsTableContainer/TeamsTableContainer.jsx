@@ -5,7 +5,7 @@ import { find } from 'lodash';
 
 import { getTeamsByCompanyAdmin } from 'actions/teams';
 import { getUsersByCompanyId } from "actions/users";
-import { teamState } from 'utils/enums';
+import { teamStateLT } from 'utils/enums';
 import DataTable from 'components/DataTable';
 import AddTeamButton from './AddTeamButton';
 import TeamRowActions from './TeamRowActions';
@@ -49,7 +49,7 @@ class TeamsTableContainer extends Component {
         systemName,
         systemUrl,
         systemContacts,
-        state: teamState[state],
+        state: teamStateLT[state],
         leader: this.getLeaderEmail(leaderId),
         actions: this.renderRowActions(id),
       };

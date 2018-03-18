@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getTeamsByUser } from 'actions/users';
-import { teamState } from 'utils/enums';
+import { teamStateLT } from 'utils/enums';
 import DataTable from 'components/DataTable/index';
 import UserTeamRowActions from './UserTeamRowActions/index';
 
@@ -40,7 +40,7 @@ class UserTeamsTableContainer extends Component {
         systemName,
         systemUrl,
         systemContacts,
-        state: teamState[state],
+        state: teamStateLT[state],
         leader: leaderEmail,
         actions: this.renderRowActions(id),
       };

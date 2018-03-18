@@ -12,10 +12,11 @@ import UserTeamHeuristicsTab from './UserTeamHeuristicsTab';
 import UserTeamPlanTab from './UserTeamPlanTab';
 import UserTeamEvaluatorsListTab from './UserTeamEvaluatorsListTab';
 
-import { teamState } from 'utils/enums';
+import { teamState, teamStateLT, evaluatorTeamState, evaluatorTeamStateLT } from 'utils/enums';
 
 import { getTeamStates } from 'actions/teamStates';
 import { getTeamById } from 'actions/teams';
+import { getUserTeamState } from 'actions/evaluatorTeam';
 
 const TeamLeaderRoutes = AuthorizationTeamHOC(['leader']);
 const EvaluatorRoutes = AuthorizationTeamHOC(['leader', 'evaluator']);
@@ -27,7 +28,9 @@ const initialState = {
     systemContacts: '',
     state: '',
     leaderId: null,
-  }
+  },
+  role: null,
+  evaluatorState: evaluatorTeamState.new,
 };
 
 class UserTeamContainer extends Component {
@@ -47,18 +50,24 @@ class UserTeamContainer extends Component {
   };
 
   getAndSetTeamState(teamId) {
-    this.props.getTeamById({ teamId })
+    let evaluatorState;
+    getUserTeamState({ userId: this.props.auth.userId, teamId })
+      .then(userTeamState => {
+        evaluatorState = userTeamState[0];
+        return this.props.getTeamById({ teamId });
+      })
       .then(team => {
         const { systemName, systemUrl, systemContacts, state, leaderId } = team;
-        this.setState({
+        return this.setState({
           team: {
             systemName,
             systemUrl,
             systemContacts,
-            state: teamState[state],
+            state: teamStateLT[state],
             leaderId,
           },
           role: this.getRole(leaderId),
+          evaluatorState: evaluatorState.state,
         });
       })
       .catch();
@@ -83,6 +92,7 @@ class UserTeamContainer extends Component {
       ]
       : [
         {name: 'Informacija', pathName: `/evaluator/teams/${teamId}/info`},
+        {name: 'Problemos', pathName: `/evaluator/teams/${teamId}/problems`},
         {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`},
         {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`},
       ];
@@ -125,7 +135,8 @@ class UserTeamContainer extends Component {
         <Route
           path='/evaluator/teams/:teamId/problems'
           component={() => this.renderArticleSegment(
-            TeamLeaderRoutes(UserProblemsTableTab),
+            EvaluatorRoutes(UserProblemsTableTab),
+            { ...this.state }
           )}
         />
         <Route

@@ -60,3 +60,17 @@ export function removeUserFromTeam({ userId, teamId }) {
       });
   }
 }
+
+export function getUserTeamState({ userId, teamId }) {
+  return fetch(`/evaluatorteam?evaluatorId=${userId}&teamId=${teamId}`, {
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch();
+}

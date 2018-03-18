@@ -9,10 +9,9 @@ module.exports = function ({ auth }) {
           auth.hooks.authenticate('jwt'),
         ],
         find: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin'],
-            fieldName: 'role',
+          authHooks.restrictToOwner({
             idField: 'id',
+            ownerField: 'evaluatorId',
           }),
         ],
         get: [
@@ -20,6 +19,8 @@ module.exports = function ({ auth }) {
             roles: ['companyadmin'],
             fieldName: 'role',
             idField: 'id',
+            ownerField: 'evaluatorId',
+            owner: true,
           }),
         ],
         create: [
