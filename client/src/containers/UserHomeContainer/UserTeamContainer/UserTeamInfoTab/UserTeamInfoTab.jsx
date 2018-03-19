@@ -8,6 +8,8 @@ import {
 } from 'semantic-ui-react'
 import UserTeamMembersList from './UserTeamMembersList';
 
+import { teamStateLT } from 'utils/enums';
+
 import { getUsersByTeam } from 'actions/teams';
 
 class UserTeamInfoTab extends Component {
@@ -44,7 +46,7 @@ class UserTeamInfoTab extends Component {
             <Header size='medium'>Būsena</Header>
             <Grid columns={2} textAlign="left" celled='internally'>
               <Grid.Row>
-                <Grid.Column>{state}</Grid.Column>
+                <Grid.Column>{teamStateLT[state]}</Grid.Column>
                 <Grid.Column><Icon name="list ol"/></Grid.Column>
               </Grid.Row>
             </Grid>

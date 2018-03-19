@@ -12,11 +12,11 @@ import UserTeamHeuristicsTab from './UserTeamHeuristicsTab';
 import UserTeamPlanTab from './UserTeamPlanTab';
 import UserTeamEvaluatorsListTab from './UserTeamEvaluatorsListTab';
 
-import { teamState, teamStateLT, evaluatorTeamState, evaluatorTeamStateLT } from 'utils/enums';
+import { evaluatorTeamState } from 'utils/enums';
 
 import { getTeamStates } from 'actions/teamStates';
 import { getTeamById } from 'actions/teams';
-import { getUserTeamState } from 'actions/evaluatorTeam';
+import { getUserTeamState, startUserEvaluation } from 'actions/evaluatorTeam';
 
 const TeamLeaderRoutes = AuthorizationTeamHOC(['leader']);
 const EvaluatorRoutes = AuthorizationTeamHOC(['leader', 'evaluator']);
@@ -29,8 +29,11 @@ const initialState = {
     state: '',
     leaderId: null,
   },
+  evaluatorTeam: {
+    id: null,
+    state: evaluatorTeamState.new,
+  },
   role: null,
-  evaluatorState: evaluatorTeamState.new,
 };
 
 class UserTeamContainer extends Component {
@@ -49,6 +52,19 @@ class UserTeamContainer extends Component {
     this.props.history.push(pathName);
   };
 
+  onUserEvaluationStart() {
+    startUserEvaluation({ id: this.state.evaluatorTeam.id })
+      .then(userTeamState => {
+        return userTeamState.state && this.setState({
+          evaluatorTeam: {
+            id: userTeamState.id,
+            state: userTeamState.state
+          }
+        });
+      })
+      .catch();
+  }
+
   getAndSetTeamState(teamId) {
     let evaluatorState;
     getUserTeamState({ userId: this.props.auth.userId, teamId })
@@ -63,11 +79,14 @@ class UserTeamContainer extends Component {
             systemName,
             systemUrl,
             systemContacts,
-            state: teamStateLT[state],
+            state,
             leaderId,
           },
+          evaluatorTeam: {
+            id: evaluatorState.id,
+            state: evaluatorState.state,
+          },
           role: this.getRole(leaderId),
-          evaluatorState: evaluatorState.state,
         });
       })
       .catch();
@@ -136,7 +155,10 @@ class UserTeamContainer extends Component {
           path='/evaluator/teams/:teamId/problems'
           component={() => this.renderArticleSegment(
             EvaluatorRoutes(UserProblemsTableTab),
-            { ...this.state }
+            {
+              ...this.state,
+              startUserEvaluation: this.onUserEvaluationStart.bind(this),
+            }
           )}
         />
         <Route

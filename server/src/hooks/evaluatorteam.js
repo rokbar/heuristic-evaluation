@@ -42,6 +42,8 @@ module.exports = function ({ auth }) {
             roles: ['companyadmin'],
             fieldName: 'role',
             idField: 'id',
+            ownerField: 'evaluatorId',
+            owner: true,
           }),
         ],
         remove: [

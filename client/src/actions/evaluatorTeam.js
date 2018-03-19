@@ -1,5 +1,6 @@
 import {ADD_USER, DELETE_USER} from './types';
 import { getJwtToken } from 'utils/localStorage';
+import { evaluatorTeamState } from 'utils/enums';
 
 export function addUserToTeam({ evaluatorId: userId, teamId: teamId }) {
   return (dispatch) => {
@@ -69,6 +70,28 @@ export function getUserTeamState({ userId, teamId }) {
     },
     method: 'GET',
   })
+    .then(response => {
+      return response.json();
+    })
+    .catch();
+}
+
+function changeUserEvaluationState({ id, state }) {
+  return fetch(`/evaluatorteam/${id}`, {
+    body: JSON.stringify({
+      state,
+    }),
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'PATCH',
+  })
+    .catch();
+}
+
+export function startUserEvaluation({ id }) {
+  return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationStarted })
     .then(response => {
       return response.json();
     })
