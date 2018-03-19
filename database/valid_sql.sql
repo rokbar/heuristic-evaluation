@@ -52,7 +52,6 @@ CREATE TABLE Rating
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
 	value integer,
-	comment TEXT,
 	problemId integer NOT NULL,
 	evaluatorId integer NOT NULL,
 	PRIMARY KEY(id)
@@ -108,6 +107,7 @@ CREATE TABLE EvaluatorProblem
   isRemoved boolean DEFAULT 0,
 	evaluatorId integer NOT NULL,
 	problemId integer NOT NULL,
+  solution TEXT,
 	PRIMARY KEY(id)
 );
 

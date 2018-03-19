@@ -34,6 +34,7 @@ module.exports = function ({ auth }) {
       }
     });
 
+    // TODO - check if user belongs to team
     app.service('problems/create').hooks({
       before: {
         all: [
@@ -42,25 +43,32 @@ module.exports = function ({ auth }) {
         ],
         create: [
           (hook) => {
-            const { description, location, photo, ruleId, teamId } = hook.data;
-            const userId = hook.user.id;
+            const { description, location, photo, solution, ruleId, teamId } = hook.data;
+            const userId = hook.params.user.id;
 
             return new Promise((resolve, reject) => {
               hook.app.service('problems').create(
-                { description, location, photo, ruleId, teamId },
+                { description, location, photo, teamId },
                 { transaction: hook.params.transaction },
               )
                 .then(result => {
                   hook.result = result;
                   return hook.app.service('problemrule').create(
                     { problemId: result.id, ruleId },
-                    { transaction: hooks.params.transaction },
+                    { transaction: hook.params.transaction },
                   );
                 })
                 .then(result => {
+                  hook.result.ruleId = result.ruleId;
                   return hook.app.service('evaluatorproblem').create(
-                    { problemId: result.problemId, evaluatorId: userId }
+                    { problemId: result.problemId, evaluatorId: userId, solution },
+                    { transaction: hook.params.transaction },
                   )
+                })
+                .then(result => {
+                  hook.result.solution = result.solution;
+                  hook.result.evaluatorId = result.evaluatorId;
+                  resolve(hook);
                 })
                 .catch(reject);
             })

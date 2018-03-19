@@ -24,3 +24,27 @@ export function getSharedHeuristics() {
       })
   }
 }
+
+export function getHeuristicsRules({ heuristicId }) {
+  return (dispatch) => {
+    return fetch(`/heuristics/${heuristicId}/rules`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(rules => {
+        dispatch({
+          type: SET_HEURISTICS,
+          payload: { heuristics: [{ id: heuristicId, rules }] },
+        });
+        console.log(rules);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+}

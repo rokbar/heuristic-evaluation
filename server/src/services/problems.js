@@ -5,7 +5,6 @@ const db = require('../database');
 module.exports = function (app) {
   app.use('/evaluatorproblems/:teamId', {
     find(params) {
-      console.log(params);
       const teamId = params.route.teamId;
       const userId = params.user.id;
       return db.select(
@@ -16,12 +15,15 @@ module.exports = function (app) {
         'problem.ratingsAverage',
         'problem.isCombined',
         'problem.teamId',
+        'evaluatorproblem.solution',
+        db.raw('GROUP_CONCAT(CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
       )
         .from('problem')
         .leftJoin('evaluatorproblem', 'problem.id', '=', 'evaluatorproblem.problemId')
         .leftJoin('problemrule', 'problem.id', '=', 'problemrule.problemId')
         .where('evaluatorproblem.evaluatorId', userId)
         .andWhere('problem.teamId', teamId)
+        .groupBy('problem.id')
         .then(response => {
           return response;
         });

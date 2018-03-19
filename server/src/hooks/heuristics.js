@@ -10,6 +10,15 @@ module.exports = function ({ auth }) {
       }
     });
 
+    // TODO - add check whether user belongs to team
+    app.service('heuristics/:heuristicId/rules').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+        ],
+      }
+    });
+
     app.service('heuristics').hooks({
       before: {
         all: [

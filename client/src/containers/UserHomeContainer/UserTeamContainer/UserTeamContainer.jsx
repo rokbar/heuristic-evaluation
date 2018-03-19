@@ -28,6 +28,7 @@ const initialState = {
     systemContacts: '',
     state: '',
     leaderId: null,
+    heuristicId: null,
   },
   evaluatorTeam: {
     id: null,
@@ -73,7 +74,7 @@ class UserTeamContainer extends Component {
         return this.props.getTeamById({ teamId });
       })
       .then(team => {
-        const { systemName, systemUrl, systemContacts, state, leaderId } = team;
+        const { systemName, systemUrl, systemContacts, state, leaderId, heuristicId } = team;
         return this.setState({
           team: {
             systemName,
@@ -81,6 +82,7 @@ class UserTeamContainer extends Component {
             systemContacts,
             state,
             leaderId,
+            heuristicId,
           },
           evaluatorTeam: {
             id: evaluatorState.id,
@@ -123,6 +125,7 @@ class UserTeamContainer extends Component {
         <Component
           {...props}
           role={this.state.role}
+          teamId={this.props.match.params.teamId}
           pushHistory={(pathName) => this.pushHistory(pathName)}
         />
       </Segment>

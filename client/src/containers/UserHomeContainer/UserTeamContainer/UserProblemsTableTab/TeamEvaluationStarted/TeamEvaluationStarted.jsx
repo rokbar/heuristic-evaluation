@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { evaluatorTeamState } from 'utils/enums';
 
 import { Button } from 'semantic-ui-react';
+import UserProblemsTable from './UserProblemsTable';
 
 class TeamEvaluationStarted extends Component {
   renderUserEvaluationNotStarted() {
@@ -10,7 +11,11 @@ class TeamEvaluationStarted extends Component {
   }
 
   renderUserEvaluationStarted() {
-    return <div>Problems</div>
+    const { heuristicId, teamId } = this.props;
+    return <UserProblemsTable
+      heuristicId={heuristicId}
+      teamId={teamId}
+    />
   }
 
   render() {

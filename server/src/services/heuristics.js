@@ -20,10 +20,10 @@ module.exports = function (app) {
           // TODO - refactor to use query builder's join
             const mappedHeuristics = heuristics.reduce((accumulator, heuristic) => {
               if (!heuristic.isUnique) {
-                const mappedRules = rules.filter((rule) => {
+                const filteredRules = rules.filter((rule) => {
                   return rule.heuristicId === heuristic.id;
                 });
-                accumulator.push({...heuristic, rules: mappedRules});
+                accumulator.push({...heuristic, rules: filteredRules});
               }
               return accumulator;
             }, []);
@@ -31,6 +31,22 @@ module.exports = function (app) {
           })
           .catch(reject);
       })
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
+
+  app.use('/heuristics/:heuristicId/rules', {
+    find(params) {
+      const heuristicId = params.route.heuristicId;
+      return db.select('rule.id', 'rule.description', 'rule.listNumber').from('rule')
+        .where('rule.heuristicId', heuristicId)
+        .orderBy('rule.listNumber', 'inc')
+        .then(response => {
+          return response;
+        });
     },
 
     setup(app) {
