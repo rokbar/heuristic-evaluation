@@ -15,6 +15,7 @@ const jwt = require('@feathersjs/authentication-jwt');
 
 const middleware = require('./middleware');
 const services = require('./services');
+
 const appHooks = require('./app.hooks');
 const authenticationHooks = require('./hooks/authentication');
 const usersHooks = require('./hooks/users');
@@ -24,6 +25,9 @@ const teamStatesHooks = require('./hooks/teamstates');
 const evaluatorTeamHooks = require('./hooks/evaluatorteam');
 const heuristicsHooks = require('./hooks/heuristics');
 const problemsHooks = require('./hooks/problems');
+const problemRuleHooks = require('./hooks/problemrule');
+const evaluatorProblemHooks = require('./hooks/evaluatorproblem');
+
 const channels = require('./channels');
 const initUser = require('./utils/initUser');
 
@@ -69,6 +73,8 @@ app.configure(teamStatesHooks({ auth }));
 app.configure(evaluatorTeamHooks({ auth }));
 app.configure(heuristicsHooks({ auth }));
 app.configure(problemsHooks({ auth }));
+app.configure(problemRuleHooks());
+app.configure(evaluatorProblemHooks());
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

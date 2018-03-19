@@ -5,6 +5,8 @@ const teamStatesService = require('./teamstates');
 const evaluatorTeamService = require('./evaluatorteam');
 const heuristicsService = require('./heuristics');
 const problemsService = require('./problems');
+const problemRuleService = require('./problemrule');
+const evaluatorProblemService = require('./evaluatorproblem');
 
 module.exports = function (app) {
   usersService(app);
@@ -14,4 +16,6 @@ module.exports = function (app) {
   evaluatorTeamService(app);
   heuristicsService(app);
   problemsService(app);
+  problemRuleService(app);
+  evaluatorProblemService(app);
 };

@@ -1,3 +1,5 @@
+const knex = require('feathers-knex');
+
 const db = require('../database');
 
 module.exports = function (app) {
@@ -29,4 +31,17 @@ module.exports = function (app) {
       this.app = app;
     }
   });
+
+  app.use('/problems/create', knex({
+    Model: db,
+    name: 'problem',
+    id: 'id',
+  }));
+
+  // TODO - adjust role access and limit REST options
+  app.use('/problems', knex({
+    Model: db,
+    name: 'problem',
+    id: 'id',
+  }));
 };

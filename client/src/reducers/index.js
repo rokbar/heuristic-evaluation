@@ -8,6 +8,7 @@ import companiesReducer from './companiesReducer';
 import teamsReducer from "./teamsReducer";
 import teamStatesReducer from './teamStatesReducer';
 import heuristicsReducer from './heuristicsReducer';
+import evaluatorProblemsReducer from './evaluatorProblemsReducer';
 
 const appReducer = combineReducers({
   router: routerReducer,
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
   teams: teamsReducer,
   teamStates: teamStatesReducer,
   heuristics: heuristicsReducer,
+  evaluatorProblems: evaluatorProblemsReducer,
 });
 
 export default appReducer;

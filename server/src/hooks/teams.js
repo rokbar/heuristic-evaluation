@@ -130,7 +130,12 @@ module.exports = function ({ auth, local }) {
               }
             });
           }
-        ]
+        ],
+        find: [() => { throw new Error('Not implemented') }],
+        get: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented') }],
+        patch: [() => { throw new Error('Not implemented') }],
+        remove: [() => { throw new Error('Not implemented') }],
       },
       after: {
         all: [

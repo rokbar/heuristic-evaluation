@@ -5,18 +5,10 @@ module.exports = function ({ auth }) {
         all: [
           auth.hooks.authenticate('jwt'),
         ],
-        create: [
-          () => { throw new Error('Not implemented') }
-        ],
-        update: [
-          () => { throw new Error('Not implemented') }
-        ],
-        patch: [
-          () => { throw new Error('Not implemented') }
-        ],
-        remove: [
-          () => { throw new Error('Not implemented') }
-        ],
+        create: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented') }],
+        patch: [() => { throw new Error('Not implemented') }],
+        remove: [() => { throw new Error('Not implemented') }],
       },
     });
   }
