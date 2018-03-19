@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { map, find, toNumber } from 'lodash';
 
 import DataTable from 'components/DataTable';
-import AddProblemButton from './AddProblemButton';
+import AddProblemFormModal from './AddProblemFormModal';
 import ProblemRowActions from './ProblemRowActions';
 import { getEvaluatorProblems } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
@@ -72,7 +72,7 @@ class UsersProblemsTable extends Component {
   }
 
   renderTableActions() {
-    return <AddProblemButton />
+    return <AddProblemFormModal />
   }
 
   render() {

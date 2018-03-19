@@ -7,6 +7,7 @@ export default function TextAreaFormField(props) {
       <TextArea
         {...props.input}
         value={props.input.value}
+        placeholder={props.placeholder}
         onChange={(param, data) => props.input.onChange(data.value)}
       />
     </Form.Field>
