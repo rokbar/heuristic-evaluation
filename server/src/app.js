@@ -23,6 +23,7 @@ const teamsHooks = require('./hooks/teams');
 const teamStatesHooks = require('./hooks/teamstates');
 const evaluatorTeamHooks = require('./hooks/evaluatorteam');
 const heuristicsHooks = require('./hooks/heuristics');
+const problemsHooks = require('./hooks/problems');
 const channels = require('./channels');
 const initUser = require('./utils/initUser');
 
@@ -67,6 +68,7 @@ app.configure(teamsHooks({ auth, local }));
 app.configure(teamStatesHooks({ auth }));
 app.configure(evaluatorTeamHooks({ auth }));
 app.configure(heuristicsHooks({ auth }));
+app.configure(problemsHooks({ auth }));
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

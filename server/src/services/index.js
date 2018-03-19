@@ -3,7 +3,8 @@ const companiesService = require('./companies');
 const teamsService = require('./teams');
 const teamStatesService = require('./teamstates');
 const evaluatorTeamService = require('./evaluatorteam');
-const heuristicService = require('./heuristics');
+const heuristicsService = require('./heuristics');
+const problemsService = require('./problems');
 
 module.exports = function (app) {
   usersService(app);
@@ -11,5 +12,6 @@ module.exports = function (app) {
   teamsService(app);
   teamStatesService(app);
   evaluatorTeamService(app);
-  heuristicService(app);
+  heuristicsService(app);
+  problemsService(app);
 };
