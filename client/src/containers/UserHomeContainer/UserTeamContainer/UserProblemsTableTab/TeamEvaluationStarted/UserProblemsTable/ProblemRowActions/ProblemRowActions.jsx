@@ -8,7 +8,7 @@ export default function ProblemRowActions(props) {
         <Button>
           <Icon name="edit"/>
         </Button>
-      <Button onClick={() => console.log('notimplemented')}>
+      <Button onClick={() => props.removeProblem(props.problemId)}>
         <Icon name="trash" />
       </Button>
     </Button.Group>

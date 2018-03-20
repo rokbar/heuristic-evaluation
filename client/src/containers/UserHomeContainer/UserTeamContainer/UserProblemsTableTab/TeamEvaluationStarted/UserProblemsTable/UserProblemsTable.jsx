@@ -6,7 +6,7 @@ import { map, find, toNumber, isArray } from 'lodash';
 import DataTable from 'components/DataTable';
 import AddProblemFormModal from './AddProblemFormModal';
 import ProblemRowActions from './ProblemRowActions';
-import { getEvaluatorProblems } from 'actions/problems';
+import { getEvaluatorProblems, removeProblem } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
 
 const propTypes = {
@@ -112,6 +112,6 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   getEvaluatorProblems,
-  // removeProblem,
+  removeProblem,
   getHeuristicsRules,
 })(UsersProblemsTable);

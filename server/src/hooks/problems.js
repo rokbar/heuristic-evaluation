@@ -93,5 +93,66 @@ module.exports = function ({ auth }) {
         ],
       }
     });
+
+    // TODO - check if user belongs to team
+    app.service('problems/remove/:problemId').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
+        remove: [
+          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
+          (hook) => {
+            const { problemId } = hook.params.route;
+
+            return new Promise((resolve, reject) => {
+              hook.app.service('evaluatorproblem').remove(
+                null,
+                {
+                  query: { problemId: problemId },
+                  transaction: hook.params.transaction,
+                },
+              )
+                .then(result => {
+                  return hook.app.service('problemrule').remove(
+                    null,
+                    {
+                      query: { problemId: problemId },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
+                  return hook.app.service('problems').remove(
+                    problemId,
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  hook.result = result;
+                  resolve(hook);
+                })
+                .catch(reject);
+            })
+          }
+        ],
+        find: [() => { throw new Error('Not implemented') }],
+        get: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented')}],
+        patch: [() => { throw new Error('Not implemented') }],
+        create: [() => { throw new Error('Not implemented') }],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
+    });
   };
 };

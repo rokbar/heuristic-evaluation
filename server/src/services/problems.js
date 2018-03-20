@@ -40,6 +40,12 @@ module.exports = function (app) {
     id: 'id',
   }));
 
+  app.use('/problems/remove/:problemId', knex({
+    Model: db,
+    name: 'evaluatorproblem',
+    id: 'id',
+  }));
+
   // TODO - adjust role access and limit REST options
   app.use('/problems', knex({
     Model: db,

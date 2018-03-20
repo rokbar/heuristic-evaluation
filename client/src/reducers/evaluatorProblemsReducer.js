@@ -18,7 +18,7 @@ export default (state = [], action) => {
     case DELETE_EVALUATOR_PROBLEM: {
       const { problemId } = action.payload;
       const filteredProblems = filter(state, (item) => item.id !== problemId);
-      return [ ...state, ...filteredProblems ];
+      return [ ...filteredProblems ];
     }
   }
 

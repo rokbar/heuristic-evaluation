@@ -1,6 +1,10 @@
 import { filter } from 'lodash';
 
-import {ADD_EVALUATOR_PROBLEM, SET_EVALUATOR_PROBLEMS} from './types';
+import {
+  ADD_EVALUATOR_PROBLEM,
+  SET_EVALUATOR_PROBLEMS,
+  DELETE_EVALUATOR_PROBLEM,
+} from './types';
 
 import { getJwtToken} from 'utils/localStorage';
 
@@ -60,6 +64,30 @@ export function createProblem({
         return problem && dispatch({
           type: ADD_EVALUATOR_PROBLEM,
           payload: { problem },
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}
+
+export function removeProblem(problemId) {
+  return (dispatch) => {
+    return fetch(`/problems/remove/${problemId}`, {
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(problem => {
+        return problem && dispatch({
+          type: DELETE_EVALUATOR_PROBLEM,
+          payload: { problemId: problem.id },
         })
       })
       .catch(error => {
