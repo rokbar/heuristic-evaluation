@@ -9,4 +9,26 @@ module.exports = function (app) {
     name: 'problemrule',
     id: 'id',
   }));
+
+  app.use('/problemrule/createBatch', {
+    create(data, params) {
+      return new Promise((resolve, reject) => {
+        const { rules, problemId } = data;
+        const rowsToInsert = rules && rules.map((item) => {
+          return { ruleId: item, problemId }
+        });
+
+        db.transacting(params.transaction.trx)
+          .insert([...rowsToInsert]).into('problemrule')
+          .then(response => {
+            resolve(response);
+          })
+          .catch();
+      })
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
 };

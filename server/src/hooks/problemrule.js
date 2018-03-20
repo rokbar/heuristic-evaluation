@@ -9,5 +9,20 @@ module.exports = function () {
         ]
       },
     });
+
+    app.service('problemrule/createBatch').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ],
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              resolve(hook);
+            })
+          }
+        ]
+      }
+    });
   }
 };

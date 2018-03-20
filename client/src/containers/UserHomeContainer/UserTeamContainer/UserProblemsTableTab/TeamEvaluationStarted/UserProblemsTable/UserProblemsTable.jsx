@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { map, find, toNumber } from 'lodash';
+import { map, find, toNumber, isArray } from 'lodash';
 
 import DataTable from 'components/DataTable';
 import AddProblemFormModal from './AddProblemFormModal';
@@ -42,13 +42,21 @@ class UsersProblemsTable extends Component {
 
   getRulesDescriptionsList(problemRules) {
     const { rules } = this.props.heuristic;
+    let mappedRules;
 
-    const mappedRules = map(problemRules.split(','), (id) => {
-      const foundRule = find(rules, (x) => x.id === toNumber(id));
-      return foundRule ? `${foundRule.listNumber}. ${foundRule.description}` : null;
-    });
+    if (isArray(problemRules)) {
+      mappedRules = problemRules && map(problemRules, (id) => {
+        const foundRule = find(rules, (x) => x.id === toNumber(id));
+        return foundRule ? `${foundRule.listNumber}. ${foundRule.description}` : null;
+      });
+    } else {
+      mappedRules = problemRules && map(problemRules.split(','), (id) => {
+        const foundRule = find(rules, (x) => x.id === toNumber(id));
+        return foundRule ? `${foundRule.listNumber}. ${foundRule.description}` : null;
+      });
+    }
 
-    return mappedRules.join(' ');
+    return mappedRules && mappedRules.join(' ');
   }
 
   getTableData() {

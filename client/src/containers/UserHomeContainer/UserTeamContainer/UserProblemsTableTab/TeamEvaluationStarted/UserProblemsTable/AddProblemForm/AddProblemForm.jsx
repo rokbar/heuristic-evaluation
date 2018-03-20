@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, FieldArray, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
 
@@ -7,18 +7,21 @@ import {
   Button,
   Form,
   Grid,
-  Header,
   Segment,
 } from 'semantic-ui-react'
 
 import { createProblem } from 'actions/problems';
 import TextAreaFormField from 'components/TextAreaFormField';
-import DropdownFormField from 'components/DropdownFormField';
 import FileInputFormField from 'components/FileInputFormField';
+import CheckHeuristicsFormField from './CheckHeuristicsFormField';
 
 class AddProblemForm extends Component {
   componentDidMount() {
-    this.props.initialize({ teamId: this.props.teamId });
+    const rules = this.getRulesValues();
+    this.props.initialize({
+      teamId: this.props.teamId,
+      rules: [...rules],
+    });
   }
 
   getRulesOptions() {
@@ -28,9 +31,12 @@ class AddProblemForm extends Component {
     }));
   };
 
+  getRulesValues() {
+    return map(this.props.rules, (rule) => (rule.id));
+  };
+
   render() {
     const { handleSubmit, createProblem, handleClose } = this.props;
-    const ruleOptions = this.getRulesOptions();
 
     return (
       <div className="AddUserForm">
@@ -39,7 +45,7 @@ class AddProblemForm extends Component {
           style={{height: "100%"}}
           verticalAlign="middle"
         >
-          <Grid.Column style={{maxWidth: 450}}>
+          <Grid.Column>
             <Form onSubmit={handleSubmit(createProblem)} size="large">
               <Segment stacked>
                 <Field
@@ -57,11 +63,10 @@ class AddProblemForm extends Component {
                   component={TextAreaFormField}
                   placeholder="Taisymo pasiūlymas"
                 />
-                <Field
-                  name="ruleId"
-                  component={DropdownFormField}
-                  label="Pažeista euristika"
-                  options={ruleOptions}
+                <FieldArray
+                  name="rules"
+                  component={CheckHeuristicsFormField}
+                  props={{ heuristics: this.getRulesOptions() }}
                 />
                 <Field
                   type="file"

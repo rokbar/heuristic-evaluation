@@ -1,3 +1,5 @@
+import { filter } from 'lodash';
+
 import {ADD_EVALUATOR_PROBLEM, SET_EVALUATOR_PROBLEMS} from './types';
 
 import { getJwtToken} from 'utils/localStorage';
@@ -31,7 +33,7 @@ export function createProblem({
   location,
   solution,
   photo = null,
-  ruleId,
+  rules,
   teamId,
 }) {
   return (dispatch) => {
@@ -41,7 +43,7 @@ export function createProblem({
         location,
         solution,
         photo,
-        ruleId,
+        rules: filter(rules, item => !!item),
         teamId,
       }),
       headers: {

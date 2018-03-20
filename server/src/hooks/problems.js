@@ -43,8 +43,9 @@ module.exports = function ({ auth }) {
         ],
         create: [
           (hook) => {
-            const { description, location, photo, solution, ruleId, teamId } = hook.data;
+            const { description, location, photo, solution, rules, teamId } = hook.data;
             const userId = hook.params.user.id;
+            let problemId;
 
             return new Promise((resolve, reject) => {
               hook.app.service('problems').create(
@@ -53,15 +54,16 @@ module.exports = function ({ auth }) {
               )
                 .then(result => {
                   hook.result = result;
-                  return hook.app.service('problemrule').create(
-                    { problemId: result.id, ruleId },
+                  problemId = result.id;
+                  return hook.app.service('problemrule/createBatch').create(
+                    { problemId: result.id, rules },
                     { transaction: hook.params.transaction },
                   );
                 })
                 .then(result => {
-                  hook.result.ruleId = result.ruleId;
+                  hook.result.rules = rules;
                   return hook.app.service('evaluatorproblem').create(
-                    { problemId: result.problemId, evaluatorId: userId, solution },
+                    { problemId, evaluatorId: userId, solution },
                     { transaction: hook.params.transaction },
                   )
                 })
