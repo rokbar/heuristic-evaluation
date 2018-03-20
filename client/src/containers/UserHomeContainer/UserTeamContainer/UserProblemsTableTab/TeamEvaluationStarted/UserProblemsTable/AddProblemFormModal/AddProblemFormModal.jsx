@@ -31,6 +31,7 @@ class AddProblemFormModal extends Component {
   }
 
   render() {
+    const { rules, teamId } = this.props;
     return (
       <Modal
         trigger={this.renderAddProblemButton()}
@@ -40,6 +41,8 @@ class AddProblemFormModal extends Component {
         <Header content="Pridėti problemą" />
         <Modal.Content>
           <AddProblemForm
+            rules={rules}
+            teamId={teamId}
           />
         </Modal.Content>
       </Modal>

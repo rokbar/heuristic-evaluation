@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { map } from 'lodash';
 
 import {
   Button,
@@ -12,10 +13,24 @@ import {
 
 import { createProblem } from 'actions/problems';
 import TextAreaFormField from 'components/TextAreaFormField';
+import DropdownFormField from 'components/DropdownFormField';
+import FileInputFormField from 'components/FileInputFormField';
 
 class AddProblemForm extends Component {
+  componentDidMount() {
+    this.props.initialize({ teamId: this.props.teamId });
+  }
+
+  getRulesOptions() {
+    return map(this.props.rules, (rule) => ({
+      text: `${rule.listNumber}. ${rule.description}`,
+      value: rule.id,
+    }));
+  };
+
   render() {
     const { handleSubmit, createProblem, handleClose } = this.props;
+    const ruleOptions = this.getRulesOptions();
 
     return (
       <div className="AddUserForm">
@@ -37,7 +52,22 @@ class AddProblemForm extends Component {
                   component={TextAreaFormField}
                   placeholder="Problemos lokacija"
                 />
-
+                <Field
+                  name="solution"
+                  component={TextAreaFormField}
+                  placeholder="Taisymo pasiūlymas"
+                />
+                <Field
+                  name="ruleId"
+                  component={DropdownFormField}
+                  label="Pažeista euristika"
+                  options={ruleOptions}
+                />
+                <Field
+                  type="file"
+                  name="photo"
+                  component={FileInputFormField}
+                />
                 <Button
                   type="submit"
                   color="teal"

@@ -12,11 +12,13 @@ import { getHeuristicsRules } from 'actions/heuristics';
 const propTypes = {
   problems: PropTypes.array,
   heuristicId: PropTypes.number,
+  heuristic: PropTypes.arrayOf({}),
 };
 
 const defaultProps = {
   problems: [],
   heuristicId: null,
+  heuristic: [],
 };
 
 class UsersProblemsTable extends Component {
@@ -72,7 +74,11 @@ class UsersProblemsTable extends Component {
   }
 
   renderTableActions() {
-    return <AddProblemFormModal />
+    const { heuristic: { rules }, teamId } = this.props;
+    return <AddProblemFormModal
+      rules={rules}
+      teamId={teamId}
+    />
   }
 
   render() {

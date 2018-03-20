@@ -1,4 +1,4 @@
-import { SET_EVALUATOR_PROBLEMS } from './types';
+import {ADD_EVALUATOR_PROBLEM, SET_EVALUATOR_PROBLEMS} from './types';
 
 import { getJwtToken} from 'utils/localStorage';
 
@@ -29,6 +29,7 @@ export function getEvaluatorProblems({ teamId }) {
 export function createProblem({
   description = '',
   location,
+  solution,
   photo = null,
   ruleId,
   teamId,
@@ -38,6 +39,7 @@ export function createProblem({
       body: JSON.stringify({
         description,
         location,
+        solution,
         photo,
         ruleId,
         teamId,
@@ -51,11 +53,11 @@ export function createProblem({
       .then(response => {
         return response.json();
       })
-      .then(problems => {
-        console.log(problems);
-        return problems.length && dispatch({
-          type: SET_EVALUATOR_PROBLEMS,
-          payload: problems,
+      .then(problem => {
+        console.log(problem);
+        return problem && dispatch({
+          type: ADD_EVALUATOR_PROBLEM,
+          payload: { problem },
         })
       })
       .catch(error => {
