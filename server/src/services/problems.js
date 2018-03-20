@@ -40,6 +40,37 @@ module.exports = function (app) {
     id: 'id',
   }));
 
+  // TODO - refactor to single sql query
+  app.use('/problems/get/:problemId', {
+    find(params) {
+      const {problemId} = params.route;
+      const problem = {};
+
+      return new Promise((resolve, reject) => {
+        app.service('problemrule').find(
+          { query: { problemId: problemId } },
+        )
+          .then(result => {
+            problem.problemrule = result;
+            return app.service('problems').get(
+              problemId,
+            )
+          })
+          .then(result => {
+            problem.problem = result;
+            return app.service('evaluatorproblem').find(
+              { query: { problemId: problemId } }
+            )
+          })
+          .then(result => {
+            problem.evaluatorproblem = result[0];
+            resolve(problem);
+          })
+          .catch(reject);
+      })
+    }
+  });
+
   app.use('/problems/remove/:problemId', knex({
     Model: db,
     name: 'evaluatorproblem',

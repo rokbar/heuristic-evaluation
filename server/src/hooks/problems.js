@@ -94,6 +94,23 @@ module.exports = function ({ auth }) {
       }
     });
 
+    // TODO - check if user belongs to team, refactor to single query
+    app.service('problems/get/:problemId').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+        ],
+        find: [
+          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
+        ],
+        get: [() => { throw new Error('Not implemented') }],
+        create: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented')}],
+        patch: [() => { throw new Error('Not implemented') }],
+        remove: [() => { throw new Error('Not implemented') }],
+      },
+    });
+
     // TODO - check if user belongs to team
     app.service('problems/remove/:problemId').hooks({
       before: {

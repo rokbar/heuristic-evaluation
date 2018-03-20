@@ -1,13 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import { Button, Icon } from 'semantic-ui-react';
+import EditProblemFormModal from '../EditProblemFormModal';
 
 export default function ProblemRowActions(props) {
   return (
     <Button.Group>
-        <Button>
-          <Icon name="edit"/>
-        </Button>
+      <EditProblemFormModal
+        rules={props.rules}
+        teamId={props.teamId}
+        problemId={props.problemId}
+      />
       <Button onClick={() => props.removeProblem(props.problemId)}>
         <Icon name="trash" />
       </Button>

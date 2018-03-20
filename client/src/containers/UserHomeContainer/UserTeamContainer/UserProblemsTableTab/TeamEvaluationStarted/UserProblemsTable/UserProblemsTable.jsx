@@ -75,9 +75,12 @@ class UsersProblemsTable extends Component {
   }
 
   renderRowActions(problemId) {
+    const { heuristic: { rules }, teamId, removeProblem } = this.props;
     return <ProblemRowActions
       problemId={problemId}
-      removeProblem={this.props.removeProblem}
+      removeProblem={removeProblem}
+      rules={rules}
+      teamId={teamId}
     />
   }
 

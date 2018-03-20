@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Field, FieldArray, reduxForm } from 'redux-form';
-import { connect } from 'react-redux';
+import {Field, FieldArray, reduxForm} from 'redux-form';
+import {connect} from 'react-redux';
 import { map } from 'lodash';
 
 import {
@@ -11,17 +11,20 @@ import {
 } from 'semantic-ui-react'
 import TextAreaFormField from 'components/TextAreaFormField';
 import FileInputFormField from 'components/FileInputFormField';
-import CheckHeuristicsFormField from './CheckHeuristicsFormField';
+import CheckHeuristicsFormField from '../AddProblemForm/CheckHeuristicsFormField';
 
-import { createProblem } from 'actions/problems';
+import { getProblemById, editProblem } from 'actions/problems';
+import { destroyFormState } from 'actions/editForm';
 
-class AddProblemForm extends Component {
+class EditProblemForm extends Component {
   componentDidMount() {
-    const rules = this.getRulesValues();
-    this.props.initialize({
-      teamId: this.props.teamId,
-      rules: [...rules],
-    });
+    this.props.destroyFormState();
+    this.props.getProblemById({ problemId: this.props.problemId });
+  }
+
+  componentWillUnmount() {
+    this.props.destroy('editTeam');
+    this.props.destroyFormState();
   }
 
   getRulesOptions() {
@@ -31,12 +34,8 @@ class AddProblemForm extends Component {
     }));
   };
 
-  getRulesValues() {
-    return map(this.props.rules, (rule) => (rule.id));
-  };
-
   render() {
-    const { handleSubmit, createProblem } = this.props;
+    const {handleSubmit, editProblem } = this.props;
 
     return (
       <div className="AddProblemForm">
@@ -46,7 +45,7 @@ class AddProblemForm extends Component {
           verticalAlign="middle"
         >
           <Grid.Column>
-            <Form onSubmit={handleSubmit(createProblem)} size="large">
+            <Form onSubmit={handleSubmit(editProblem)} size="large">
               <Segment stacked>
                 <Field
                   name="description"
@@ -90,11 +89,35 @@ class AddProblemForm extends Component {
   }
 }
 
-AddProblemForm = connect(
-  null,
-  { createProblem },
-)(AddProblemForm);
+function mapStateToProps(state) {
+  if (state.editForm.data.problem) {
+    const {
+      problem: {description, location, photo},
+      problemrule,
+      evaluatorproblem: {solution}
+    } = state.editForm.data;
+    const rules = map(problemrule, (item) => item.ruleId);
 
-export default reduxForm({
-  form: 'createProblem',
-})(AddProblemForm);
+    return {
+      // redux-form prop which lets to initialize form data
+      initialValues: { description, location, photo, solution, rules },
+    };
+  } else {
+    return {}
+  }
+}
+
+EditProblemForm = reduxForm({
+  form: 'editProblem',
+})(EditProblemForm);
+
+EditProblemForm = connect(
+  mapStateToProps,
+  {
+    getProblemById,
+    editProblem,
+    destroyFormState
+  },
+)(EditProblemForm);
+
+export default EditProblemForm;

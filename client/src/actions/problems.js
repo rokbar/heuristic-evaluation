@@ -4,6 +4,7 @@ import {
   ADD_EVALUATOR_PROBLEM,
   SET_EVALUATOR_PROBLEMS,
   DELETE_EVALUATOR_PROBLEM,
+  EDIT_FORM,
 } from './types';
 
 import { getJwtToken} from 'utils/localStorage';
@@ -65,6 +66,67 @@ export function createProblem({
           type: ADD_EVALUATOR_PROBLEM,
           payload: { problem },
         })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}
+
+export function getProblemById({ problemId }) {
+  return (dispatch) => {
+    return fetch(`/problems/get/${problemId}`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(problem => {
+        problem && dispatch({
+          type: EDIT_FORM,
+          payload: { ...problem }
+        });
+        return problem;
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+}
+
+export function editProblem({
+  problemId,
+  description = '',
+  location,
+  solution,
+  photo = null,
+  rules,
+  teamId,
+}) {
+  return (dispatch) => {
+    return fetch(`/problems/edit/${problemId}`, {
+      body: JSON.stringify({
+        description,
+        location,
+        solution,
+        photo,
+        rules: filter(rules, item => !!item),
+        teamId,
+      }),
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(teams => {
+        console.log(teams);
       })
       .catch(error => {
         console.log(error);
