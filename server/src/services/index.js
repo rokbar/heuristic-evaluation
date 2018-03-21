@@ -7,6 +7,7 @@ const heuristicsService = require('./heuristics');
 const problemsService = require('./problems');
 const problemRuleService = require('./problemrule');
 const evaluatorProblemService = require('./evaluatorproblem');
+const imageUploadService = require('./imageupload');
 
 module.exports = function (app) {
   usersService(app);
@@ -18,4 +19,5 @@ module.exports = function (app) {
   problemsService(app);
   problemRuleService(app);
   evaluatorProblemService(app);
+  imageUploadService(app);
 };

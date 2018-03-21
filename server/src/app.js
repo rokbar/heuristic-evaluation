@@ -27,6 +27,7 @@ const heuristicsHooks = require('./hooks/heuristics');
 const problemsHooks = require('./hooks/problems');
 const problemRuleHooks = require('./hooks/problemrule');
 const evaluatorProblemHooks = require('./hooks/evaluatorproblem');
+const imageUploadHooks = require('./hooks/imageupload');
 
 const channels = require('./channels');
 const initUser = require('./utils/initUser');
@@ -75,6 +76,7 @@ app.configure(heuristicsHooks({ auth }));
 app.configure(problemsHooks({ auth }));
 app.configure(problemRuleHooks());
 app.configure(evaluatorProblemHooks());
+app.configure(imageUploadHooks());
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

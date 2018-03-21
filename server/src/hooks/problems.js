@@ -114,7 +114,7 @@ module.exports = function ({ auth }) {
       },
     });
 
-    // TODO - check if user belongs to team
+    // TODO - check if user belongs to team, restrictToOwner does not work
     app.service('problems/edit/:problemId').hooks({
       before: {
         all: [
