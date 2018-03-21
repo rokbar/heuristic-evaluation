@@ -25,10 +25,10 @@ class EditProblemForm extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.problem && !this.props.problem) {
-      const { rules, problem} = nextProps;
+      const { rules, problem, problemId } = nextProps;
       const rulesId =  map(rules, (rule) => (rule.id));;
 
-      this.props.initialize({...problem, rules: [...rulesId]});
+      this.props.initialize({...problem, problemId, rules: [...rulesId]});
     }
   }
 

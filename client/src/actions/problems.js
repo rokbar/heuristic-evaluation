@@ -4,6 +4,7 @@ import {
   ADD_EVALUATOR_PROBLEM,
   SET_EVALUATOR_PROBLEMS,
   DELETE_EVALUATOR_PROBLEM,
+  EDIT_EVALUATOR_PROBLEM,
   EDIT_FORM,
 } from './types';
 
@@ -104,7 +105,6 @@ export function editProblem({
   solution,
   photo = null,
   rules,
-  teamId,
 }) {
   return (dispatch) => {
     return fetch(`/problems/edit/${problemId}`, {
@@ -114,7 +114,6 @@ export function editProblem({
         solution,
         photo,
         rules: filter(rules, item => !!item),
-        teamId,
       }),
       headers: {
         'Authorization': getJwtToken(),
@@ -125,8 +124,12 @@ export function editProblem({
       .then(response => {
         return response.json();
       })
-      .then(teams => {
-        console.log(teams);
+      .then(problem => {
+        problem && dispatch({
+          type: EDIT_EVALUATOR_PROBLEM,
+          payload: { problem },
+        });
+        console.log(problem);
       })
       .catch(error => {
         console.log(error);

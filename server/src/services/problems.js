@@ -40,7 +40,7 @@ module.exports = function (app) {
     id: 'id',
   }));
 
-  // TODO - refactor to single sql query
+  // TODO - refactor to single sql query, restictToOwner
   app.use('/problems/get/:problemId', {
     find(params) {
       const {problemId} = params.route;
@@ -70,6 +70,12 @@ module.exports = function (app) {
       })
     }
   });
+
+  app.use('/problems/edit/:problemId', knex({
+    Model: db,
+    name: 'evaluatorproblem',
+    id: 'id',
+  }));
 
   app.use('/problems/remove/:problemId', knex({
     Model: db,

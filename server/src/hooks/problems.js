@@ -101,7 +101,10 @@ module.exports = function ({ auth }) {
           auth.hooks.authenticate('jwt'),
         ],
         find: [
-          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
+          authHooks.restrictToOwner({
+            idField: 'id',
+            ownerField: 'evaluatorId',
+          }),
         ],
         get: [() => { throw new Error('Not implemented') }],
         create: [() => { throw new Error('Not implemented') }],
@@ -109,6 +112,82 @@ module.exports = function ({ auth }) {
         patch: [() => { throw new Error('Not implemented') }],
         remove: [() => { throw new Error('Not implemented') }],
       },
+    });
+
+    // TODO - check if user belongs to team
+    app.service('problems/edit/:problemId').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
+        patch: [
+          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
+          (hook) => {
+            const { problemId } = hook.params.route;
+            const { description, location, solution, photo, rules } = hook.data;
+            hook.result = {};
+
+            return new Promise((resolve, reject) => {
+              hook.app.service('evaluatorproblem').patch(
+                null,
+                { solution: solution },
+                {
+                  query: { problemId: problemId },
+                  transaction: hook.params.transaction,
+                },
+              )
+                .then(result => {
+                  if (result.length) {
+                    hook.result.solution = result[0].solution;
+                    hook.result.evaluatorId = result[0].evaluatorId;
+                  }
+                  return hook.app.service('problemrule').remove(
+                    null,
+                    {
+                      query: { problemId: problemId },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
+                  return hook.app.service('problemrule/createBatch').create(
+                    { problemId, rules },
+                    { transaction: hook.params.transaction },
+                  );
+                })
+                .then(result => {
+                  hook.result.rules = rules;
+                  return hook.app.service('problems').patch(
+                    problemId,
+                    { description, location, photo },
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  const hookResult = Object.assign(hook.result, result);
+                  resolve(hook);
+                })
+                .catch(reject);
+            })
+          }
+        ],
+        find: [() => { throw new Error('Not implemented') }],
+        get: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented')}],
+        remove: [() => { throw new Error('Not implemented') }],
+        create: [() => { throw new Error('Not implemented') }],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
     });
 
     // TODO - check if user belongs to team

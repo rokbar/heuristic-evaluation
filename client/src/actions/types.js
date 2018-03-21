@@ -18,5 +18,6 @@ export const SET_TEAMS = 'set-teams';
 export const SET_HEURISTICS = 'set-heuristics';
 
 export const SET_EVALUATOR_PROBLEMS = 'set-evaluator-problems';
-export const ADD_EVALUATOR_PROBLEM = 'set-evaluator-problem';
+export const ADD_EVALUATOR_PROBLEM = 'add-evaluator-problem';
 export const DELETE_EVALUATOR_PROBLEM = 'delete-evaluator-problem';
+export const EDIT_EVALUATOR_PROBLEM = 'edit-evaluator-problem';
