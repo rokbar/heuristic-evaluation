@@ -20,6 +20,16 @@ class EditProblemForm extends Component {
   componentDidMount() {
     this.props.destroyFormState();
     this.props.getProblemById({ problemId: this.props.problemId });
+
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.problem && !this.props.problem) {
+      const { rules, problem} = nextProps;
+      const rulesId =  map(rules, (rule) => (rule.id));;
+
+      this.props.initialize({...problem, rules: [...rulesId]});
+    }
   }
 
   componentWillUnmount() {
@@ -65,7 +75,10 @@ class EditProblemForm extends Component {
                 <FieldArray
                   name="rules"
                   component={CheckHeuristicsFormField}
-                  props={{ heuristics: this.getRulesOptions() }}
+                  props={{
+                    heuristics: this.getRulesOptions(),
+                    checkedHeuristics: this.props.checkedRules,
+                  }}
                 />
                 <Field
                   type="file"
@@ -90,17 +103,17 @@ class EditProblemForm extends Component {
 }
 
 function mapStateToProps(state) {
-  if (state.editForm.data.problem) {
+  if (state.editForm.data && state.editForm.data.problem) {
     const {
       problem: {description, location, photo},
       problemrule,
       evaluatorproblem: {solution}
     } = state.editForm.data;
-    const rules = map(problemrule, (item) => item.ruleId);
+    const checkedRules = map(problemrule, (item) => item.ruleId);
 
     return {
-      // redux-form prop which lets to initialize form data
-      initialValues: { description, location, photo, solution, rules },
+      problem: { description, location, photo, solution },
+      checkedRules: checkedRules,
     };
   } else {
     return {}

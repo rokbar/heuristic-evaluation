@@ -5,10 +5,10 @@ class CheckboxFormField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: false,
+      checked: this.props.isCheckedBefore,
       value: props.input.value,
     };
-    this.props.input.onChange(false); // hacks, to reset FieldArray form component values
+    !this.props.isCheckedBefore && this.props.input.onChange(false); // hacks, to reset FieldArray form component values
   }
 
   render() {
