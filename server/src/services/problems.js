@@ -5,27 +5,37 @@ const db = require('../database');
 module.exports = function (app) {
   app.use('/evaluatorproblems/:teamId', {
     find(params) {
+      console.log(params);
       const teamId = params.route.teamId;
       const userId = params.user.id;
+      const host = params.headers.host;
+      const proto = params.headers['x-forwarded-proto'];
+
       return db.select(
         'problem.id',
         'problem.description',
         'problem.location',
-        'problem.photo',
         'problem.ratingsAverage',
         'problem.isCombined',
         'problem.teamId',
         'evaluatorproblem.solution',
-        db.raw('GROUP_CONCAT(CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
+        db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'id', 'photos']),
+        db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
       )
         .from('problem')
         .leftJoin('evaluatorproblem', 'problem.id', '=', 'evaluatorproblem.problemId')
         .leftJoin('problemrule', 'problem.id', '=', 'problemrule.problemId')
+        .leftJoin('problemphoto', 'problem.id', '=', 'problemphoto.problemId')
         .where('evaluatorproblem.evaluatorId', userId)
         .andWhere('problem.teamId', teamId)
         .groupBy('problem.id')
         .then(response => {
-          return response;
+          const modifiedResponse = response.map(item => {
+            const {photos, ...rest} = item;
+            return {...rest, photos: photos && photos.split(',').map(photo => `${proto}://${host}/${photo}`)};
+          });
+
+          return modifiedResponse;
         });
     },
 
@@ -48,7 +58,7 @@ module.exports = function (app) {
 
       return new Promise((resolve, reject) => {
         app.service('problemrule').find(
-          { query: { problemId: problemId } },
+          {query: {problemId: problemId}},
         )
           .then(result => {
             problem.problemrule = result;
@@ -59,7 +69,7 @@ module.exports = function (app) {
           .then(result => {
             problem.problem = result;
             return app.service('evaluatorproblem').find(
-              { query: { problemId: problemId } }
+              {query: {problemId: problemId}}
             )
           })
           .then(result => {

@@ -134,6 +134,14 @@ CREATE TABLE Problem
 	PRIMARY KEY(id)
 );
 
+CREATE TABLE ProblemPhoto
+(
+	id VARCHAR(255),
+  isRemoved boolean DEFAULT 0,
+	problemId integer NOT NULL,
+	PRIMARY KEY(id)
+);
+
 ALTER TABLE Rule
 	ADD CONSTRAINT consists_of FOREIGN KEY(heuristicId) REFERENCES Heuristic (id) ON DELETE CASCADE;
 
@@ -169,5 +177,8 @@ ALTER TABLE EvaluatorTeam
     
 ALTER TABLE Problem
 	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE;
+
+ALTER TABLE ProblemPhoto
+  ADD CONSTRAINT describes FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE;
 
 ALTER TABLE user AUTO_INCREMENT = 1

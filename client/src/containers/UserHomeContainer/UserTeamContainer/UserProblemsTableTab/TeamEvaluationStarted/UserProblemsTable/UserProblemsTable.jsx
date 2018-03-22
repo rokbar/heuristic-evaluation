@@ -61,17 +61,22 @@ class UsersProblemsTable extends Component {
 
   getTableData() {
     return this.props.problems.map(item => {
-      const { id, description, location, photo, ratingsAverage, solution, rules } = item;
+      const { id, description, location, photos, ratingsAverage, solution, rules } = item;
       return {
         description,
         location,
         rules: this.getRulesDescriptionsList(rules),
-        photo,
+        photo: this.renderPhotoCell(photos),
         ratingsAverage,
         solution,
         actions: this.renderRowActions(id),
       };
     })
+  }
+
+  renderPhotoCell(photos) {
+    const url = photos && photos[0];
+    return <img src={url} />;
   }
 
   renderRowActions(problemId) {

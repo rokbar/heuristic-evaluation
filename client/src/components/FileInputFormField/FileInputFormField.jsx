@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+const reader = new FileReader();
+
 class FileInputFormField extends Component {
   constructor(props) {
     super(props);
@@ -8,7 +10,12 @@ class FileInputFormField extends Component {
 
   onChange(e) {
     const { input: { onChange } } = this.props;
-    onChange(e.target.files[0]);
+    const file = e.target.files[0];
+    reader.readAsDataURL(file);
+
+    reader.addEventListener('load', function () {
+      onChange({ uri: reader.result });
+    }, false);
   }
 
   render() {

@@ -65,7 +65,12 @@ export function createProblem({
         console.log(problem);
         return problem && dispatch({
           type: ADD_EVALUATOR_PROBLEM,
-          payload: { problem },
+          payload: {
+            problem: {
+              ...problem,
+              photo: photo.uri,
+            }
+          },
         })
       })
       .catch(error => {

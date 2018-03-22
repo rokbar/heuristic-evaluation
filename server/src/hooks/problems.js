@@ -49,14 +49,27 @@ module.exports = function ({ auth }) {
 
             return new Promise((resolve, reject) => {
               hook.app.service('problems').create(
-                { description, location, photo, teamId },
+                { description, location, teamId },
                 { transaction: hook.params.transaction },
               )
                 .then(result => {
                   hook.result = result;
                   problemId = result.id;
+                  return hook.app.service('imageupload').create(
+                    { ...photo },
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  return hook.app.service('problemphotos').create(
+                    { id: result.id, problemId },
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  hook.result.photos = result.photos;
                   return hook.app.service('problemrule/createBatch').create(
-                    { problemId: result.id, rules },
+                    { problemId: problemId, rules },
                     { transaction: hook.params.transaction },
                   );
                 })
@@ -160,7 +173,7 @@ module.exports = function ({ auth }) {
                   hook.result.rules = rules;
                   return hook.app.service('problems').patch(
                     problemId,
-                    { description, location, photo },
+                    { description, location },
                     { transaction: hook.params.transaction },
                   )
                 })
