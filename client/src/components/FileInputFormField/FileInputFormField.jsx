@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-
-const reader = new FileReader();
+import { forEach } from 'lodash';
 
 class FileInputFormField extends Component {
   constructor(props) {
@@ -10,12 +9,19 @@ class FileInputFormField extends Component {
 
   onChange(e) {
     const { input: { onChange } } = this.props;
-    const file = e.target.files[0];
-    reader.readAsDataURL(file);
+    const files = e.target.files;
+    const base64Files = [];
 
-    reader.addEventListener('load', function () {
-      onChange({ uri: reader.result });
-    }, false);
+    forEach(files, (file => {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+      reader.addEventListener('load', () => {
+        base64Files.push({ uri: reader.result });
+      }, false);
+    }));
+
+    onChange([...base64Files]);
   }
 
   render() {
@@ -24,6 +30,7 @@ class FileInputFormField extends Component {
       type="file"
       value={null}
       onChange={this.onChange}
+      multiple
     />
   }
 }

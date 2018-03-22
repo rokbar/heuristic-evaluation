@@ -136,7 +136,8 @@ CREATE TABLE Problem
 
 CREATE TABLE ProblemPhoto
 (
-	id VARCHAR(255),
+	id integer AUTO_INCREMENT,
+	path varchar(255),
   isRemoved boolean DEFAULT 0,
 	problemId integer NOT NULL,
 	PRIMARY KEY(id)

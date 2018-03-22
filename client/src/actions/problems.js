@@ -48,13 +48,13 @@ export function createProblem({
         description,
         location,
         solution,
-        photo,
+        photos: photo,
         rules: filter(rules, item => !!item),
         teamId,
       }),
       headers: {
         'Authorization': getJwtToken(),
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json', // TODO-use multipart/form-data?
       },
       method: 'POST',
     })

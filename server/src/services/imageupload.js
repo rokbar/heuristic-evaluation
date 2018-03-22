@@ -5,6 +5,12 @@ const multipartMiddleware = multer();
 const { blobStorage } = require('../blobStorage');
 
 module.exports = function(app) {
+  app.use('/imageupload/createBatch', {
+    async create(data, params) {
+      return params;
+    },
+  });
+
   app.use('/imageupload',
     multipartMiddleware.single('uri'),
 

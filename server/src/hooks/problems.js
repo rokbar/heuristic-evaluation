@@ -43,7 +43,7 @@ module.exports = function ({ auth }) {
         ],
         create: [
           (hook) => {
-            const { description, location, photo, solution, rules, teamId } = hook.data;
+            const { description, location, photos, solution, rules, teamId } = hook.data;
             const userId = hook.params.user.id;
             let problemId;
 
@@ -55,19 +55,19 @@ module.exports = function ({ auth }) {
                 .then(result => {
                   hook.result = result;
                   problemId = result.id;
-                  return hook.app.service('imageupload').create(
-                    { ...photo },
+                  return hook.app.service('imageupload/createBatch').create(
+                    { photos, problemId },
                     { transaction: hook.params.transaction },
                   )
                 })
                 .then(result => {
-                  return hook.app.service('problemphotos').create(
-                    { id: result.id, problemId },
-                    { transaction: hook.params.transaction },
-                  )
+                  return hook.app.service('problemphotos/createBatch').create(
+                    { problemphotos: result, problemId: problemId },
+                    { transaction: hook.params.transaction, headers: hook.params.headers },
+                  );
                 })
                 .then(result => {
-                  hook.result.photos = result.photos;
+                  hook.result.photos = result;
                   return hook.app.service('problemrule/createBatch').create(
                     { problemId: problemId, rules },
                     { transaction: hook.params.transaction },

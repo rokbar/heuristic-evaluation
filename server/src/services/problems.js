@@ -5,7 +5,6 @@ const db = require('../database');
 module.exports = function (app) {
   app.use('/evaluatorproblems/:teamId', {
     find(params) {
-      console.log(params);
       const teamId = params.route.teamId;
       const userId = params.user.id;
       const host = params.headers.host;
@@ -19,7 +18,7 @@ module.exports = function (app) {
         'problem.isCombined',
         'problem.teamId',
         'evaluatorproblem.solution',
-        db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'id', 'photos']),
+        db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'path', 'photos']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
       )
         .from('problem')

@@ -9,12 +9,38 @@ module.exports = function () {
           disallow('external'),
         ],
         create: [
-          (context) => {
-            if (!context.data.uri && context.params.file) {
-              const file = context.params.file;
+          (hook) => {
+            if (!hook.data.uri && hook.params.file) {
+              const file = hook.params.file;
               const uri = dauria.getBase64DataURI(file.buffer, file.mimetype);
-              context.data = {uri: uri};
+              hook.data = {uri: uri};
             }
+          }
+        ]
+      }
+    });
+
+    app.service('/imageupload/createBatch').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ],
+        create: [
+          (hook) => {
+            const { photos } = hook.data;
+
+            return new Promise((resolve, reject) => {
+              Promise.all(
+                photos.map(item => hook.app.service('imageupload').create(
+                  {...item},
+                ))
+              )
+                .then(result => {
+                  hook.result = result;
+                  resolve(hook);
+                })
+                .catch(reject);
+            })
           }
         ]
       }
