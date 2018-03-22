@@ -1,21 +1,16 @@
-import React, { Component } from 'react';
-import { forEach, map } from 'lodash';
+import React, {Component} from 'react';
+import {forEach, map, filter} from 'lodash';
 
-import { Image, Modal } from 'semantic-ui-react';
-
-const initialState = {
-  photos: [],
-};
+import {Image, Modal, Icon, Card} from 'semantic-ui-react';
 
 class FileInputFormField extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    this.state = initialState;
   }
 
   onChange(e) {
-    const { input: { onChange } } = this.props;
+    const {input: {onChange}} = this.props;
     const files = e.target.files;
     const base64Files = [];
 
@@ -24,7 +19,7 @@ class FileInputFormField extends Component {
 
       reader.readAsDataURL(file);
       reader.addEventListener('load', () => {
-        base64Files.push({ uri: reader.result });
+        base64Files.push({uri: reader.result});
       }, false);
     }));
 
@@ -34,9 +29,15 @@ class FileInputFormField extends Component {
     onChange([...base64Files]);
   }
 
+  removePhoto({ id }) {
+    const {input: {onChange, value}} = this.props;
+    const filteredPhotos = filter(value, (item) => item.id !== id);
+
+    onChange([...filteredPhotos]);
+  }
+
   render() {
-    const { input: { value } } = this.props;
-    const { photos } = this.state;
+    const {input: {value}} = this.props;
     return [
       <input
         type="file"
@@ -44,11 +45,25 @@ class FileInputFormField extends Component {
         onChange={this.onChange}
         multiple
       />,
-      <Image.Group size="small">
-        {map(photos, (item) => <Modal trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
-          <Image src={item} />
-        </Modal>)}
-      </Image.Group>
+      <div style={{display: 'flex'}}>
+        {map(value, (item) => <div style={{display: 'flex', margin: '10px'}}>
+            <Modal
+              trigger={
+                <Image style={{cursor: 'pointer', height: '100px', width: 'auto'}} src={item.path}/>
+              }
+            >
+              <Image src={item.path}/>
+            </Modal>
+            <Icon
+              onClick={() => this.removePhoto({ ...item })}
+              name="trash outline"
+              size="large"
+              color="red"
+              style={{float: 'right'}}
+            />
+          </div>
+        )}
+      </div>
     ];
   }
 }

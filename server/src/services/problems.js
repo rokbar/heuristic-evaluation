@@ -54,13 +54,24 @@ module.exports = function (app) {
     find(params) {
       const {problemId} = params.route;
       const problem = {};
+      const host = params.headers && params.headers.host;
+      const proto = params.headers && params.headers['x-forwarded-proto'];
 
       return new Promise((resolve, reject) => {
         app.service('problemrule').find(
-          {query: {problemId: problemId}},
+          { query: { problemId: problemId } },
         )
           .then(result => {
             problem.problemrule = result;
+            return app.service('problemphotos').find(
+              { query: {
+                problemId: problemId,
+                $select: [ 'path' ],
+              }},
+            )
+          })
+          .then(result => {
+            problem.photos = result.map(item => ({ id: item.id, path: `${proto}://${host}/${item.path}` }));
             return app.service('problems').get(
               problemId,
             )

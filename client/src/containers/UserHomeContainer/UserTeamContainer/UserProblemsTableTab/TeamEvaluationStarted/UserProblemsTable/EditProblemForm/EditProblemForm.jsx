@@ -20,15 +20,19 @@ class EditProblemForm extends Component {
   componentDidMount() {
     this.props.destroyFormState();
     this.props.getProblemById({ problemId: this.props.problemId });
-
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.problem && !this.props.problem) {
-      const { rules, problem, problemId } = nextProps;
-      const rulesId =  map(rules, (rule) => (rule.id));;
+      const { rules, photos, problem, problemId } = nextProps;
+      const rulesId = map(rules, (rule) => (rule.id));
 
-      this.props.initialize({...problem, problemId, rules: [...rulesId]});
+      this.props.initialize({
+        ...problem,
+        problemId,
+        rules: [...rulesId],
+        photo: [...photos],
+      });
     }
   }
 
@@ -91,7 +95,7 @@ class EditProblemForm extends Component {
                   fluid
                   size="large"
                 >
-                  Pridėti
+                  Redaguoti
                 </Button>
               </Segment>
             </Form>
@@ -105,15 +109,17 @@ class EditProblemForm extends Component {
 function mapStateToProps(state) {
   if (state.editForm.data && state.editForm.data.problem) {
     const {
-      problem: {description, location, photo},
+      problem: {description, location},
+      photos,
       problemrule,
       evaluatorproblem: {solution}
     } = state.editForm.data;
     const checkedRules = map(problemrule, (item) => item.ruleId);
 
     return {
-      problem: { description, location, photo, solution },
+      problem: { description, location, solution },
       checkedRules: checkedRules,
+      photos,
     };
   } else {
     return {}
