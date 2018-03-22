@@ -233,6 +233,15 @@ module.exports = function ({ auth }) {
                   );
                 })
                 .then(result => {
+                  return hook.app.service('problemphotos').remove(
+                    null,
+                    {
+                      query: { problemId: problemId },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
                   return hook.app.service('problems').remove(
                     problemId,
                     { transaction: hook.params.transaction },

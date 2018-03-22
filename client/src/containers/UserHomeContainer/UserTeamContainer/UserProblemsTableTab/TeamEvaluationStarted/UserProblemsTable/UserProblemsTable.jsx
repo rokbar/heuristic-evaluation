@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { map, find, toNumber, isArray } from 'lodash';
 
+import { Modal, Image, Label } from 'semantic-ui-react';
 import DataTable from 'components/DataTable';
 import AddProblemFormModal from './AddProblemFormModal';
 import ProblemRowActions from './ProblemRowActions';
+
 import { getEvaluatorProblems, removeProblem } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
 
@@ -75,8 +77,15 @@ class UsersProblemsTable extends Component {
   }
 
   renderPhotoCell(photos) {
-    const url = photos && photos[0];
-    return <img src={url} />;
+    return photos
+      ? <Image.Group size="mini">
+        {map(photos, (item) => <Modal trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
+          <Image src={item} />
+        </Modal>)}
+      </Image.Group>
+      : <Image size="small">
+        <Label content="Nuotrauka nerasta." icon="warning" />
+      </Image>
   }
 
   renderRowActions(problemId) {
