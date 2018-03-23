@@ -135,11 +135,13 @@ module.exports = function ({ auth }) {
           transaction.start(),
         ],
         patch: [
-          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
           (hook) => {
             const { problemId } = hook.params.route;
-            const { description, location, solution, photo, rules } = hook.data;
+            const { description, location, solution, photos, rules } = hook.data;
             hook.result = {};
+            const photosToRemove = photos.length && photos.filter(item => item.removed);
+            const photosToRemoveIds = photosToRemove.length && photosToRemove.map(item => item.id);
+            const photosToInsert = photos.filter(item => (!item.removed && !item.id));
 
             return new Promise((resolve, reject) => {
               hook.app.service('evaluatorproblem').patch(
@@ -178,7 +180,32 @@ module.exports = function ({ auth }) {
                   )
                 })
                 .then(result => {
-                  const hookResult = Object.assign(hook.result, result);
+                  return photosToRemoveIds.length && hook.app.service('problemphotos').remove(
+                    null,
+                    {
+                      query: {
+                        id: {
+                          $in: [ ...photosToRemoveIds ],
+                        },
+                      },
+                      transaction: hook.params.transaction
+                    },
+                  )
+                })
+                .then(result => {
+                  return photosToInsert && hook.app.service('imageupload/createBatch').create(
+                    { photos: photosToInsert, problemId },
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  return photosToInsert && hook.app.service('problemphotos/createBatch').create(
+                    { problemphotos: result, problemId: problemId },
+                    { transaction: hook.params.transaction, headers: hook.params.headers },
+                  );
+                })
+                .then(result => {
+                  hook.result.photos = result;
                   resolve(hook);
                 })
                 .catch(reject);

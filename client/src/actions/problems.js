@@ -117,7 +117,7 @@ export function editProblem({
         description,
         location,
         solution,
-        photo,
+        photos: photo,
         rules: filter(rules, item => !!item),
       }),
       headers: {

@@ -31,13 +31,15 @@ class FileInputFormField extends Component {
 
   removePhoto({ id }) {
     const {input: {onChange, value}} = this.props;
-    const filteredPhotos = filter(value, (item) => item.id !== id);
+    const mappedPhotos = map(value, (item) => (item.id === id ? { ...item, removed: true } : item));
+    const filteredPhotos = filter(mappedPhotos, (item) => (item.id !== id || !item.uri));
 
     onChange([...filteredPhotos]);
   }
 
   render() {
     const {input: {value}} = this.props;
+    const notRemovedPhotos = filter(value, (item) => !item.removed);
     return [
       <input
         type="file"
@@ -46,7 +48,7 @@ class FileInputFormField extends Component {
         multiple
       />,
       <div style={{display: 'flex'}}>
-        {map(value, (item) => <div style={{display: 'flex', margin: '10px'}}>
+        {map(notRemovedPhotos, (item) => <div style={{display: 'flex', margin: '10px'}}>
             <Modal
               trigger={
                 <Image style={{cursor: 'pointer', height: '100px', width: 'auto'}} src={item.path}/>
