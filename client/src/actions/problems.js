@@ -38,7 +38,7 @@ export function createProblem({
   description = '',
   location,
   solution,
-  photo = null,
+  photo = [],
   rules,
   teamId,
 }) {
@@ -108,7 +108,7 @@ export function editProblem({
   description = '',
   location,
   solution,
-  photo = null,
+  photo = [],
   rules,
 }) {
   return (dispatch) => {
@@ -130,11 +130,10 @@ export function editProblem({
         return response.json();
       })
       .then(problem => {
-        problem && dispatch({
+        return problem && dispatch({
           type: EDIT_EVALUATOR_PROBLEM,
           payload: { problem },
         });
-        console.log(problem);
       })
       .catch(error => {
         console.log(error);

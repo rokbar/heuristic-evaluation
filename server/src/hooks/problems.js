@@ -139,9 +139,10 @@ module.exports = function ({ auth }) {
             const { problemId } = hook.params.route;
             const { description, location, solution, photos, rules } = hook.data;
             hook.result = {};
-            const photosToRemove = photos.length && photos.filter(item => item.removed);
-            const photosToRemoveIds = photosToRemove.length && photosToRemove.map(item => item.id);
-            const photosToInsert = photos.filter(item => (!item.removed && !item.id));
+            const photosToRemove = photos && photos.length && photos.filter(item => item.removed);
+            const photosToRemoveIds = photosToRemove && photosToRemove.length && photosToRemove.map(item => item.id);
+            const photosToInsert = photos && photos.filter(item => (!item.removed && !item.id));
+            const photosToRemain = photos && photos.length && photos.filter(item => (!item.removed && item.id));
 
             return new Promise((resolve, reject) => {
               hook.app.service('evaluatorproblem').patch(
@@ -153,7 +154,7 @@ module.exports = function ({ auth }) {
                 },
               )
                 .then(result => {
-                  if (result.length) {
+                  if (result && result.length) {
                     hook.result.solution = result[0].solution;
                     hook.result.evaluatorId = result[0].evaluatorId;
                   }
@@ -180,6 +181,7 @@ module.exports = function ({ auth }) {
                   )
                 })
                 .then(result => {
+                  const hookResult = Object.assign(hook.result, result);  // mutates hook.result
                   return photosToRemoveIds.length && hook.app.service('problemphotos').remove(
                     null,
                     {
@@ -205,7 +207,8 @@ module.exports = function ({ auth }) {
                   );
                 })
                 .then(result => {
-                  hook.result.photos = result;
+                  const photosToRemainPaths = photosToRemain ? photosToRemain.map(item => item.path) : [];
+                  hook.result.photos = [ ...photosToRemainPaths, ...result ];
                   resolve(hook);
                 })
                 .catch(reject);
