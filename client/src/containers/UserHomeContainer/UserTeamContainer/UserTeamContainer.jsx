@@ -10,7 +10,6 @@ import UserTeamEvaluationTab from './UserTeamEvaluationTab';
 import UserProblemsTableTab from './UserProblemsTableTab';
 import UserTeamHeuristicsTab from './UserTeamHeuristicsTab';
 import UserTeamPlanTab from './UserTeamPlanTab';
-import UserTeamEvaluatorsListTab from './UserTeamEvaluatorsListTab';
 
 import { evaluatorTeamState } from 'utils/enums';
 
@@ -141,7 +140,6 @@ class UserTeamContainer extends Component {
         {name: 'Problemos', pathName: `/evaluator/teams/${teamId}/problems`},
         {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`},
         {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`},
-        {name: 'Vertintojai', pathName: `/evaluator/teams/${teamId}/evaluators`},
       ]
       : [
         {name: 'Informacija', pathName: `/evaluator/teams/${teamId}/info`},
@@ -210,12 +208,6 @@ class UserTeamContainer extends Component {
           component={(props) => this.renderArticleSegment(
             EvaluatorRoutes(UserTeamPlanTab),
             { plan: this.state.team && this.state.team.plan },
-          )}
-        />
-        <Route
-          path='/evaluator/teams/:teamId/evaluators'
-          component={() => this.renderArticleSegment(
-            TeamLeaderRoutes(UserTeamEvaluatorsListTab),
           )}
         />
       </Switch>,
