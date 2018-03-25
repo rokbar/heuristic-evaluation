@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
-class UserTeamPlanTab extends Component {
-  render() {
-    return <div>Plan</div>;
-  }
-}
+import { Container } from 'semantic-ui-react';
 
-export default UserTeamPlanTab;
+export default function UserTeamPlanTab({ plan }) {
+    return <Container
+      textAlign="justified"
+      fluid
+    >
+      {plan}
+    </Container>;
+}

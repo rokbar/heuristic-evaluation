@@ -41,7 +41,13 @@ module.exports = function (app) {
   app.use('/heuristics/:heuristicId/rules', {
     find(params) {
       const heuristicId = params.route.heuristicId;
-      return db.select('rule.id', 'rule.description', 'rule.listNumber').from('rule')
+      return db.select(
+        'rule.id',
+        'rule.description',
+        'rule.listNumber',
+        'heuristic.name as heuristicName',
+      ).from('rule')
+        .rightJoin('heuristic', 'heuristic.id', '=', 'rule.heuristicId')
         .where('rule.heuristicId', heuristicId)
         .orderBy('rule.listNumber', 'inc')
         .then(response => {

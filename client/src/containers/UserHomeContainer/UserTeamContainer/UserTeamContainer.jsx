@@ -105,13 +105,14 @@ class UserTeamContainer extends Component {
         return this.props.getTeamById({ teamId });
       })
       .then(team => {
-        const { systemName, systemUrl, systemContacts, state, leaderId, heuristicId } = team;
+        const { systemName, systemUrl, systemContacts, state, plan, leaderId, heuristicId } = team;
         return this.setState({
           team: {
             systemName,
             systemUrl,
             systemContacts,
             state,
+            plan,
             leaderId,
             heuristicId,
           },
@@ -176,7 +177,7 @@ class UserTeamContainer extends Component {
           component={(props) => this.renderArticleSegment(
             EvaluatorRoutes(UserTeamInfoTab),
             { ...props, team: this.state.team },
-            )}
+          )}
         />
         <Route
           path='/evaluator/teams/:teamId/evaluation'
@@ -201,12 +202,14 @@ class UserTeamContainer extends Component {
           path='/evaluator/teams/:teamId/heuristics'
           component={() => this.renderArticleSegment(
             EvaluatorRoutes(UserTeamHeuristicsTab),
+            { heuristicId: this.state.team && this.state.team.heuristicId },
           )}
         />
         <Route
           path='/evaluator/teams/:teamId/plan'
           component={(props) => this.renderArticleSegment(
             EvaluatorRoutes(UserTeamPlanTab),
+            { plan: this.state.team && this.state.team.plan },
           )}
         />
         <Route
