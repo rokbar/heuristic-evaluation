@@ -17,15 +17,17 @@ export const teamStateLT = {
 export const evaluatorTeamState = {
   new: 1,
   evaluationStarted: 2,
-  ratingProblems: 3,
-  evaluationFinished: 4,
+  submittedProblems: 3,
+  ratingProblems: 4,
+  evaluationFinished: 5,
 };
 
 export const evaluatorTeamStateLT = {
   1: 'Nauja komanda',
   2: 'Registruoja problemas',
-  3: 'Vertina problemas',
-  4: 'Baigė vertinimą',
+  3: 'Pateikė problemas',
+  4: 'Vertina problemas',
+  5: 'Baigė vertinimą',
 };
 
 

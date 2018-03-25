@@ -13,9 +13,11 @@ CREATE TABLE EvaluatorTeamState
 	name char (18) NOT NULL,
 	PRIMARY KEY(id)
 );
-INSERT INTO EvaluatorTeamState(id, name) VALUES(1, 'evaluationStarted');
-INSERT INTO EvaluatorTeamState(id, name) VALUES(2, 'ratingProblems');
-INSERT INTO EvaluatorTeamState(id, name) VALUES(3, 'evaluationFinished');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(1, 'new');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(2, 'evaluationStarted');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(3, 'submittedProblems');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(4, 'ratingProblems');
+INSERT INTO EvaluatorTeamState(id, name) VALUES(4, 'evaluationFinished');
 
 CREATE TABLE TeamState
 (

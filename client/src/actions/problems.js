@@ -164,3 +164,14 @@ export function removeProblem(problemId) {
       });
   }
 }
+
+export function submitEvaluatorProblems() {
+  return (dispatch) => {
+    return fetch(`/`, {
+
+    })
+      .then(response => {
+        return response.json();
+    })
+  }
+}

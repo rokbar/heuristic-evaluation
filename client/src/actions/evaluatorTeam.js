@@ -90,7 +90,24 @@ function changeUserEvaluationState({ id, state }) {
     .catch();
 }
 
+// TODO - add backend validation
 export function startUserEvaluation({ id }) {
+  return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationStarted })
+    .then(response => {
+      return response.json();
+    })
+    .catch();
+}
+
+export function submitUserProblems({ id }) {
+  return changeUserEvaluationState({ id, state: evaluatorTeamState.submittedProblems })
+    .then(response => {
+      return response.json();
+    })
+    .catch();
+}
+
+export function cancelUserProblems({ id }) {
   return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationStarted })
     .then(response => {
       return response.json();

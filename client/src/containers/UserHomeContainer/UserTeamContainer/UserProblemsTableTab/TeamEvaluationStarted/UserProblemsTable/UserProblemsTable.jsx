@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { map, find, toNumber, isArray } from 'lodash';
 
-import { Modal, Image, Label } from 'semantic-ui-react';
+import { Modal, Image, Label, Message, Icon } from 'semantic-ui-react';
 import DataTable from 'components/DataTable';
 import AddProblemFormModal from './AddProblemFormModal';
 import ProblemRowActions from './ProblemRowActions';
+import { SubmitProblemsButton, CancelProblemsButton } from './PageButtons';
 
 import { getEvaluatorProblems, removeProblem } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
@@ -89,13 +90,15 @@ class UsersProblemsTable extends Component {
   }
 
   renderRowActions(problemId) {
-    const { heuristic: { rules }, teamId, removeProblem } = this.props;
-    return <ProblemRowActions
-      problemId={problemId}
-      removeProblem={removeProblem}
-      rules={rules}
-      teamId={teamId}
-    />
+    const { heuristic: { rules }, teamId, removeProblem, hasSubmittedProblems } = this.props;
+    return hasSubmittedProblems
+      ? '-'
+      : <ProblemRowActions
+        problemId={problemId}
+        removeProblem={removeProblem}
+        rules={rules}
+        teamId={teamId}
+      />;
   }
 
   renderTableActions() {
@@ -106,14 +109,36 @@ class UsersProblemsTable extends Component {
     />
   }
 
+  renderPageActions(hasSubmittedProblems) {
+    const { submitUserProblems, cancelUserProblems } = this.props;
+    return hasSubmittedProblems
+      ? [
+        <Message warning icon>
+          <Icon name="warning" />
+          <Message.Content>
+            <Message.Header>Ne visi komandos nariai yra pateikę problemas.</Message.Header>
+            <p>Jūsų rastos problemos jau yra pateiktos. Jeigu norite jas redaguoti, atšaukite pateikimą.</p>
+          </Message.Content>
+          <CancelProblemsButton
+            cancelUserProblems={cancelUserProblems}
+          />
+        </Message>,
+      ]
+      : <SubmitProblemsButton
+        submitUserProblems={submitUserProblems}
+      />
+  }
+
   render() {
-    return(
+    const { hasSubmittedProblems } = this.props;
+    return [
+      this.renderPageActions(hasSubmittedProblems),
       <DataTable
-        actions={this.renderTableActions()}
+        actions={!hasSubmittedProblems && this.renderTableActions()}
         headers={this.getTableHeaders()}
         data={this.getTableData()}
       />
-    )
+    ];
   }
 }
 

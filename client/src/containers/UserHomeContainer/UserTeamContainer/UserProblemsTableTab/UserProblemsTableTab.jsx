@@ -12,7 +12,16 @@ class UserProblemsTableTab extends Component {
   }
 
   render() {
-    const { role, team: { state, heuristicId }, evaluatorTeam, startUserEvaluation, teamId } = this.props;
+    const {
+      role,
+      team: { state, heuristicId },
+      evaluatorTeam,
+      startUserEvaluation,
+      submitUserProblems,
+      cancelUserProblems,
+      teamId
+    } = this.props;
+
     switch(state) {
       case 1:
         return <TeamNotStarted />;
@@ -24,6 +33,8 @@ class UserProblemsTableTab extends Component {
           heuristicId={heuristicId}
           evaluatorTeam={evaluatorTeam}
           startUserEvaluation={startUserEvaluation}
+          submitUserProblems={submitUserProblems}
+          cancelUserProblems={cancelUserProblems}
         />;
       case 3:
         return <TeamGeneralization

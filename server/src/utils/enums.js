@@ -9,6 +9,7 @@ exports.teamState = {
 exports.evaluatorTeamState = {
   new: 1,
   evaluationStarted: 2,
-  ratingProblems: 3,
-  evaluationFinished: 4,
+  submittedProblems: 3,
+  ratingProblems: 4,
+  evaluationFinished: 5,
 };

@@ -11,11 +11,14 @@ class TeamEvaluationStarted extends Component {
   }
 
   renderUserEvaluationStarted() {
-    const { heuristicId, teamId } = this.props;
+    const { heuristicId, teamId, submitUserProblems, cancelUserProblems, evaluatorTeam: { state } } = this.props;
     return <UserProblemsTable
-      heuristicId={heuristicId}
-      teamId={teamId}
-    />
+        heuristicId={heuristicId}
+        teamId={teamId}
+        submitUserProblems={submitUserProblems}
+        cancelUserProblems={cancelUserProblems}
+        hasSubmittedProblems={state === evaluatorTeamState.submittedProblems}
+      />
   }
 
   render() {

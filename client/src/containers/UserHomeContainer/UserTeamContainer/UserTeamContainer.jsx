@@ -16,7 +16,12 @@ import { evaluatorTeamState } from 'utils/enums';
 
 import { getTeamStates } from 'actions/teamStates';
 import { getTeamById } from 'actions/teams';
-import { getUserTeamState, startUserEvaluation } from 'actions/evaluatorTeam';
+import {
+  getUserTeamState,
+  startUserEvaluation,
+  submitUserProblems,
+  cancelUserProblems,
+} from 'actions/evaluatorTeam';
 
 const TeamLeaderRoutes = AuthorizationTeamHOC(['leader']);
 const EvaluatorRoutes = AuthorizationTeamHOC(['leader', 'evaluator']);
@@ -55,6 +60,32 @@ class UserTeamContainer extends Component {
 
   onUserEvaluationStart() {
     startUserEvaluation({ id: this.state.evaluatorTeam.id })
+      .then(userTeamState => {
+        return userTeamState.state && this.setState({
+          evaluatorTeam: {
+            id: userTeamState.id,
+            state: userTeamState.state
+          }
+        });
+      })
+      .catch();
+  }
+
+  onUserProblemsSubmit() {
+    submitUserProblems({ id: this.state.evaluatorTeam.id })
+      .then(userTeamState => {
+        return userTeamState.state && this.setState({
+          evaluatorTeam: {
+            id: userTeamState.id,
+            state: userTeamState.state
+          }
+        });
+      })
+      .catch();
+  }
+
+  onUserProblemsCancel() {
+    cancelUserProblems({ id: this.state.evaluatorTeam.id })
       .then(userTeamState => {
         return userTeamState.state && this.setState({
           evaluatorTeam: {
@@ -161,6 +192,8 @@ class UserTeamContainer extends Component {
             {
               ...this.state,
               startUserEvaluation: this.onUserEvaluationStart.bind(this),
+              submitUserProblems: this.onUserProblemsSubmit.bind(this),
+              cancelUserProblems: this.onUserProblemsCancel.bind(this),
             }
           )}
         />
