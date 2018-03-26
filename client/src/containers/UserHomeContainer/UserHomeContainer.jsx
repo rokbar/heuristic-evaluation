@@ -35,11 +35,11 @@ class UserHomeContainer extends Component {
         <Route
           exact
           path='/evaluator'
-          component={() => this.renderArticleSegment(UserTeamTableContainer)}
+          render={() => this.renderArticleSegment(UserTeamTableContainer)}
         />
         <Route
           path='/evaluator/teams/:teamId'
-          component={(props) => this.renderArticleSegment(UserTeamContainer, props)}
+          render={(props) => this.renderArticleSegment(UserTeamContainer, props)}
         />
       </Switch>,
     ]

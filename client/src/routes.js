@@ -20,10 +20,14 @@ const SystemAdminRoutes = AuthorizationHOC(['systemadmin']);
 //   loading: LoadingComponent,
 // });
 
+const SystemAdminHome = SystemAdminRoutes(SystemAdminHomeContainer);
+const CompanyAdminHome = CompanyAdminRoutes(CompanyAdminHomeContainer);
+const EvaluatorHome = UserRoutes(UserHomeContainer);
+
 export default ({childProps}) =>
   <Switch>
     <Route path="/" exact component={SignInContainer} props={childProps} />
-    <Route path="/systemadmin" component={SystemAdminRoutes(SystemAdminHomeContainer)} props={childProps} />
-    <Route path="/companyadmin" component={CompanyAdminRoutes(CompanyAdminHomeContainer)} props={childProps} />
-    <Route path="/evaluator" component={UserRoutes(UserHomeContainer)} props={childProps} />
+    <Route path="/systemadmin" component={SystemAdminHome} props={childProps} />
+    <Route path="/companyadmin" component={CompanyAdminHome} props={childProps} />
+    <Route path="/evaluator" component={EvaluatorHome} props={childProps} />
   </Switch>
