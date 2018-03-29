@@ -6,6 +6,7 @@ import Layout from 'components/Layout';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
 import UserTeamTableContainer from './UserTeamsTableContainer';
 import UserTeamContainer from './UserTeamContainer';
+import EditAccountContainer from '../EditAccountContainer';
 
 class UserHomeContainer extends Component {
   pushHistory(pathName) {
@@ -40,6 +41,10 @@ class UserHomeContainer extends Component {
         <Route
           path='/evaluator/teams/:teamId'
           render={(props) => this.renderArticleSegment(UserTeamContainer, props)}
+        />
+        <Route
+          path='/evaluator/editAccount'
+          render={() => this.renderArticleSegment(EditAccountContainer)}
         />
       </Switch>,
     ]

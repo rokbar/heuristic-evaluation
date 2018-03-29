@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { Link } from 'react-router-dom';
 import { Menu, Container, Icon, Dropdown } from 'semantic-ui-react';
 
 export default function FixedMenu({ name, logout }) {
@@ -9,7 +11,7 @@ export default function FixedMenu({ name, logout }) {
           Euristinis vertinimas
         </Menu.Item>
         <Menu.Menu position="right">
-          <Menu.Item as='a'>
+          <Menu.Item as={Link} to="/evaluator/editAccount">
             <Icon name="user" size="large" />Paskyra
           </Menu.Item>
           <Menu.Item as='a' position='right'>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import FixedMenu from 'components/FixedMenu';
+
 import { logout } from 'actions/auth';
 
 class SharedMenuContainer extends Component {

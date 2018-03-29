@@ -35,7 +35,7 @@ export function getUsers() {
 
 export function getUserById({ userId }) {
   return (dispatch) => {
-    return fetch(`/users?id=${userId}`, {
+    return fetch(`/users/${userId}`, {
       headers: {
         'Authorization': getJwtToken(),
       },
@@ -44,10 +44,10 @@ export function getUserById({ userId }) {
       .then(response => {
         return response.json()
       })
-      .then(users => {
-        users.length && dispatch({
+      .then(user => {
+        dispatch({
           type: EDIT_FORM,
-          payload: { ...users[0] }
+          payload: { ...user }
         });
       })
       .catch(error => {
@@ -144,7 +144,7 @@ export function editUser({ id, name, email, companyId, role }) {
 
 export function editAccount({ id, name, email }) {
   return (dispatch) => {
-    return fetch(`/users?id=${id}`, {
+    return fetch(`/users/${id}`, {
       body: JSON.stringify({
         name,
         email,
