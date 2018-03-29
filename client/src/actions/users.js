@@ -142,6 +142,55 @@ export function editUser({ id, name, email, companyId, role }) {
   }
 }
 
+export function editAccount({ id, name, email }) {
+  return (dispatch) => {
+    return fetch(`/users?id=${id}`, {
+      body: JSON.stringify({
+        name,
+        email,
+      }),
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(users => {
+        console.log(users);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}
+
+export function editPassword({ id, password }) {
+  return (dispatch) => {
+    return fetch(`/users?id=${id}`, {
+      body: JSON.stringify({
+        password
+      }),
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(users => {
+        console.log(users);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}
+
 export function removeUser(id) {
   return (dispatch) => {
     return fetch(`/users?id=${id}`, {

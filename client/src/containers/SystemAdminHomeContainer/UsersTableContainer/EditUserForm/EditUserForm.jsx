@@ -74,7 +74,7 @@ class EditUserForm extends Component {
                   fluid
                   icon="user"
                   iconPosition="left"
-                  placeholder="Vardas"
+                  placeholder="Vardas ir pavardė"
                 />
                 <Field
                   name="email"

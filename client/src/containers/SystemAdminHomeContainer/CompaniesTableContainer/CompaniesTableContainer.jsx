@@ -21,7 +21,7 @@ class CompaniesTableContainer extends Component {
 
   getTableHeaders() {
     return {
-      name: 'Vardas',
+      name: 'Vardas ir pavardė',
       country: 'Šalis',
       url: 'Svetainė',
       address: 'Adresas',

@@ -25,7 +25,7 @@ class UsersTableContainer extends Component {
 
   getTableHeaders() {
     return {
-      name: 'Vardas',
+      name: 'Vardas ir pavardė',
       email: 'El. paštas',
       lastLogon: 'Paskutinis prisijungimas',
       company: 'Įmonė',

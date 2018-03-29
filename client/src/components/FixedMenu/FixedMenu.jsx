@@ -8,21 +8,27 @@ export default function FixedMenu({ name, logout }) {
         <Menu.Item as='a' header>
           Euristinis vertinimas
         </Menu.Item>
-        <Menu.Item as='a' position='right'>Pagrindinis</Menu.Item>
-
-        <Dropdown item simple position='right' text='Meniu'>
-          <Dropdown.Menu>
-            <Dropdown.Header
-              content={`Labas, ${name}`}
-            />
-            <Dropdown.Divider/>
-            <Dropdown.Item
-              icon='log out'
-              content='Atsijungti'
-              onClick={logout}
-            />
-          </Dropdown.Menu>
-        </Dropdown>
+        <Menu.Menu position="right">
+          <Menu.Item as='a'>
+            <Icon name="user" size="large" />Paskyra
+          </Menu.Item>
+          <Menu.Item as='a' position='right'>
+            <Icon name="home" size="large" />Pagrindinis
+          </Menu.Item>
+          <Dropdown item simple position='right' text='Meniu'>
+            <Dropdown.Menu>
+              <Dropdown.Header
+                content={`Labas, ${name}`}
+              />
+              <Dropdown.Divider/>
+              <Dropdown.Item
+                icon='log out'
+                content='Atsijungti'
+                onClick={logout}
+              />
+            </Dropdown.Menu>
+          </Dropdown>
+        </Menu.Menu>
       </Container>
     </Menu>
   );

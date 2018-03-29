@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
 import { map } from 'lodash';
@@ -10,46 +10,25 @@ import {
   Segment,
 } from 'semantic-ui-react'
 
-import { addUser } from 'actions/users';
-import { getCompanies } from 'actions/companies';
-import DropdownFormField from 'components/DropdownFormField';
+import { getUserById, editAccount, editPassword } from 'actions/users';
+import { destroyFormState } from 'actions/editForm';
 
-class AddUserForm extends Component {
+class EditAccountContainer extends Component {
   componentDidMount() {
+    this.props.getUserById({ userId: this.props.match.params.userId });
     this.props.getCompanies();
   }
 
-  getCompanyOptions() {
-    return map(this.props.companies, (company) => ({
-      text: company.name,
-      value: company.id,
-    }));
-  };
-
-  getRoleOptions() {
-    return [
-      {
-        text: 'Vertintojas',
-        value: 'evaluator',
-      },
-      {
-        text: 'Įmonės administratorius',
-        value: 'companyadmin',
-      },
-      {
-        text: 'Sistemos administratorius',
-        value: 'systemadmin'
-      },
-    ]
-  };
+  componentWillUnmount() {
+    this.props.destroy('editAccount');
+    this.props.destroyFormState();
+  }
 
   render() {
-    const {handleSubmit, addUser } = this.props;
-    const companyOptions = this.getCompanyOptions();
-    const roleOptions = this.getRoleOptions();
+    const {handleSubmit, editAccount, editPassword } = this.props;
 
     return (
-      <div className="AddUserForm">
+      <div className="EditAccountForm">
         <Grid
           textAlign="center"
           style={{height: "100%"}}
@@ -57,9 +36,9 @@ class AddUserForm extends Component {
         >
           <Grid.Column style={{maxWidth: 450}}>
             <Header as="h2" color="teal" textAlign="center">
-              Sukurti naują naudotoją
+              Redaguoti paskyrą
             </Header>
-            <Form onSubmit={handleSubmit(addUser)} size="large">
+            <Form onSubmit={handleSubmit(editAccount)} size="large">
               <Segment stacked>
                 <Field
                   name="name"
@@ -77,26 +56,36 @@ class AddUserForm extends Component {
                   iconPosition="left"
                   placeholder="El. paštas"
                 />
+                <Button
+                  type="submit"
+                  color="teal"
+                  fluid
+                  size="large"
+                >
+                  Redaguoti
+                </Button>
+              </Segment>
+            </Form>
+            <Header as="h2" color="teal" textAlign="center">
+              Keisti slaptažodį
+            </Header>
+            <Form onSubmit={handleSubmit(editPassword)} size="large">
+              <Segment stacked>
                 <Field
                   name="password"
                   component={Form.Input}
-                  fluid
                   icon="lock"
                   iconPosition="left"
                   placeholder="Slaptažodis"
                   type="password"
                 />
                 <Field
-                  name="company"
-                  component={DropdownFormField}
-                  label="Įmonė"
-                  options={companyOptions}
-                />
-                <Field
-                  name="role"
-                  component={DropdownFormField}
-                  label="Rolė"
-                  options={roleOptions}
+                  name="confirmPassword"
+                  component={Form.Input}
+                  icon="repeat"
+                  iconPosition="left"
+                  placeholder="Pakartoti slaptažodį"
+                  type="password"
                 />
                 <Button
                   type="submit"
@@ -104,7 +93,7 @@ class AddUserForm extends Component {
                   fluid
                   size="large"
                 >
-                  Pridėti
+                  Keisti
                 </Button>
               </Segment>
             </Form>
@@ -115,17 +104,13 @@ class AddUserForm extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    companies: state.companies,
-  };
-}
+EditAccountContainer = reduxForm({
+  form: 'editAccount',
+})(EditAccountContainer);
 
-AddUserForm = connect(
+EditAccountContainer = connect(
   mapStateToProps,
-  { addUser, getCompanies },
-)(AddUserForm);
+  { getUserById, editAccount, editPassword, destroyFormState },
+)(EditAccountContainer);
 
-export default reduxForm({
-  form: 'addUser',
-})(AddUserForm);
+export default EditAccountContainer;

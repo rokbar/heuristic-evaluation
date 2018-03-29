@@ -51,6 +51,8 @@ module.exports = {
               roles: ['systemadmin'],
               fieldName: 'role',
               idField: 'id',
+              ownerField: 'id',
+              owner: true,
             }),
           ],
           patch: [
@@ -58,6 +60,8 @@ module.exports = {
               roles: ['systemadmin'],
               fieldName: 'role',
               idField: 'id',
+              ownerField: 'id',
+              owner: true,
             }),
           ],
           remove: [
