@@ -40,4 +40,50 @@ module.exports = function (app) {
       this.app = app;
     }
   });
+
+  app.use('/users/:userId/editAccount', {
+    create(data, params) {
+      const userId = params.route.userId;
+      const {email, name} = data;
+      return new Promise((resolve, reject) => {
+        app.service('users').patch(
+          userId,
+          {email, name},
+        )
+          .then(response => {
+            return resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
+
+  app.use('/users/:userId/changePassword', {
+    create(data, params) {
+      const userId = params.route.userId;
+      return new Promise((resolve, reject) => {
+        const {newPassword} = data;
+        app.service('users').patch(
+          userId,
+          {password: newPassword}
+        )
+          .then(response => {
+            return resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      })
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
 };

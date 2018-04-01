@@ -1,4 +1,5 @@
 const authHooks = require('feathers-authentication-hooks');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
   // Add a hook to the user service that automatically replaces
@@ -11,6 +12,20 @@ module.exports = {
             local.hooks.hashPassword({passwordField: 'password'})
           ]
         },
+      });
+      app.service('users/:userId/changePassword').hooks({
+        before: {
+          create: [
+            (hook) => {
+              const { newPassword, confirmPassword } = hook.data;
+              return new Promise((resolve, reject) => {
+                if (newPassword !== confirmPassword) reject(new Error('Patvirtinimo slaptažodis yra neteisingas.'));
+                resolve(hook);
+              });
+            },
+            local.hooks.hashPassword({passwordField: 'newPassword'}),
+          ]
+        }
       });
     }
   },
@@ -51,8 +66,6 @@ module.exports = {
               roles: ['systemadmin'],
               fieldName: 'role',
               idField: 'id',
-              ownerField: 'id',
-              owner: true,
             }),
           ],
           patch: [
@@ -60,8 +73,6 @@ module.exports = {
               roles: ['systemadmin'],
               fieldName: 'role',
               idField: 'id',
-              ownerField: 'id',
-              owner: true,
             }),
           ],
           remove: [
@@ -87,6 +98,52 @@ module.exports = {
               fieldName: 'role',
               idField: 'id',
             }),
+          ],
+        },
+        after: local.hooks.protect('password'),
+      });
+
+      app.service('users/:userId/editAccount').hooks({
+        before: {
+          all: [
+            auth.hooks.authenticate('jwt'),
+            (hook) => {
+              return new Promise((resolve, reject) => {
+                if (hook.params.user.id !== parseInt(hook.params.route.userId, 10)) reject(new Error('Veiksmas yra negalimas.'));
+                return bcrypt.compare(hook.data.password, hook.params.user.password)
+                  .then(result => {
+                    if (result) {
+                      resolve(hook);
+                    } else {
+                      throw new Error('Neteisingas slaptažodis.');
+                    }
+                  })
+                  .catch(err => reject(err));
+              });
+            },
+          ],
+        },
+        after: local.hooks.protect('password'),
+      });
+
+      app.service('users/:userId/changePassword').hooks({
+        before: {
+          all: [
+            auth.hooks.authenticate('jwt'),
+            (hook) => {
+              return new Promise((resolve, reject) => {
+                if (hook.params.user.id !== parseInt(hook.params.route.userId, 10)) reject(new Error('Veiksmas yra negalimas.'));
+                return bcrypt.compare(hook.data.currentPassword, hook.params.user.password)
+                  .then(result => {
+                    if (result) {
+                      resolve(hook);
+                    } else {
+                      throw new Error('Neteisingas slaptažodis.');
+                    }
+                  })
+                  .catch(err => reject(err));
+              });
+            },
           ],
         },
         after: local.hooks.protect('password'),
