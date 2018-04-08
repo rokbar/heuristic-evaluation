@@ -148,5 +148,19 @@ module.exports = function ({ auth, local }) {
         ],
       }
     });
+
+    // TODO - add restriction, only available to group leader, check if team state === 2
+    app.service('teams/:teamId/startGeneralization').hooks({
+      before: {
+        all: [ auth.hooks.authenticate('jwt') ],
+        create: [
+          authHooks.restrictToRoles({
+            roles: ['evaluator'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+      },
+    });
   }
 };

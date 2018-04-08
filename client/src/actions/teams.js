@@ -163,3 +163,24 @@ export function startEvaluation({ plan = '', heuristicName, rules = null, heuris
       });
   }
 }
+
+export function startGeneralization({ teamId }) {
+  return (dispatch) => {
+    return fetch(`/teams/${teamId}/startGeneralization`, {
+      headers: {
+        'Authorization': getJwtToken(),
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(teams => {
+        console.log(teams);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+}

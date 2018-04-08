@@ -1,6 +1,7 @@
 const knex = require('feathers-knex');
 
 const db = require('../database');
+const { teamState } = require('../utils/enums');
 
 module.exports = function (app) {
   app.use('/teams', knex({
@@ -30,4 +31,26 @@ module.exports = function (app) {
     name: 'heuristic',
     id: 'id',
   }));
+
+  app.use('/teams/:teamId/startGeneralization', {
+    create(data, params) {
+      const teamId = params.route.teamId;
+      return new Promise((resolve, reject) => {
+        app.service('teams').patch(
+          teamId,
+          { state: teamState.generalization },
+        )
+          .then(response => {
+            return resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
 };
