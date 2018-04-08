@@ -16,7 +16,7 @@ export default function EditAccountDetailsForm({handleSubmit, editPassword}) {
     <Form onSubmit={handleSubmit(editPassword)} size="large">
       <Segment stacked>
         <Field
-          name="password"
+          name="currentPassword"
           component={Form.Input}
           icon="unlock alternate"
           iconPosition="left"
@@ -24,7 +24,7 @@ export default function EditAccountDetailsForm({handleSubmit, editPassword}) {
           type="password"
         />
         <Field
-          name="password"
+          name="newPassword"
           component={Form.Input}
           icon="lock"
           iconPosition="left"

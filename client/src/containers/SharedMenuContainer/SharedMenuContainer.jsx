@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
 import FixedMenu from 'components/FixedMenu';
 
-import { logout } from 'actions/auth';
+import {logout} from 'actions/auth';
 
 class SharedMenuContainer extends Component {
   render() {
-    const { name, logout } = this.props;
+    const {name, role, logout} = this.props;
     return (
       <FixedMenu
         name={name}
+        role={role}
         logout={logout}
       />
     )
@@ -18,5 +19,10 @@ class SharedMenuContainer extends Component {
 }
 
 export default connect((state) => {
-  return { name: state.auth.name };
-}, { logout })(SharedMenuContainer);
+    return {
+      name: state.auth.name,
+      role: state.auth.role,
+    };
+  },
+  {logout}
+)(SharedMenuContainer);

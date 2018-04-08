@@ -142,18 +142,19 @@ export function editUser({ id, name, email, companyId, role }) {
   }
 }
 
-export function editAccount({ id, name, email }) {
+export function editAccount({ id, name, email, password = '' }) {
   return (dispatch) => {
-    return fetch(`/users/${id}`, {
+    return fetch(`/users/${id}/editAccount`, {
       body: JSON.stringify({
         name,
         email,
+        password,
       }),
       headers: {
         'Authorization': getJwtToken(),
         'Content-Type': 'application/json',
       },
-      method: 'PATCH',
+      method: 'POST',
     })
       .then(response => {
         return response.json();
@@ -167,17 +168,19 @@ export function editAccount({ id, name, email }) {
   }
 }
 
-export function editPassword({ id, password }) {
+export function editPassword({ id, currentPassword, newPassword, confirmPassword }) {
   return (dispatch) => {
-    return fetch(`/users?id=${id}`, {
+    return fetch(`/users/${id}/changePassword`, {
       body: JSON.stringify({
-        password
+        currentPassword,
+        newPassword,
+        confirmPassword,
       }),
       headers: {
         'Authorization': getJwtToken(),
         'Content-Type': 'application/json',
       },
-      method: 'PATCH',
+      method: 'POST',
     })
       .then(response => {
         return response.json();

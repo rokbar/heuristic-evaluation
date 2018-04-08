@@ -10,6 +10,7 @@ import AddUserForm from './UsersTableContainer/AddUserForm';
 import EditUserForm from './UsersTableContainer/EditUserForm';
 import CompaniesTableContainer from './CompaniesTableContainer';
 import AddCompanyForm from './CompaniesTableContainer/AddCompanyForm';
+import EditAccountContainer from '../EditAccountContainer';
 
 export default class SystemAdminHomeContainer extends Component {
   pushHistory(pathName) {
@@ -69,6 +70,10 @@ export default class SystemAdminHomeContainer extends Component {
         <Route
           path='/systemadmin/companies/add'
           component={() => this.renderArticleSegment(AddCompanyForm)}
+        />
+        <Route
+          path='/systemadmin/editAccount'
+          render={() => this.renderArticleSegment(EditAccountContainer)}
         />
       </Switch>,
     ]

@@ -38,6 +38,7 @@ export default function EditAccountDetailsForm({ handleSubmit, editAccount }) {
           icon="lock"
           iconPosition="left"
           placeholder="Slaptažodis"
+          type="password"
         />
         <Button
           type="submit"
