@@ -5,7 +5,7 @@ import { Grid } from 'semantic-ui-react';
 import { getSharedHeuristics } from 'actions/heuristics'
 import StartEvaluationForm from './StartEvaluationForm';
 
-class UserTeamEvaluationTab extends Component {
+class LeaderTeamEvaluationTab extends Component {
   componentDidMount() {
     this.props.getSharedHeuristics();
   }
@@ -13,7 +13,7 @@ class UserTeamEvaluationTab extends Component {
   render() {
     const { teamId } = this.props.match.params;
     return(
-      <div className="UserTeamEvaluationTab">
+      <div className="LeaderTeamEvaluationTab">
         <Grid
           textAlign="center"
           style={{height: "100%"}}
@@ -38,4 +38,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   { getSharedHeuristics }
-)(UserTeamEvaluationTab);
+)(LeaderTeamEvaluationTab);

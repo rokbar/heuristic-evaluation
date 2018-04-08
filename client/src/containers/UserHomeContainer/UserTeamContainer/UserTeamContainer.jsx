@@ -5,11 +5,11 @@ import { Switch, Route } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
 import AuthorizationTeamHOC from 'components/AuthorizationTeamHOC';
 import Tabs from 'components/Tabs';
-import UserTeamInfoTab from './UserTeamInfoTab';
-import UserTeamEvaluationTab from './UserTeamEvaluationTab';
-import UserProblemsTableTab from './UserProblemsTableTab';
-import UserTeamHeuristicsTab from './UserTeamHeuristicsTab';
-import UserTeamPlanTab from './UserTeamPlanTab';
+import EvaluatorTeamInfoTab from './EvaluatorTeamInfoTab';
+import LeaderTeamEvaluationTab from './LeaderTeamEvaluationTab';
+import EvaluatorProblemsTableTab from './EvaluatorProblemsTableTab';
+import EvaluatorTeamHeuristicsTab from './EvaluatorTeamHeuristicsTab';
+import EvaluatorTeamPlanTab from './EvaluatorTeamPlanTab';
 
 import { evaluatorTeamState } from 'utils/enums';
 
@@ -173,21 +173,21 @@ class UserTeamContainer extends Component {
         <Route
           path='/evaluator/teams/:teamId/info'
           component={(props) => this.renderArticleSegment(
-            EvaluatorRoutes(UserTeamInfoTab),
+            EvaluatorRoutes(EvaluatorTeamInfoTab),
             { ...props, team: this.state.team },
           )}
         />
         <Route
           path='/evaluator/teams/:teamId/evaluation'
           component={(props) => this.renderArticleSegment(
-            TeamLeaderRoutes(UserTeamEvaluationTab),
+            TeamLeaderRoutes(LeaderTeamEvaluationTab),
             props,
           )}
         />
         <Route
           path='/evaluator/teams/:teamId/problems'
           component={() => this.renderArticleSegment(
-            EvaluatorRoutes(UserProblemsTableTab),
+            EvaluatorRoutes(EvaluatorProblemsTableTab),
             {
               ...this.state,
               startUserEvaluation: this.onUserEvaluationStart.bind(this),
@@ -199,14 +199,14 @@ class UserTeamContainer extends Component {
         <Route
           path='/evaluator/teams/:teamId/heuristics'
           component={() => this.renderArticleSegment(
-            EvaluatorRoutes(UserTeamHeuristicsTab),
+            EvaluatorRoutes(EvaluatorTeamHeuristicsTab),
             { heuristicId: this.state.team && this.state.team.heuristicId },
           )}
         />
         <Route
           path='/evaluator/teams/:teamId/plan'
           component={(props) => this.renderArticleSegment(
-            EvaluatorRoutes(UserTeamPlanTab),
+            EvaluatorRoutes(EvaluatorTeamPlanTab),
             { plan: this.state.team && this.state.team.plan },
           )}
         />

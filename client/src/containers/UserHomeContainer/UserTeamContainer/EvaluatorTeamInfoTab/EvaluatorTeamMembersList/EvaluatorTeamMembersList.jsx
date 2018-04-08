@@ -2,7 +2,7 @@ import React from 'react';
 import { map } from 'lodash';
 import { List, Label, Button, Icon } from 'semantic-ui-react';
 
-export default function UserTeamMembersList(props) {
+export default function EvaluatorTeamMembersList(props) {
   const renderListRows = (props) => {
     const { teamUsers, leaderId } = props;
     return map(teamUsers, (user) => (

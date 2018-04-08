@@ -17,7 +17,7 @@ const defaultProps = {
   heuristic: [],
 };
 
-class UserTeamHeuristicsTab extends Component {
+class EvaluatorTeamHeuristicsTab extends Component {
   componentDidMount() {
     const { heuristicId } = this.props;
     this.props.getHeuristicsRules({ heuristicId });
@@ -44,8 +44,8 @@ class UserTeamHeuristicsTab extends Component {
   }
 }
 
-UserTeamHeuristicsTab.propTypes = propTypes;
-UserTeamHeuristicsTab.defaultProps = defaultProps;
+EvaluatorTeamHeuristicsTab.propTypes = propTypes;
+EvaluatorTeamHeuristicsTab.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
   return {
@@ -53,4 +53,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, { getHeuristicsRules })(UserTeamHeuristicsTab);
+export default connect(mapStateToProps, { getHeuristicsRules })(EvaluatorTeamHeuristicsTab);

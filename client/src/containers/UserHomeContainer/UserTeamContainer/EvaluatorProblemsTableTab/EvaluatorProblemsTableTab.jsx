@@ -6,7 +6,7 @@ import TeamGeneralization from './TeamGeneralization';
 import TeamRatingProblems from './TeamRatingProblems';
 import TeamEvaluationFinished from './TeamEvaluationFinished';
 
-class UserProblemsTableTab extends Component {
+class EvaluatorProblemsTableTab extends Component {
   constructor(props) {
     super(props);
   }
@@ -59,4 +59,4 @@ class UserProblemsTableTab extends Component {
   }
 }
 
-export default UserProblemsTableTab;
+export default EvaluatorProblemsTableTab;

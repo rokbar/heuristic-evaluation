@@ -6,13 +6,13 @@ import {
   Header,
   Icon,
 } from 'semantic-ui-react'
-import UserTeamMembersList from './UserTeamMembersList';
+import EvaluatorTeamMembersList from './EvaluatorTeamMembersList';
 
 import { teamStateLT } from 'utils/enums';
 
 import { getUsersByTeam } from 'actions/teams';
 
-class UserTeamInfoTab extends Component {
+class EvaluatorTeamInfoTab extends Component {
   componentDidMount() {
     const { teamId } = this.props.match.params;
     this.props.getUsersByTeam({ teamId });
@@ -21,7 +21,7 @@ class UserTeamInfoTab extends Component {
   render() {
     const { team: { systemName, systemUrl, systemContacts, leaderId, state } } = this.props;
     return (
-      <div className="UserTeamInfoTab">
+      <div className="EvaluatorTeamInfoTab">
         <Grid
           textAlign="center"
           style={{height: "100%"}}
@@ -51,7 +51,7 @@ class UserTeamInfoTab extends Component {
               </Grid.Row>
             </Grid>
             <Header size='medium'>Vertintojai</Header>
-            <UserTeamMembersList
+            <EvaluatorTeamMembersList
               teamUsers={this.props.teamUsers}
               leaderId={leaderId}
             />
@@ -71,4 +71,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   { getUsersByTeam }
-)(UserTeamInfoTab);
+)(EvaluatorTeamInfoTab);
