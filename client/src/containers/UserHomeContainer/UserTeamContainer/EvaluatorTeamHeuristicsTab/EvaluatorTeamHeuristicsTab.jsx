@@ -37,7 +37,7 @@ class EvaluatorTeamHeuristicsTab extends Component {
       </Segment>,
       <Segment basic textAlign="left">
         <List as="ol">
-          {map(rules, (item) => <List.Item as="li">{item.description}</List.Item>)}
+          {map(rules, (item, index) => <List.Item key={index} as="li">{item.description}</List.Item>)}
         </List>
       </Segment>
     ];

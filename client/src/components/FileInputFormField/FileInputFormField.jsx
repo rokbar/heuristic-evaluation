@@ -69,7 +69,7 @@ class FileInputFormField extends Component {
         </Button>
       </div>,
       <div style={{display: 'flex'}}>
-        {map(notRemovedPhotos, (item) => <div style={{display: 'flex', margin: '10px'}}>
+        {map(notRemovedPhotos, (item, key) => <div key={key} style={{display: 'flex', margin: '10px'}}>
             <Modal
               trigger={
                 <Image style={{cursor: 'pointer', height: '100px', width: 'auto'}} src={item.path || item.uri}/>

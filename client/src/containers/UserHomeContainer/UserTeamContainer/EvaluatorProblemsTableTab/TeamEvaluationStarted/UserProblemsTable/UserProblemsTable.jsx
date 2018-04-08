@@ -80,7 +80,7 @@ class UsersProblemsTable extends Component {
   renderPhotoCell(photos) {
     return photos
       ? <Image.Group size="mini">
-        {map(photos, (item) => <Modal trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
+        {map(photos, (item, key) => <Modal key={key} trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
           <Image src={item} />
         </Modal>)}
       </Image.Group>

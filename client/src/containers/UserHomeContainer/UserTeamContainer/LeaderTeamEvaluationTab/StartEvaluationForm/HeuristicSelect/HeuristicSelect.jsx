@@ -49,7 +49,7 @@ class HeuristicSelect extends Component {
         {name}
       </Accordion.Title>,
       <Accordion.Content active={checkedHeuristic === id}>
-        {map(rules, (item, key) => <p>{key + 1}. {item && item.description}</p>)}
+        {map(rules, (item, key) => <p key={key}>{key + 1}. {item && item.description}</p>)}
       </Accordion.Content>
     ]
   }

@@ -181,7 +181,10 @@ class UserTeamContainer extends Component {
           path='/evaluator/teams/:teamId/evaluation'
           component={(props) => this.renderArticleSegment(
             TeamLeaderRoutes(LeaderTeamEvaluationTab),
-            props,
+            {
+              ...props,
+              ...this.state,
+            },
           )}
         />
         <Route

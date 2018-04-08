@@ -8,7 +8,7 @@ const renderRules = ({ fields, meta: { error } }) => {
   return [
     <div className="RulesList">
       {fields.map((rule, index) => (
-        <div className="RulesList__item">
+        <div key={index} className="RulesList__item">
           <div className="RulesList__rule">
             <Field
               size="mini"

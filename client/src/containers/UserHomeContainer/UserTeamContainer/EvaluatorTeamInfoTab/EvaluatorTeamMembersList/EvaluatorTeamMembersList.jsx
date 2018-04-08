@@ -5,8 +5,8 @@ import { List, Label, Button, Icon } from 'semantic-ui-react';
 export default function EvaluatorTeamMembersList(props) {
   const renderListRows = (props) => {
     const { teamUsers, leaderId } = props;
-    return map(teamUsers, (user) => (
-      <List.Item>
+    return map(teamUsers, (user, key) => (
+      <List.Item key={key}>
         <List.Icon name='user circle' size='large' verticalAlign='middle' />
         <List.Content>
           <List.Header style={{textAlign: 'left'}}>{user.name}</List.Header>

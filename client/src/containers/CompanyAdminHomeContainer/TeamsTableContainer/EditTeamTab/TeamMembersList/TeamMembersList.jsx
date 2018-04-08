@@ -5,8 +5,8 @@ import { List, Button, Icon } from 'semantic-ui-react';
 export default function TeamMembersList(props) {
   const renderListRows = (props) => {
     const { teamUsers, teamId, removeUserFromTeam } = props;
-    return map(teamUsers, (user) => (
-      <List.Item>
+    return map(teamUsers, (user, key) => (
+      <List.Item key={key}>
         <List.Content floated="right">
           <Button onClick={() => removeUserFromTeam({ userId: user.id, teamId })}>
             <Icon name="trash" />

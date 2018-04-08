@@ -8,6 +8,7 @@ export default function Tabs(props) {
       const { name, pathName, activeItem } = item;
       const regex = new RegExp('^' + pathName);
       return <Menu.Item
+        key={name}
         content={name}
         active={regex.test(currentLocation)}
         as={Link} to={pathName}

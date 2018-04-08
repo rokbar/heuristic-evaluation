@@ -11,6 +11,7 @@ const renderHeuristics = ({ heuristics, checkedHeuristics = [], fields, meta: { 
       && find(checkedHeuristics, (ruleId) => ruleId === heuristics[index].value );
 
     return <Field
+      key={index}
       name={rule}
       id={rule}
       component={CheckboxFormField}

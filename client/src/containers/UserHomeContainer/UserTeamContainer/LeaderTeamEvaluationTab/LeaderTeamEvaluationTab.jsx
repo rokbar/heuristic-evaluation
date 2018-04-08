@@ -5,6 +5,7 @@ import { Grid } from 'semantic-ui-react';
 import { getSharedHeuristics } from 'actions/heuristics'
 import StartEvaluationForm from './StartEvaluationForm';
 
+
 class LeaderTeamEvaluationTab extends Component {
   componentDidMount() {
     this.props.getSharedHeuristics();
@@ -12,6 +13,7 @@ class LeaderTeamEvaluationTab extends Component {
 
   render() {
     const { teamId } = this.props.match.params;
+    console.log(this.props);
     return(
       <div className="LeaderTeamEvaluationTab">
         <Grid
