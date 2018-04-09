@@ -105,6 +105,7 @@ class UserTeamContainer extends Component {
       })
       .then(team => {
         const { systemName, systemUrl, systemContacts, state, plan, leaderId, heuristicId } = team;
+        // TODO - use redux state
         return this.setState({
           team: {
             systemName,
@@ -184,6 +185,7 @@ class UserTeamContainer extends Component {
             {
               ...props,
               ...this.state,
+              changeTeamState: (teamState) => this.setState({ team: { state: teamState }})
             },
           )}
         />

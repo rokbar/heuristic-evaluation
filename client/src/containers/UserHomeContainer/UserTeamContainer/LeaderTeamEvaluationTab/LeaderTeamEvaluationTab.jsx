@@ -27,6 +27,7 @@ class LeaderTeamEvaluationTab extends Component {
 
   renderContent() {
     const { teamId } = this.props.match.params;
+    const { heuristicId } = this.props.team;
     const state = this.props.team.state;
     const evaluatorState = this.props.evaluatorTeam.state;
 
@@ -47,7 +48,19 @@ class LeaderTeamEvaluationTab extends Component {
       ) return <LeaderEvaluationNotFinished />;
 
       if (evaluatorState === evaluatorTeamState.submittedProblems)
-        return <LeaderSubmitted />;
+        return <LeaderSubmitted
+          teamId={teamId}
+          heuristicId={heuristicId}
+          changeTeamState={this.props.changeTeamState}
+        />;
+    }
+
+    if (state === teamState.generalization) {
+      return <LeaderSubmitted
+        teamId={teamId}
+        heuristicId={heuristicId}
+        hasGeneralizationStarted
+      />
     }
   }
 

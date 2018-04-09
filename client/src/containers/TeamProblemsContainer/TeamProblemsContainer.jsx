@@ -92,20 +92,21 @@ class TeamProblemsContainer extends Component {
     // select user dropdown
   }
 
-  renderPageActions(hasGeneralizationStarted) {
-    const { startGeneralization } = this.props;
+  renderPageActions() {
+    const { startGeneralization, teamId, hasGeneralizationStarted, changeTeamState } = this.props;
     return hasGeneralizationStarted
       ? <RedirectToMergeProblemsPageButton
       />
       : <StartGeneralizationButton
         startGeneralization={startGeneralization}
+        changeTeamState={changeTeamState} // This came from UserTeamContainer
+        teamId={teamId}
       />
   }
 
   render() {
-    const { hasGeneralizationStarted } = this.props;
     return [
-      this.renderPageActions(hasGeneralizationStarted),
+      this.renderPageActions(),
       <DataTable
         actions={this.renderTableActions()}
         headers={this.getTableHeaders()}
