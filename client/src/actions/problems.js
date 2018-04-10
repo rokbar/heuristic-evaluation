@@ -34,6 +34,31 @@ export function getEvaluatorProblems({ teamId }) {
   }
 }
 
+// only available for team leader
+export function getSelectedEvaluatorProblems({ teamId }) {
+  return (dispatch) => {
+    return fetch(`/teamproblems/${teamId}`, {
+      headers: {
+        'Authorization': getJwtToken(),
+      },
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(problems => {
+        dispatch({
+          type: SET_EVALUATOR_PROBLEMS,
+          payload: { problems },
+        });
+        console.log(problems);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+}
+
 export function createProblem({
   description = '',
   location,

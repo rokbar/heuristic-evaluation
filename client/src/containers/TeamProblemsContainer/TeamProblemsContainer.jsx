@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { map, find, toNumber, isArray } from 'lodash';
+import { map, filter, find, toNumber, isArray, includes } from 'lodash';
 
-import { Modal, Image, Label } from 'semantic-ui-react';
+import { Modal, Image, Icon, Label, Dropdown } from 'semantic-ui-react';
 import DataTable from 'components/DataTable';
 import StartGeneralizationButton from './StartGeneralizationButton';
 import RedirectToMergeProblemsPageButton from './RedirectToMergeProblemsPageButton';
 
-import { getEvaluatorProblems } from 'actions/problems';
+import { getSelectedEvaluatorProblems } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
 import { startGeneralization } from 'actions/teams';
+import { getUsersByCompanyId } from 'actions/users';
 
 const propTypes = {
   problems: PropTypes.array,
@@ -26,11 +27,54 @@ const defaultProps = {
 
 
 class TeamProblemsContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userOptions: [],
+      problemIds: [],
+      filteredProblems: [],
+    };
+  }
+
   componentDidMount() {
     const { heuristicId, teamId } = this.props;
-    this.props.getHeuristicsRules({ heuristicId });
-    this.props.getEvaluatorProblems({ teamId });
+    let userOptions = [];
+    let filteredProblems = [];
+
+    this.props.getHeuristicsRules({heuristicId});
+    this.props.getUsersByCompanyId()
+      .then(() => {
+        userOptions = map(this.props.users, (item) => ({
+          value: item.id,
+          text: item.email
+        }));
+        return this.props.getSelectedEvaluatorProblems({teamId});
+      })
+      .then(() => {
+        return this.setState({
+          userOptions: userOptions,
+          filteredProblems: this.props.problems,
+        });
+      })
+      .catch();
   }
+
+  filterProblemsByUser = (e, data) => {
+    const {value} = data;
+    const {problems} = this.props;
+    let filteredProblems = [];
+
+    if (value && value === 'all') {
+      filteredProblems = problems;
+    } else {
+      filteredProblems = filter(problems, (item) => {
+        const users = item.users.split(',').map(Number);
+        return includes(users, value);
+      });
+    }
+
+    this.setState({ filteredProblems });
+  };
 
   getTableHeaders() {
     return {
@@ -63,7 +107,7 @@ class TeamProblemsContainer extends Component {
   }
 
   getTableData() {
-    return this.props.problems.map(item => {
+    return this.state.filteredProblems.map(item => {
       const { id, description, location, photos, ratingsAverage, solution, rules } = item;
       return {
         description,
@@ -89,7 +133,17 @@ class TeamProblemsContainer extends Component {
   }
 
   renderTableActions() {
-    // select user dropdown
+    const evaluatorOptions = [ { value: 'all', text: 'VISŲ' }, ...this.state.userOptions ];
+    return <span>
+      <Icon name="user" size="large" color="teal" />
+      <Dropdown
+        inline
+        options={evaluatorOptions}
+        defaultValue={evaluatorOptions[0].value}
+        onChange={this.filterProblemsByUser}
+      />
+      rastos problemos.
+    </span>;
   }
 
   renderPageActions() {
@@ -123,11 +177,13 @@ function mapStateToProps(state) {
   return {
     problems: state.evaluatorProblems,
     heuristic: state.heuristics[0],
+    users: state.users.companyUsers,
   }
 }
 
 export default connect(mapStateToProps, {
-  getEvaluatorProblems,
+  getUsersByCompanyId,
+  getSelectedEvaluatorProblems,
   getHeuristicsRules,
   startGeneralization,
 })(TeamProblemsContainer);

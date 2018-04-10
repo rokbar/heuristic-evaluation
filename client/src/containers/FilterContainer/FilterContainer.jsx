@@ -21,6 +21,7 @@ class FilterContainer extends Component {
     const { visible } = this.state;
     return [
       <Icon
+        key="FilterToggleButton"
         className="ToggleButton"
         name={visible ? 'chevron left': 'chevron right'}
         onClick={this.toggleVisibility}
@@ -29,7 +30,10 @@ class FilterContainer extends Component {
         fitted
       />,
       visible
-        ? <Segment className="FilterMenu">
+        ? <Segment
+          className="FilterMenu"
+          key="FilterMenu"
+        >
           Not Implemented
         </Segment>
         : null

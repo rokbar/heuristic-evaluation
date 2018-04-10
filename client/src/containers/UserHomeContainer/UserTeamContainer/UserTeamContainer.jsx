@@ -167,10 +167,11 @@ class UserTeamContainer extends Component {
     const { location } = this.props;
     return [
       <Tabs
+        key="UserTeamContainerTabs"
         panes={this.getTabs()}
         currentLocation={location.pathname}
       />,
-      <Switch>
+      <Switch key="UserTeamContainerRoutes">
         <Route
           path='/evaluator/teams/:teamId/info'
           component={(props) => this.renderArticleSegment(

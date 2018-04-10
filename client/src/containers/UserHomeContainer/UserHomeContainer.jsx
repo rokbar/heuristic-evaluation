@@ -32,7 +32,7 @@ class UserHomeContainer extends Component {
 
   renderArticleContent() {
     return [
-      <Switch>
+      <Switch key="UserHomeContainerRoutes">
         <Route
           exact
           path='/evaluator'
