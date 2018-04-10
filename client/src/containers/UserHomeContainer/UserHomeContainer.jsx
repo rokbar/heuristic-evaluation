@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
-import { Segment } from 'semantic-ui-react';
+import { Segment, Transition } from 'semantic-ui-react';
 
 import Layout from 'components/Layout';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
+import FilterContainer from 'containers/FilterContainer';
 import UserTeamTableContainer from './UserTeamsTableContainer';
 import UserTeamContainer from './UserTeamContainer';
 import EditAccountContainer from '../EditAccountContainer';
@@ -14,9 +15,8 @@ class UserHomeContainer extends Component {
   }
 
   renderAsideContent() {
-    return (
-      <div>Not Implemented</div>
-    )
+    return <FilterContainer
+    />;
   }
 
   renderArticleSegment(Component, props) {

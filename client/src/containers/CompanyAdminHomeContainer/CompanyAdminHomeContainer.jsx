@@ -6,6 +6,7 @@ import { Segment } from 'semantic-ui-react';
 import Layout from 'components/Layout';
 import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
+import FilterContainer from 'containers/FilterContainer';
 import TeamsTableContainer from './TeamsTableContainer';
 import AddTeamForm from './TeamsTableContainer/AddTeamForm';
 import EditTeamTab from './TeamsTableContainer/EditTeamTab';
@@ -29,9 +30,8 @@ class CompanyAdminHomeContainer extends Component {
   }
 
   renderAsideContent() {
-    return (
-      <div>Not Implemented</div>
-    )
+    return <FilterContainer
+    />;
   }
 
   renderArticleSegment(Component, props) {

@@ -5,6 +5,7 @@ import { Segment } from 'semantic-ui-react';
 import Layout from 'components/Layout';
 import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
+import FilterContainer from 'containers/FilterContainer';
 import UsersTableContainer from './UsersTableContainer';
 import AddUserForm from './UsersTableContainer/AddUserForm';
 import EditUserForm from './UsersTableContainer/EditUserForm';
@@ -25,9 +26,8 @@ export default class SystemAdminHomeContainer extends Component {
   }
 
   renderAsideContent() {
-    return (
-      <div>Not Implemented</div>
-    )
+    return <FilterContainer
+    />;
   }
 
   renderArticleSegment(Component, props) {

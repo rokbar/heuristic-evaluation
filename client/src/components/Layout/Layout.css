@@ -24,19 +24,25 @@
 }
 
 .Aside {
+  display: flex;
+  flex-flow: row wrap;
   margin-right: 10px;
+  align-items: flex-start;
+}
+
+.Aside .FilterMenu {
+  margin-left: 15px;
+  margin-top: 0;
 }
 
 @media all and (min-width: 600px) {
   .Aside {
-    flex: 1 auto;
     margin: 0 0 10px 0;
   }
 }
 
 @media all and (max-width: 600px) {
   .Aside {
-    flex: 1 auto;
     margin: 0 0 10px 0;
   }
 }
@@ -50,7 +56,6 @@
   }
   .Aside {
     order: 1;
-    flex: 1 auto;
     margin: 0 10px 0 0;
   }
   .Article {

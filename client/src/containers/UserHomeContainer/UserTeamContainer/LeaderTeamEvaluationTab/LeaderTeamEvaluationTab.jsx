@@ -6,7 +6,8 @@ import { Grid } from 'semantic-ui-react';
 import { getSharedHeuristics } from 'actions/heuristics'
 import StartEvaluationForm from './StartEvaluationForm';
 import LeaderEvaluationNotFinished from './LeaderEvaluationNotFinished';
-import LeaderSubmitted from './LeaderSubmitted';
+import LeaderSubmitted from './LeaderSubmitted'
+import LeaderGeneralizing from './LeaderGeneralizing';
 
 import { teamState, evaluatorTeamState } from 'utils/enums';
 
@@ -56,7 +57,7 @@ class LeaderTeamEvaluationTab extends Component {
     }
 
     if (state === teamState.generalization) {
-      return <LeaderSubmitted
+      return <LeaderGeneralizing
         teamId={teamId}
         heuristicId={heuristicId}
         hasGeneralizationStarted
