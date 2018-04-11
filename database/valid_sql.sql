@@ -54,7 +54,7 @@ CREATE TABLE Rating
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
 	value integer,
-	problemId integer NOT NULL,
+	mergedProblemId integer NOT NULL,
 	evaluatorId integer NOT NULL,
 	PRIMARY KEY(id)
 );
@@ -82,7 +82,6 @@ CREATE TABLE User
   isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	password varchar (255),
-	isBlocked boolean DEFAULT 0,
 	lastLogon date,
 	email varchar (255),
 	companyId integer,
@@ -129,10 +128,19 @@ CREATE TABLE Problem
   isRemoved boolean DEFAULT 0,
 	description TEXT,
 	location varchar (255),
-	photo BLOB,
-	ratingsAverage float,
 	isCombined boolean DEFAULT false,
 	teamId integer NOT NULL,
+	mergedProblemId: integer.
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE MergedProblem
+(
+	id integer AUTO_INCREMENT,
+  isRemoved boolean DEFAULT 0,
+	description TEXT,
+	location varchar (255),
+	ratingsAverage float,
 	PRIMARY KEY(id)
 );
 
@@ -142,6 +150,7 @@ CREATE TABLE ProblemPhoto
 	path varchar(255),
   isRemoved boolean DEFAULT 0,
 	problemId integer NOT NULL,
+	mergedProblemId integer,
 	PRIMARY KEY(id)
 );
 
@@ -153,7 +162,7 @@ ALTER TABLE ProblemRule
     ADD FOREIGN KEY(ruleId) REFERENCES Rule (id) ON DELETE CASCADE;
     
 ALTER TABLE Rating
-	ADD FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE,
+	ADD FOREIGN KEY(mergedProblemId) REFERENCES MergedProblem (id) ON DELETE CASCADE,
 	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE;
 
 ALTER TABLE Team
@@ -180,8 +189,10 @@ ALTER TABLE EvaluatorTeam
     
 ALTER TABLE Problem
 	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE;
+	ADD CONSTRAINT generalized_by FOREIGN KEY(mergedProblemId) REFERENCES MergedProblem(id) ON DELETE CASCADE;
 
 ALTER TABLE ProblemPhoto
   ADD CONSTRAINT describes FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE;
+  ADD CONSTRAINT describes_merged FOREIGN KEY(mergedProblemId) REFERENCES MergedProblem (id) ON DELETE CASCADE;
 
 ALTER TABLE user AUTO_INCREMENT = 1
