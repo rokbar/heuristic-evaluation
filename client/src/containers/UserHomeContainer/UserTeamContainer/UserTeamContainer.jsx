@@ -10,6 +10,7 @@ import LeaderTeamEvaluationTab from './LeaderTeamEvaluationTab';
 import EvaluatorProblemsTableTab from './EvaluatorProblemsTableTab';
 import EvaluatorTeamHeuristicsTab from './EvaluatorTeamHeuristicsTab';
 import EvaluatorTeamPlanTab from './EvaluatorTeamPlanTab';
+import ProblemsGeneralizationContainer from 'containers/ProblemsGeneralizationContainer';
 
 import { evaluatorTeamState } from 'utils/enums';
 
@@ -187,6 +188,16 @@ class UserTeamContainer extends Component {
               ...props,
               ...this.state,
               changeTeamState: (teamState) => this.setState({ team: { state: teamState }})
+            },
+          )}
+        />
+        <Route
+          path='/evaluator/teams/:teamId/generalization'
+          component={(props) => this.renderArticleSegment(
+            TeamLeaderRoutes(ProblemsGeneralizationContainer),
+            {
+              heuristicId: this.state && this.state.team.heuristicId,
+              teamId: this.props.match.params,
             },
           )}
         />

@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { map, filter, find, toNumber, isArray, includes } from 'lodash';
-import { withRouter } from 'react-router-dom';
 
 import { Modal, Image, Icon, Label, Dropdown } from 'semantic-ui-react';
 import DataTable from 'components/DataTable';
-import StartGeneralizationButton from './StartGeneralizationButton';
-import RedirectToMergeProblemsPageButton from './RedirectToMergeProblemsPageButton';
 
 import { getSelectedEvaluatorProblems } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
@@ -27,7 +24,7 @@ const defaultProps = {
 };
 
 
-class TeamProblemsContainer extends Component {
+class SelectedEvaluatorProblems extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -82,7 +79,6 @@ class TeamProblemsContainer extends Component {
       location: 'Lokacija',
       rules: 'Pažeistia euristika',
       photo: 'Nuotrauka',
-      ratingsAverage: 'Įvertinimas',
       solution: 'Pasiūlymas taisymui',
     }
   }
@@ -108,13 +104,12 @@ class TeamProblemsContainer extends Component {
 
   getTableData() {
     return this.state.filteredProblems.map(item => {
-      const { id, description, location, photos, ratingsAverage, solution, rules } = item;
+      const { id, description, location, photos, solution, rules } = item;
       return {
         description,
         location,
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
-        ratingsAverage,
         solution,
       };
     })
@@ -147,17 +142,6 @@ class TeamProblemsContainer extends Component {
   }
 
   renderPageActions() {
-    const { startGeneralization, teamId, hasGeneralizationStarted, changeTeamState, history: { push } } = this.props;
-    return hasGeneralizationStarted
-      ? <RedirectToMergeProblemsPageButton
-        teamId={teamId}
-        pushHistory={push}
-      />
-      : <StartGeneralizationButton
-        startGeneralization={startGeneralization}
-        changeTeamState={changeTeamState} // This came from UserTeamContainer
-        teamId={teamId}
-      />
   }
 
   render() {
@@ -172,8 +156,8 @@ class TeamProblemsContainer extends Component {
   }
 }
 
-TeamProblemsContainer.propTypes = propTypes;
-TeamProblemsContainer.defaultProps = defaultProps;
+SelectedEvaluatorProblems.propTypes = propTypes;
+SelectedEvaluatorProblems.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
   return {
@@ -183,11 +167,9 @@ function mapStateToProps(state) {
   }
 }
 
-TeamProblemsContainer = withRouter(TeamProblemsContainer);
-
 export default connect(mapStateToProps, {
   getUsersByCompanyId,
   getSelectedEvaluatorProblems,
   getHeuristicsRules,
   startGeneralization,
-})(TeamProblemsContainer);
+})(SelectedEvaluatorProblems);
