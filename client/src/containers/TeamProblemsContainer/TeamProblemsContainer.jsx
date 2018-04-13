@@ -82,7 +82,6 @@ class TeamProblemsContainer extends Component {
       location: 'Lokacija',
       rules: 'Pažeistia euristika',
       photo: 'Nuotrauka',
-      ratingsAverage: 'Įvertinimas',
       solution: 'Pasiūlymas taisymui',
     }
   }
@@ -108,13 +107,12 @@ class TeamProblemsContainer extends Component {
 
   getTableData() {
     return this.state.filteredProblems.map(item => {
-      const { id, description, location, photos, ratingsAverage, solution, rules } = item;
+      const { id, description, location, photos, solution, rules } = item;
       return {
         description,
         location,
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
-        ratingsAverage,
         solution,
       };
     })

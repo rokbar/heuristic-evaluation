@@ -29,7 +29,7 @@ class EvaluatorTeamHeuristicsTab extends Component {
       <Segment basic textAlign="center">
         <Header as="h2" textAlign="center" icon>
           <Icon name="ordered list" circular/>
-          {rules && rules[0].heuristicName}
+          {rules && rules.length && rules[0].heuristicName}
           <Header.Subheader>
             Euristikų rinkinys
           </Header.Subheader>
@@ -37,7 +37,7 @@ class EvaluatorTeamHeuristicsTab extends Component {
       </Segment>,
       <Segment basic textAlign="left">
         <List as="ol">
-          {map(rules, (item, index) => <List.Item key={index} as="li">{item.description}</List.Item>)}
+          {rules && rules.length && map(rules, (item, index) => <List.Item key={index} as="li">{item.description}</List.Item>)}
         </List>
       </Segment>
     ];

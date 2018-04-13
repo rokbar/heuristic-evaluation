@@ -36,6 +36,7 @@ CREATE TABLE Rule
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
 	description varchar (255),
+	listNumber integer,
 	heuristicId integer NOT NULL,
 	PRIMARY KEY(id)
 );
