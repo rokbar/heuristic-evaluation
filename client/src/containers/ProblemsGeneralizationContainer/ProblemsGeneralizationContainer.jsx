@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import {Segment} from 'semantic-ui-react';
 import SelectedEvaluatorProblems from './SelectedEvaluatorProblems';
+import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import './ProblemsGeneralizationContainer.css';
 
 class ProblemsGeneralizationContainer extends Component {
@@ -10,7 +11,7 @@ class ProblemsGeneralizationContainer extends Component {
     return (
       <div className="ProblemsGeneralization">
         <Segment className="MergedProblems">
-          Apibendrintas sąrašas
+          <GeneralizationProblemsTable />
         </Segment>
         <Segment className="EvaluatorProblems">
           <SelectedEvaluatorProblems
