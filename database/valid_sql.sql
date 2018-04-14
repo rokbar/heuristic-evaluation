@@ -55,7 +55,7 @@ CREATE TABLE Rating
 	id integer AUTO_INCREMENT,
 	isRemoved boolean DEFAULT 0,
 	value integer,
-	mergedProblemId integer NOT NULL,
+	problemId integer NOT NULL,
 	evaluatorId integer NOT NULL,
 	PRIMARY KEY(id)
 );
@@ -129,19 +129,11 @@ CREATE TABLE Problem
   isRemoved boolean DEFAULT 0,
 	description TEXT,
 	location varchar (255),
-	isCombined boolean DEFAULT false,
 	teamId integer NOT NULL,
-	mergedProblemId integer,
-	PRIMARY KEY(id)
-);
-
-CREATE TABLE MergedProblem
-(
-	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
-	description TEXT,
-	location varchar (255),
-	ratingsAverage float,
+	isRevised boolean DEFAULT false,
+	isCombined boolean DEFAULT false,
+  ratingsAverage float,
+  nextMergedProblemId integer,
 	PRIMARY KEY(id)
 );
 
@@ -151,49 +143,44 @@ CREATE TABLE ProblemPhoto
 	path varchar(255),
   isRemoved boolean DEFAULT 0,
 	problemId integer,
-	mergedProblemId integer,
 	PRIMARY KEY(id)
 );
 
 ALTER TABLE Rule
-	ADD CONSTRAINT consists_of FOREIGN KEY(heuristicId) REFERENCES Heuristic (id) ON DELETE CASCADE;
+	ADD CONSTRAINT consists_of FOREIGN KEY(heuristicId) REFERENCES Heuristic (id);
 
 ALTER TABLE ProblemRule
-	ADD CONSTRAINT violates FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE,
-    ADD FOREIGN KEY(ruleId) REFERENCES Rule (id) ON DELETE CASCADE;
+	ADD CONSTRAINT violates FOREIGN KEY(problemId) REFERENCES Problem (id),
+    ADD FOREIGN KEY(ruleId) REFERENCES Rule (id);
 
 ALTER TABLE Rating
-	ADD FOREIGN KEY(mergedProblemId) REFERENCES MergedProblem (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE;
+	ADD FOREIGN KEY(problemId) REFERENCES Problem (id),
+	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id);
 
 ALTER TABLE Team
 	ADD FOREIGN KEY(state) REFERENCES TeamState (id) ON DELETE CASCADE,
-	ADD CONSTRAINT creates FOREIGN KEY(companyAdminId) REFERENCES User (id) ON DELETE CASCADE,
-	ADD CONSTRAINT manages FOREIGN KEY(leaderId) REFERENCES User (id) ON DELETE CASCADE,
-	ADD CONSTRAINT uses FOREIGN KEY(heuristicId) REFERENCES Heuristic (id) ON DELETE CASCADE;
+	ADD CONSTRAINT creates FOREIGN KEY(companyAdminId) REFERENCES User (id),
+	ADD CONSTRAINT manages FOREIGN KEY(leaderId) REFERENCES User (id),
+	ADD CONSTRAINT uses FOREIGN KEY(heuristicId) REFERENCES Heuristic (id);
 
 ALTER TABLE User
-	ADD CONSTRAINT belongs_to FOREIGN KEY(companyId) REFERENCES Company (id) ON DELETE CASCADE,
-	ADD CONSTRAINT admin_creates FOREIGN KEY(systemAdminId) REFERENCES User (id) ON DELETE CASCADE;
+	ADD CONSTRAINT belongs_to FOREIGN KEY(companyId) REFERENCES Company (id),
+	ADD CONSTRAINT admin_creates FOREIGN KEY(systemAdminId) REFERENCES User (id);
 
 ALTER TABLE Company
-	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdminId) REFERENCES User (id) ON DELETE CASCADE;
+	ADD CONSTRAINT admin_creates_company FOREIGN KEY(systemAdminId) REFERENCES User (id);
 
 ALTER TABLE EvaluatorProblem
-	ADD CONSTRAINT detected FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE;
+	ADD CONSTRAINT detected FOREIGN KEY(evaluatorId) REFERENCES User (id),
+	ADD FOREIGN KEY(problemId) REFERENCES Problem (id);
 
 ALTER TABLE EvaluatorTeam
-	ADD FOREIGN KEY(state) REFERENCES EvaluatorTeamState (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE,
-	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id) ON DELETE CASCADE;
+	ADD FOREIGN KEY(state) REFERENCES EvaluatorTeamState (id),
+	ADD FOREIGN KEY(teamId) REFERENCES Team (id),
+	ADD FOREIGN KEY(evaluatorId) REFERENCES User (id);
 
 ALTER TABLE Problem
-	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id) ON DELETE CASCADE,
-	ADD CONSTRAINT generalized_by FOREIGN KEY(mergedProblemId) REFERENCES MergedProblem(id) ON DELETE CASCADE;
-
-ALTER TABLE ProblemPhoto
-  ADD CONSTRAINT describes FOREIGN KEY(problemId) REFERENCES Problem (id) ON DELETE CASCADE,
-  ADD CONSTRAINT describes_merged FOREIGN KEY(mergedProblemId) REFERENCES MergedProblem (id) ON DELETE CASCADE;
+	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id),
+	ADD CONSTRAINT is_before FOREIGN KEY(nextMergedProblemId) REFERENCES Problem (id);
 
 ALTER TABLE user AUTO_INCREMENT = 1
