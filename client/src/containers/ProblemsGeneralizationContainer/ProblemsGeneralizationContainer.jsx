@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import {filter, map, reduce} from 'lodash';
+import {filter, map, reduce, uniq} from 'lodash';
 
 import {Segment} from 'semantic-ui-react';
 import SelectedEvaluatorProblems from './SelectedEvaluatorProblems';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import './ProblemsGeneralizationContainer.css';
 
-import { createMergedProblems, removeMergedProblem } from 'actions/mergedProblems';
+import { createMergedProblem, removeMergedProblem } from 'actions/mergedProblems';
 
 class ProblemsGeneralizationContainer extends Component {
   constructor(props) {
@@ -17,19 +17,31 @@ class ProblemsGeneralizationContainer extends Component {
   }
 
   addProblems = (problems) => {
-    const mergedProblem = {
-      description: map(problems, 'description').join('\n'),
-      location: map(problems, 'location').join('\n'),
-      photos: reduce(problems, (mergedPhotos, item) => mergedPhotos.concat(item.photos), []),
-      mergedProblemIds: map(problems, 'id'),
+    const description = map(problems, 'description').join('\n');
+    const location =  map(problems, 'location').join('\n');
+    const photos = reduce(problems, (mergedPhotos, item) => {
+      const paths = map(item.photos, (item) => {
+        let pathname = new URL(item).pathname;
+        while (pathname.charAt(0) === '/') pathname = pathname.substr(1);
+        return pathname;
+      });
+      return mergedPhotos.concat(paths);
+    }, []);
+    const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []))
+    const evaluatorProblems = map(problems, (item) => ({ evaluatorId: parseInt(item.users, 10), solution: item.solution}));
+    const mergedProblemIds = map(problems, 'id');
 
-    };
-    // createMergedProblems({ mergedProblem })
-    //   .then(result => {
-        this.setState(prevState => ({
-          generalizedProblems: [...prevState.generalizedProblems, ...problems],
+    const mergedProblem = { description, location, photos, rules, evaluatorProblems };
+
+    createMergedProblem({ ...mergedProblem, teamId: this.props.teamId, mergedProblemIds })
+      .then(result => {
+        return result && result.description && this.setState(prevState => ({
+          generalizedProblems: [
+            ...prevState.generalizedProblems,
+            result,
+          ],
         }));
-      // });
+      });
   };
 
   removeProblem = (problem) => {

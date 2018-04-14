@@ -54,6 +54,7 @@ module.exports = function (app) {
         'problem.location',
         'problem.isCombined',
         'problem.teamId',
+        'problem.isRevised',
         'evaluatorproblem.solution',
         db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'path', 'photos']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
@@ -63,7 +64,8 @@ module.exports = function (app) {
         .leftJoin('evaluatorproblem', 'problem.id', '=', 'evaluatorproblem.problemId')
         .leftJoin('problemrule', 'problem.id', '=', 'problemrule.problemId')
         .leftJoin('problemphoto', 'problem.id', '=', 'problemphoto.problemId')
-        .andWhere('problem.teamId', teamId)
+        .where('problem.teamId', teamId)
+        .andWhereNot('problem.isCombined', true)
         .groupBy('problem.id')
         .then(response => {
           const modifiedResponse = response.map(item => {

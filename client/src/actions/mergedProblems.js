@@ -1,30 +1,40 @@
 import {getJwtToken} from 'utils/localStorage';
 
-export function createMergedProblems({
-  problemsToCreate = [],
+export function createMergedProblem({
+  description,
+  location,
+  photos,
+  rules,
+  evaluatorProblems,
+  teamId,
+  mergedProblemIds,
 }) {
-  return (dispatch) => {
-    return fetch('/mergedproblems/create', {
-      body: JSON.stringify({
-        problemsToCreate
-      }),
-      headers: {
-        'Authorization': getJwtToken(),
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
+  return fetch('/mergedproblems/create', {
+    body: JSON.stringify({
+      description,
+      location,
+      photos,
+      rules,
+      evaluatorProblems,
+      teamId,
+      mergedProblemIds,
+    }),
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
+    .then(response => {
+      return response.json();
     })
-      .then(response => {
-        return response.json();
-      })
-      .then(problem => {
-        console.log(problem);
-        return problem;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+    .then(problem => {
+      console.log(problem);
+      return problem;
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 export function editMergedProblem({

@@ -29,6 +29,7 @@ const problemRuleHooks = require('./hooks/problemrule');
 const evaluatorProblemHooks = require('./hooks/evaluatorproblem');
 const problemPhotoHooks = require('./hooks/problemphoto');
 const imageUploadHooks = require('./hooks/imageupload');
+const mergedProblemsHooks = require('./hooks/mergedproblems');
 
 const channels = require('./channels');
 const initUser = require('./utils/initUser');
@@ -79,6 +80,7 @@ app.configure(problemRuleHooks());
 app.configure(evaluatorProblemHooks());
 app.configure(problemPhotoHooks());
 app.configure(imageUploadHooks());
+app.configure(mergedProblemsHooks({ auth }));
 
 // This call must stay after hookHashPassword and before hookAuth.
 app.configure(initUser);

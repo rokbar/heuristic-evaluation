@@ -1,22 +1,11 @@
-const authHooks = require('feathers-authentication-hooks');
 const {hooks: knexHooks} = require('feathers-knex');
-const {disallow} = require('feathers-hooks-common');
 
 const {transaction} = knexHooks;
 
 // TODO - all these services are available to team leader, modify access logic
 module.exports = function ({auth}) {
   return function (app) {
-    app.service('mergedproblems').hooks({
-      before: {
-        all: [
-          disallow('external'),
-        ]
-      },
-    });
-
     // TODO - check if user belongs to team
-    // unlike create problem service,this service can create multiple merged problems
     app.service('mergedproblems/create').hooks({
       before: {
         all: [
@@ -25,26 +14,50 @@ module.exports = function ({auth}) {
         ],
         create: [
           (hook) => {
-            const { problemsToCreate } = hook.data;
-            const {description, location, problemId} = hook.data;
-            let mergedProblemId;
+            const {description, location, photos, rules, evaluatorProblems, teamId, mergedProblemIds} = hook.data;
+            let problemId;
 
             return new Promise((resolve, reject) => {
-              return hook.app.service('mergedproblems/createBatch').create(
-                {problemsToCreate},
+              return hook.app.service('problems').create(
+                {description, location, isCombined: true, teamId},
                 {transaction: hook.params.transaction},
               )
                 .then(result => {
                   hook.result = result;
-                  mergedProblemId = result.id;
+                  problemId = result.id;
+                  return hook.app.service('problemphotos/createBatch').create(
+                    { problemphotos: photos, problemId: problemId },
+                    { transaction: hook.params.transaction, headers: hook.params.headers },
+                  );
+                })
+                .then(result => {
+                  hook.result.photos = result;
                   return hook.app.service('problems').patch(
-                    problemId,
-                    {mergedProblemId: result.id, isCombined: true},
-                    {transaction: hook.params.transaction},
+                    null,
+                    { isRevised: true },
+                    {
+                      query: { id: { $in: [...mergedProblemIds] } },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
+                  return hook.app.service('problemrule/createBatch').create(
+                    { problemId: problemId, rules },
+                    { transaction: hook.params.transaction },
+                  );
+                })
+                .then(result => {
+                  hook.result.rules = rules;
+                  return hook.app.service('evaluatorproblem/createBatch').create(
+                    { problemId, evaluatorProblems },
+                    { transaction: hook.params.transaction },
                   )
                 })
                 .then(result => {
                   hook.result.problemId = problemId;
+                  hook.result.solution = result.solution;
+                  hook.result.evaluatorId = result.evaluatorId;
                   resolve(hook);
                 })
                 .catch(reject);
@@ -76,22 +89,6 @@ module.exports = function ({auth}) {
         all: [
           transaction.rollback()
         ],
-      }
-    });
-
-
-    app.service('mergedproblems/createBatch').hooks({
-      before: {
-        all: [
-          disallow('external'),
-        ],
-        create: [
-          (hook) => {
-            return new Promise((resolve, reject) => {
-              resolve(hook);
-            })
-          }
-        ]
       }
     });
 

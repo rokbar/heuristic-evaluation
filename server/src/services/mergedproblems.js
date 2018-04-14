@@ -3,45 +3,21 @@ const knex = require('feathers-knex');
 const db = require('../database');
 
 module.exports = function (app) {
-  app.use('/mergedProblems/createBatch', {
-    create(data, params) {
-      return new Promise((resolve, reject) => {
-        const { problemsToCreate } = data;
-        const rowsToInsert = problemsToCreate.map((item) => {
-          const { description, location } = item;
-          return { description, location };
-        });
-
-        db.transacting(params.transaction.trx)
-          .insert([...rowsToInsert]).into('mergedproblem')
-          .then(response => {
-            resolve(response);
-          })
-          .catch();
-      })
-    },
-
-    setup(app) {
-      this.app = app;
-    }
-  });
-
-  app.use('/mergedproblems/edit/:problemId', knex({
+  app.use('/mergedproblems/create', knex({
     Model: db,
-    name: 'evaluatorproblem',
+    name: 'problem',
     id: 'id',
   }));
 
-  app.use('/mergedproblems/remove/:problemId', knex({
+  app.use('/mergedproblems/edit/:mergedProblemId', knex({
     Model: db,
-    name: 'evaluatorproblem',
+    name: 'problem',
     id: 'id',
   }));
 
-  // TODO - adjust role access and limit REST options
-  app.use('/mergedproblems', knex({
+  app.use('/mergedproblems/remove/:mergedProblemId', knex({
     Model: db,
-    name: 'mergedproblem',
+    name: 'problem',
     id: 'id',
   }));
 };
