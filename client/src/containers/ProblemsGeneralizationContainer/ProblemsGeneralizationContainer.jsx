@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import filter from 'lodash';
+import {filter, map, reduce} from 'lodash';
 
 import {Segment} from 'semantic-ui-react';
 import SelectedEvaluatorProblems from './SelectedEvaluatorProblems';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import './ProblemsGeneralizationContainer.css';
+
+import { createMergedProblems, removeMergedProblem } from 'actions/mergedProblems';
 
 class ProblemsGeneralizationContainer extends Component {
   constructor(props) {
@@ -15,9 +17,19 @@ class ProblemsGeneralizationContainer extends Component {
   }
 
   addProblems = (problems) => {
-    this.setState(prevState => ({
-      generalizedProblems: [...prevState.generalizedProblems, ...problems],
-    }));
+    const mergedProblem = {
+      description: map(problems, 'description').join('\n'),
+      location: map(problems, 'location').join('\n'),
+      photos: reduce(problems, (mergedPhotos, item) => mergedPhotos.concat(item.photos), []),
+      mergedProblemIds: map(problems, 'id'),
+
+    };
+    // createMergedProblems({ mergedProblem })
+    //   .then(result => {
+        this.setState(prevState => ({
+          generalizedProblems: [...prevState.generalizedProblems, ...problems],
+        }));
+      // });
   };
 
   removeProblem = (problem) => {

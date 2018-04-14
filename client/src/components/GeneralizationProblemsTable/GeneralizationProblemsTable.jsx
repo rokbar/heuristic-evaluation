@@ -1,7 +1,10 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import AgGrid from 'ag-grid';
-import {AgGridReact, AgGridColumn} from "ag-grid-react";
+
+import {AgGridReact} from "ag-grid-react";
+import PhotoCellRenderer from './PhotoCellRenderer';
+import RulesCellRenderer from './RulesCellRenderer';
 
 import 'ag-grid/dist/styles/ag-grid.css';
 import 'ag-grid/dist/styles/ag-theme-balham.css';
@@ -22,12 +25,16 @@ class GeneralizationProblemsTable extends Component {
       columnDefs: [
         {headerName: 'Aprašymas', field: 'description', editable: true},
         {headerName: 'Lokacija', field: 'location', editable: true},
-        {headerName: 'Pažeistos euristikos', field: 'rules', editable: false},
-        {headerName: 'Nuotraukos', field: 'photos', editable: false},
+        {headerName: 'Pažeistos euristikos', field: 'rules', editable: false, cellRenderer: 'rulesCellRenderer'},
+        {headerName: 'Nuotraukos', field: 'photos', editable: false, cellRenderer: 'photoCellRenderer'},
         {headerName: 'Pasiūlymas taisymui', field: 'solution', editable: true},
       ],
       getRowNodeId: function(data) {
         return data.id;
+      },
+      frameworkComponents: {
+        photoCellRenderer: PhotoCellRenderer,
+        rulesCellRenderer: RulesCellRenderer,
       },
     }
   }
@@ -35,7 +42,6 @@ class GeneralizationProblemsTable extends Component {
   onGridReady(params) {
     this.gridApi = params.api;
     this.columnApi = params.columnApi;
-
     this.gridApi.sizeColumnsToFit();
   }
 
@@ -51,6 +57,7 @@ class GeneralizationProblemsTable extends Component {
           <AgGridReact
             columnDefs={this.state.columnDefs}
             rowData={problems}
+            frameworkComponents={this.state.frameworkComponents}
             getRowNodeId={this.state.getRowNodeId}
             onGridReady={this.onGridReady}
           />
