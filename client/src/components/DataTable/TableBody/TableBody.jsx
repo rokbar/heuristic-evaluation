@@ -6,7 +6,7 @@ export default function TableBody({ data, headers }) {
   const renderDataRow = (data, headers) => {
     return data.map((item, index) => {
       return (
-        <Table.Row key={index}>
+        <Table.Row key={index} style={{backgroundColor: item['completed'] ? 'darkseagreen' : ''}}>
           {map(headers, (value, key) => {
             return <Table.Cell key={key}>{item[key]}</Table.Cell>
           })}

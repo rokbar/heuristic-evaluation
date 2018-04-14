@@ -14,7 +14,8 @@ module.exports = function (app) {
         db.transacting(params.transaction.trx)
           .insert([...rowsToInsert]).into('evaluatorproblem')
           .then(response => {
-            resolve(response);
+            const mergedSolutions = evaluatorProblems.map((item) => item.solution);
+            resolve(mergedSolutions.join('\n'));
           })
           .catch();
       })

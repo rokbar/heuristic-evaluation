@@ -79,7 +79,15 @@ class SelectedEvaluatorProblems extends Component {
       return item && includes(checkedProblems, item.id);
     });
 
-    moveProblems(problemsToMove);
+    moveProblems(problemsToMove)
+      .then(problemIds => {
+        const updatedProblems = map(this.state.filteredProblems, (item) => includes(problemIds, item.id)
+          ? { ...item, isRevised: true }
+          : { ...item }
+        );
+        this.setState({ filteredProblems: updatedProblems });
+      })
+      .catch();
   };
 
   filterProblemsByUser = (e, data) => {
@@ -96,7 +104,7 @@ class SelectedEvaluatorProblems extends Component {
       });
     }
 
-    this.setState({filteredProblems});
+    this.setState({filteredProblems, checkedProblems: []});
   };
 
   getTableHeaders() {
@@ -131,7 +139,7 @@ class SelectedEvaluatorProblems extends Component {
 
   getTableData() {
     return this.state.filteredProblems.map(item => {
-      const {id, description, location, photos, solution, rules} = item;
+      const {id, description, location, photos, solution, rules, isRevised} = item;
       return {
         checkbox: this.renderSelectProblemCheckbox(id),
         description,
@@ -139,6 +147,7 @@ class SelectedEvaluatorProblems extends Component {
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
         solution,
+        completed: isRevised
       };
     })
   }
@@ -146,6 +155,7 @@ class SelectedEvaluatorProblems extends Component {
   renderSelectProblemCheckbox(problemId) {
     return <Checkbox
       onChange={(e, data) => this.handleCheckboxChange(data, problemId)}
+      checked={includes(this.state.checkedProblems, problemId)}
     />;
   };
 

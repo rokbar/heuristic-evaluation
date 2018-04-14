@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {filter, map, reduce, uniq} from 'lodash';
 
 import {Segment} from 'semantic-ui-react';
@@ -6,7 +7,7 @@ import SelectedEvaluatorProblems from './SelectedEvaluatorProblems';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import './ProblemsGeneralizationContainer.css';
 
-import { createMergedProblem, removeMergedProblem } from 'actions/mergedProblems';
+import { createMergedProblem, getGeneralizedProblems, removeMergedProblem } from 'actions/mergedProblems';
 
 class ProblemsGeneralizationContainer extends Component {
   constructor(props) {
@@ -16,32 +17,50 @@ class ProblemsGeneralizationContainer extends Component {
     };
   }
 
+  componentDidMount() {
+    getGeneralizedProblems({ teamId: this.props.teamId })
+      .then(response => {
+        this.setState({
+          generalizedProblems: [...response],
+        });
+      })
+      .catch();
+  }
+
   addProblems = (problems) => {
-    const description = map(problems, 'description').join('\n');
-    const location =  map(problems, 'location').join('\n');
-    const photos = reduce(problems, (mergedPhotos, item) => {
-      const paths = map(item.photos, (item) => {
-        let pathname = new URL(item).pathname;
-        while (pathname.charAt(0) === '/') pathname = pathname.substr(1);
-        return pathname;
-      });
-      return mergedPhotos.concat(paths);
-    }, []);
-    const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []))
-    const evaluatorProblems = map(problems, (item) => ({ evaluatorId: parseInt(item.users, 10), solution: item.solution}));
-    const mergedProblemIds = map(problems, 'id');
+    return new Promise((resolve, reject) => {
+      const description = map(problems, 'description').join('\n');
+      const location = map(problems, 'location').join('\n');
+      const photos = reduce(problems, (mergedPhotos, item) => {
+        const paths = map(item.photos, (item) => {
+          let pathname = new URL(item).pathname;
+          while (pathname.charAt(0) === '/') pathname = pathname.substr(1);
+          return pathname;
+        });
+        return mergedPhotos.concat(paths);
+      }, []);
+      const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []))
+      const evaluatorProblems = map(problems, (item) => ({
+        evaluatorId: parseInt(item.users, 10),
+        solution: item.solution
+      }));
+      const mergedProblemIds = map(problems, 'id');
 
-    const mergedProblem = { description, location, photos, rules, evaluatorProblems };
+      const mergedProblem = {description, location, photos, rules, evaluatorProblems};
 
-    createMergedProblem({ ...mergedProblem, teamId: this.props.teamId, mergedProblemIds })
-      .then(result => {
-        return result && result.description && this.setState(prevState => ({
-          generalizedProblems: [
-            ...prevState.generalizedProblems,
-            result,
-          ],
-        }));
-      });
+      this.props.createMergedProblem({...mergedProblem, teamId: this.props.teamId, mergedProblemIds})
+        .then(result => {
+          result && result.description && this.setState(prevState => ({
+            generalizedProblems: [
+              ...prevState.generalizedProblems,
+              result,
+            ],
+          }));
+          // used to update state in SelectedEvaluatorProblems component
+          resolve(mergedProblemIds);
+        })
+        .catch(reject);
+    });
   };
 
   removeProblem = (problem) => {
@@ -77,4 +96,4 @@ class ProblemsGeneralizationContainer extends Component {
   }
 }
 
-export default ProblemsGeneralizationContainer;
+export default connect(null, {createMergedProblem})(ProblemsGeneralizationContainer);

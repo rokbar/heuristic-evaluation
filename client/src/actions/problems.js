@@ -35,6 +35,7 @@ export function getEvaluatorProblems({ teamId }) {
 }
 
 // only available for team leader
+// TODO - rethink method name
 export function getSelectedEvaluatorProblems({ teamId }) {
   return (dispatch) => {
     return fetch(`/teamproblems/${teamId}`, {
