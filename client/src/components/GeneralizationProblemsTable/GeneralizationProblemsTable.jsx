@@ -1,20 +1,34 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import AgGrid from 'ag-grid';
 import {AgGridReact, AgGridColumn} from "ag-grid-react";
 
 import 'ag-grid/dist/styles/ag-grid.css';
 import 'ag-grid/dist/styles/ag-theme-balham.css';
 
-export default class extends Component {
+const propTypes = {
+  problems: PropTypes.array,
+};
+
+const defaultProps = {
+  problems: [],
+};
+
+class GeneralizationProblemsTable extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      rowData: [
-        {make: "Toyota", model: "Celica", price: 35000},
-        {make: "Ford", model: "Mondeo", price: 32000},
-        {make: "Porsche", model: "Boxter", price: 72000}
-      ]
+      columnDefs: [
+        {headerName: 'Aprašymas', field: 'description', editable: true},
+        {headerName: 'Lokacija', field: 'location', editable: true},
+        {headerName: 'Pažeistos euristikos', field: 'rules', editable: false},
+        {headerName: 'Nuotraukos', field: 'photos', editable: false},
+        {headerName: 'Pasiūlymas taisymui', field: 'solution', editable: true},
+      ],
+      getRowNodeId: function(data) {
+        return data.id;
+      },
     }
   }
 
@@ -26,28 +40,27 @@ export default class extends Component {
   }
 
   render() {
+    const { problems } = this.props;
     let containerStyle = {
-      height: 131
+      height: 500
     };
 
     return (
-
       <div>
         <div style={containerStyle} className="ag-theme-balham">
           <AgGridReact
-            // properties
-            rowData={this.state.rowData}
-
-            // events
-            onGridReady={this.onGridReady}>
-
-            {/*column definitions */}
-            <AgGridColumn field="make"></AgGridColumn>
-            <AgGridColumn field="model"></AgGridColumn>
-            <AgGridColumn field="price"></AgGridColumn>
-          </AgGridReact>
+            columnDefs={this.state.columnDefs}
+            rowData={problems}
+            getRowNodeId={this.state.getRowNodeId}
+            onGridReady={this.onGridReady}
+          />
         </div>
       </div>
     )
   }
-};
+}
+
+GeneralizationProblemsTable.propTypes = propTypes;
+GeneralizationProblemsTable.defaultProps = defaultProps;
+
+export default GeneralizationProblemsTable;

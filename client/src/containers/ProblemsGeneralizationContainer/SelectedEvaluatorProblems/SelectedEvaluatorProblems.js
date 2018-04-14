@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { map, filter, find, toNumber, isArray, includes } from 'lodash';
+import {connect} from 'react-redux';
+import {map, filter, find, toNumber, isArray, includes} from 'lodash';
 
-import { Modal, Image, Icon, Label, Dropdown } from 'semantic-ui-react';
+import {Modal, Image, Icon, Label, Dropdown, Checkbox} from 'semantic-ui-react';
 import DataTable from 'components/DataTable';
+import MoveToGeneralizedProblemsButton from './MoveToGeneralizedProblemsButton';
 
-import { getSelectedEvaluatorProblems } from 'actions/problems';
-import { getHeuristicsRules } from 'actions/heuristics';
-import { startGeneralization } from 'actions/teams';
-import { getUsersByCompanyId } from 'actions/users';
+import {getSelectedEvaluatorProblems} from 'actions/problems';
+import {getHeuristicsRules} from 'actions/heuristics';
+import {startGeneralization} from 'actions/teams';
+import {getUsersByCompanyId} from 'actions/users';
 
 const propTypes = {
   problems: PropTypes.array,
@@ -23,7 +24,6 @@ const defaultProps = {
   heuristic: [],
 };
 
-
 class SelectedEvaluatorProblems extends Component {
   constructor(props) {
     super(props);
@@ -31,11 +31,12 @@ class SelectedEvaluatorProblems extends Component {
       userOptions: [],
       problemIds: [],
       filteredProblems: [],
+      checkedProblems: [],
     };
   }
 
   componentDidMount() {
-    const { heuristicId, teamId } = this.props;
+    const {heuristicId, teamId} = this.props;
     let userOptions = [];
 
     this.props.getHeuristicsRules({heuristicId});
@@ -56,6 +57,31 @@ class SelectedEvaluatorProblems extends Component {
       .catch();
   }
 
+  handleCheckboxChange = (data, problemId) => {
+    const {checked} = data;
+
+    if (checked && problemId) {
+      this.setState(prevState => ({
+        checkedProblems: [...prevState.checkedProblems, problemId],
+      }));
+    } else if (problemId) {
+      const checkedProblems = filter(this.state.checkedProblems, (item) => {
+        return item !== problemId;
+      });
+      this.setState({checkedProblems: checkedProblems});
+    }
+  };
+
+  handleMoveProblemsClick = () => {
+    const { moveProblems } = this.props;
+    const { filteredProblems, checkedProblems } = this.state;
+    const problemsToMove = filter(filteredProblems, (item) => {
+      return item && includes(checkedProblems, item.id);
+    });
+
+    moveProblems(problemsToMove);
+  };
+
   filterProblemsByUser = (e, data) => {
     const {value} = data;
     const {problems} = this.props;
@@ -70,21 +96,22 @@ class SelectedEvaluatorProblems extends Component {
       });
     }
 
-    this.setState({ filteredProblems });
+    this.setState({filteredProblems});
   };
 
   getTableHeaders() {
     return {
+      checkbox: null,
       description: 'Aprašymas',
       location: 'Lokacija',
-      rules: 'Pažeistia euristika',
+      rules: 'Pažeistos euristikos',
       photo: 'Nuotrauka',
       solution: 'Pasiūlymas taisymui',
     }
   }
 
   getRulesDescriptionsList(problemRules) {
-    const { rules } = this.props.heuristic;
+    const {rules} = this.props.heuristic;
     let mappedRules;
 
     if (isArray(problemRules)) {
@@ -104,8 +131,9 @@ class SelectedEvaluatorProblems extends Component {
 
   getTableData() {
     return this.state.filteredProblems.map(item => {
-      const { id, description, location, photos, solution, rules } = item;
+      const {id, description, location, photos, solution, rules} = item;
       return {
+        checkbox: this.renderSelectProblemCheckbox(id),
         description,
         location,
         rules: this.getRulesDescriptionsList(rules),
@@ -115,38 +143,48 @@ class SelectedEvaluatorProblems extends Component {
     })
   }
 
+  renderSelectProblemCheckbox(problemId) {
+    return <Checkbox
+      onChange={(e, data) => this.handleCheckboxChange(data, problemId)}
+    />;
+  };
+
   renderPhotoCell(photos) {
     return photos
       ? <Image.Group size="mini">
-        {map(photos, (item, key) => <Modal key={key} trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
-          <Image src={item} />
+        {map(photos, (item, key) => <Modal key={key} trigger={<Image style={{cursor: 'pointer'}} src={item}/>}>
+          <Image src={item}/>
         </Modal>)}
       </Image.Group>
       : <Image size="small">
-        <Label content="Nuotrauka nerasta." icon="warning" />
+        <Label content="Nuotrauka nerasta." icon="warning"/>
       </Image>
   }
 
   renderTableActions() {
-    const evaluatorOptions = [ { value: 'all', text: 'VISŲ narių' }, ...this.state.userOptions ];
-    return <span>
-      <Icon name="user" size="large" color="teal" />
-      <Dropdown
-        inline
-        options={evaluatorOptions}
-        defaultValue={evaluatorOptions[0].value}
-        onChange={this.filterProblemsByUser}
-      />
-      problemos.
-    </span>;
-  }
-
-  renderPageActions() {
+    const evaluatorOptions = [{value: 'all', text: 'VISŲ narių'}, ...this.state.userOptions];
+    return (
+      <div>
+        <span>
+          <Icon name="user" size="large" color="teal"/>
+          <Dropdown
+            inline
+            options={evaluatorOptions}
+            defaultValue={evaluatorOptions[0].value}
+            onChange={this.filterProblemsByUser}
+          />
+          problemos.
+        </span>
+        <MoveToGeneralizedProblemsButton
+          checkedProblems={this.state.checkedProblems}
+          handleMoveProblemsClick={this.handleMoveProblemsClick}
+        />
+      </div>
+    );
   }
 
   render() {
     return [
-      this.renderPageActions(),
       <DataTable
         actions={this.renderTableActions()}
         headers={this.getTableHeaders()}

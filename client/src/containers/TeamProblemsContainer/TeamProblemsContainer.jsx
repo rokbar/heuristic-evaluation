@@ -80,7 +80,7 @@ class TeamProblemsContainer extends Component {
     return {
       description: 'Aprašymas',
       location: 'Lokacija',
-      rules: 'Pažeistia euristika',
+      rules: 'Pažeistos euristikos',
       photo: 'Nuotrauka',
       solution: 'Pasiūlymas taisymui',
     }
