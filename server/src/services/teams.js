@@ -53,4 +53,26 @@ module.exports = function (app) {
       this.app = app;
     }
   });
+
+  app.use('/teams/:teamId/finishGeneralization', {
+    create(data, params) {
+      const teamId = params.route.teamId;
+      return new Promise((resolve, reject) => {
+        app.service('teams').patch(
+          teamId,
+          { state: teamState.ratingProblems },
+        )
+          .then(response => {
+            return resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
 };

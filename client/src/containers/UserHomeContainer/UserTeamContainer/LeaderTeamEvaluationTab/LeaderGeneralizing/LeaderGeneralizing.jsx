@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 
+
 import TeamProblemsContainer from 'containers/TeamProblemsContainer';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import { Dropdown, Icon } from 'semantic-ui-react';
+import SubmitGeneralizedProblemsButton from './SubmitGeneralizedProblemsButton';
 
 import { getGeneralizedProblems } from 'actions/mergedProblems';
+import { finishGeneralization } from 'actions/teams';
 
 import './LeaderGeneralizing.css'
 
@@ -51,13 +54,27 @@ class LeaderGeneralizing extends Component {
 
   renderProblemsList() {
     const { selectedList, generalizedProblems } = this.state;
+    const { heuristicId, teamId, changeTeamState, hasGeneralizationStarted } = this.props;
     if (selectedList === 'evaluatorsProblems') {
-      return <TeamProblemsContainer {...this.props} />;
+      return <TeamProblemsContainer
+        heuristicId={heuristicId}
+        teamId={teamId}
+        hasGeneralizationStarted={hasGeneralizationStarted}
+      />;
     }
     if (selectedList === 'generalizedProblems') {
-      return <GeneralizationProblemsTable
-        problems={generalizedProblems}
-      />;
+      return <div
+        className="GeneralizationProblemsTable"
+      >
+        <SubmitGeneralizedProblemsButton
+          changeTeamState={changeTeamState}
+          finishGeneralization={finishGeneralization}
+          teamId={teamId}
+        />
+        <GeneralizationProblemsTable
+          problems={generalizedProblems}
+        />
+      </div>;
     }
   }
 

@@ -184,3 +184,22 @@ export function startGeneralization({ teamId }) {
       });
   }
 }
+
+export function finishGeneralization({ teamId }) {
+  return fetch(`/teams/${teamId}/finishGeneralization`, {
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(teams => {
+      console.log(teams);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}

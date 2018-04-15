@@ -60,8 +60,13 @@ class LeaderTeamEvaluationTab extends Component {
       return <LeaderGeneralizing
         teamId={teamId}
         heuristicId={heuristicId}
+        changeTeamState={this.props.changeTeamState}
         hasGeneralizationStarted
       />
+    }
+
+    if (state === teamState.ratingProblems) {
+      return <div>Reitingavimas</div>
     }
   }
 
