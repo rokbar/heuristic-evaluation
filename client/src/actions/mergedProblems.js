@@ -45,7 +45,7 @@ export function createMergedProblem({
   }
 }
 
-// only available for team leader
+// team leader can access all the time, evaluator - only when rating has started
 export function getGeneralizedProblems({ teamId }) {
   return fetch(`/teammergedproblems/${teamId}`, {
     headers: {

@@ -21,6 +21,7 @@ class EvaluatorProblemsTableTab extends Component {
       cancelUserProblems,
       teamId
     } = this.props;
+    console.log(this.props);
 
     switch(state) {
       case 1:
@@ -47,6 +48,8 @@ class EvaluatorProblemsTableTab extends Component {
           role={role}
           state={state}
           evaluatorTeam={evaluatorTeam}
+          teamId={teamId}
+          heuristicId={heuristicId}
         />;
       case 5:
         return <TeamEvaluationFinished
