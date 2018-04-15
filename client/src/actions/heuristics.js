@@ -1,4 +1,4 @@
-import { SET_HEURISTICS } from "./types";
+import { SET_HEURISTICS, SET_SHARED_HEURISTICS } from "./types";
 import { getJwtToken} from "utils/localStorage";
 
 export function getSharedHeuristics() {
@@ -14,7 +14,7 @@ export function getSharedHeuristics() {
       })
       .then(heuristics => {
         dispatch({
-          type: SET_HEURISTICS,
+          type: SET_SHARED_HEURISTICS,
           payload: { heuristics },
         });
         console.log(heuristics);

@@ -86,7 +86,7 @@ LeaderTeamEvaluationTab.propTypes = propTypes;
 LeaderTeamEvaluationTab.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
-  return { heuristics: state.heuristics };
+  return { heuristics: state.heuristics.shared };
 }
 
 export default connect(

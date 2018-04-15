@@ -181,7 +181,7 @@ TeamProblemsContainer.defaultProps = defaultProps;
 function mapStateToProps(state) {
   return {
     problems: state.evaluatorProblems,
-    heuristic: state.heuristics[0],
+    heuristic: state.heuristics.team[0],
     users: state.users.companyUsers,
   }
 }
