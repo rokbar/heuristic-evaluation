@@ -39,7 +39,7 @@ class ProblemsGeneralizationContainer extends Component {
         });
         return mergedPhotos.concat(paths);
       }, []);
-      const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []))
+      const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []));
       const evaluatorProblems = map(problems, (item) => ({
         evaluatorId: parseInt(item.users, 10),
         solution: item.solution

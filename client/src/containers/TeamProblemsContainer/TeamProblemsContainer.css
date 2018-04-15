@@ -1,0 +1,9 @@
+.TeamProblemsContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.TeamProblemsContaner__page-actions {
+  align-self: flex-end;
+}

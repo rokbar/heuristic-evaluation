@@ -1,6 +1,15 @@
 import React, {Component} from 'react';
+import PropTypes from 'react';
 import { connect } from 'react-redux';
 import {find, map, isArray, toNumber} from 'lodash';
+
+const propTypes = {
+  heuristic: PropTypes.object,
+};
+
+const defaultProps = {
+  heuristic: { rules: [] },
+};
 
 // TODO - duplicate component, refactor
 class RulesCellRenderer extends Component {
@@ -28,6 +37,9 @@ class RulesCellRenderer extends Component {
     return mappedRules && mappedRules.join(' ');
   }
 }
+
+RulesCellRenderer.propTypes = propTypes;
+RulesCellRenderer.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
   return {

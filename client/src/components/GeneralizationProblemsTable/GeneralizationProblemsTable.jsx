@@ -48,20 +48,19 @@ class GeneralizationProblemsTable extends Component {
   render() {
     const { problems } = this.props;
     let containerStyle = {
-      height: 500
+      height: 500,
+      width: '100%',
     };
 
     return (
-      <div>
-        <div style={containerStyle} className="ag-theme-balham">
-          <AgGridReact
-            columnDefs={this.state.columnDefs}
-            rowData={problems}
-            frameworkComponents={this.state.frameworkComponents}
-            getRowNodeId={this.state.getRowNodeId}
-            onGridReady={this.onGridReady}
-          />
-        </div>
+      <div style={containerStyle} className="ag-theme-balham">
+        <AgGridReact
+          columnDefs={this.state.columnDefs}
+          rowData={problems}
+          frameworkComponents={this.state.frameworkComponents}
+          getRowNodeId={this.state.getRowNodeId}
+          onGridReady={this.onGridReady}
+        />
       </div>
     )
   }

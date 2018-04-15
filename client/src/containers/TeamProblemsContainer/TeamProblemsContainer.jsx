@@ -14,6 +14,8 @@ import { getHeuristicsRules } from 'actions/heuristics';
 import { startGeneralization } from 'actions/teams';
 import { getUsersByCompanyId } from 'actions/users';
 
+import './TeamProblemsContainer.css';
+
 const propTypes = {
   problems: PropTypes.array,
   heuristicId: PropTypes.number,
@@ -107,13 +109,14 @@ class TeamProblemsContainer extends Component {
 
   getTableData() {
     return this.state.filteredProblems.map(item => {
-      const { id, description, location, photos, solution, rules } = item;
+      const { id, description, location, photos, solution, rules, isRevised } = item;
       return {
         description,
         location,
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
         solution,
+        completed: isRevised,
       };
     })
   }
@@ -159,14 +162,16 @@ class TeamProblemsContainer extends Component {
   }
 
   render() {
-    return [
-      this.renderPageActions(),
+    return <div className="TeamProblemsContainer">
+      <div className="TeamProblemsContaner__page-actions">
+        {this.renderPageActions()}
+      </div>
       <DataTable
         actions={this.renderTableActions()}
         headers={this.getTableHeaders()}
         data={this.getTableData()}
       />
-    ];
+    </div>
   }
 }
 
