@@ -10,6 +10,7 @@ const evaluatorProblemService = require('./evaluatorproblem');
 const problemPhotoService = require('./problemphoto');
 const imageUploadService = require('./imageupload');
 const mergedProblemsService = require('./mergedproblems');
+const ratingsService = require('./ratings');
 
 module.exports = function (app) {
   usersService(app);
@@ -24,4 +25,5 @@ module.exports = function (app) {
   problemPhotoService(app);
   imageUploadService(app);
   mergedProblemsService(app);
+  ratingsService(app);
 };

@@ -3,7 +3,8 @@ import { map, toNumber, isArray, find } from 'lodash';
 import PropTypes from 'prop-types';
 
 import DataTable from 'components/DataTable';
-import { Image, Label, Modal } from 'semantic-ui-react';
+import { Image, Icon, Label, Modal, Rating } from 'semantic-ui-react';
+import SaveRatingsButton from './SaveRatingsButton';
 
 const propTypes = {
   problems: PropTypes.array,
@@ -24,6 +25,10 @@ class ProblemsRatingTable extends Component {
 
   componentDidMount() {
   }
+
+  handleClickSave = () => {
+
+  };
 
   getTableHeaders() {
     return {
@@ -63,7 +68,7 @@ class ProblemsRatingTable extends Component {
         location,
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
-        rating: '',
+        rating: this.renderRatingCell(),
         solution,
       };
     })
@@ -81,8 +86,19 @@ class ProblemsRatingTable extends Component {
       </Image>
   }
 
-  renderTableActions() {
+  onMouseEnter = (e, data) => {
+    console.log(e);
+    console.log(data);
+  };
 
+  renderRatingCell() {
+    return <Rating maxRating={4} onRate={this.onMouseEnter} />
+  }
+
+  renderTableActions() {
+    return <SaveRatingsButton
+      handleClickSave={this.handleClickSave}
+    />;
   }
 
   render() {
