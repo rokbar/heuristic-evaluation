@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { map, toNumber, isArray, find } from 'lodash';
+import { map, reduce, toNumber, isArray, find, uniqBy } from 'lodash';
 import PropTypes from 'prop-types';
 
 import DataTable from 'components/DataTable';
@@ -30,17 +30,55 @@ class ProblemsRatingTable extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserRatingsByTeam({ teamId })
+    const { teamId } = this.props;
+
+    getUserRatingsByTeam({ teamId })
       .then(response => {
-        const ratings = [];
-        this.setState({ ratings });
+        this.setState({ ratings: response && response.length ? response : [] });
       })
       .catch();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { problems } = nextProps;
+
+    if (problems && problems.length) {
+      const { ratings } = this.state;
+      const updatedRatings = this.getInitialRatingsState({ problems, ratings });
+
+      this.setState(prevState => ({
+        updatedRatings: uniqBy(
+          [...updatedRatings, ...prevState.updatedRatings], // prevState.updatedRatings must be after
+          'problemId',
+        ),
+      }));
+    }
+  }
+
+  handleRatingClick = (e, data) => {
+    const { rating, problemId } = data;
+    const updatedRatings = map(this.state.updatedRatings, (item) => (
+      item.problemId === problemId ? { ...item, value: rating } : { ...item }
+    ));
+
+    this.setState({ updatedRatings });
+  };
+
   handleClickSave = () => {
 
   };
+
+  getInitialRatingsState({ problems, ratings }) {
+    // track which problems weren't rated yet
+    // if problems are left with 0 rating, ratings will be inserted into DB either way (with 0 value)
+    return reduce(problems, (updatedRatings, item) => {
+      const rating = find(ratings, (o) => o.problemId === item.id);
+
+      if (!rating) updatedRatings.push({ problemId: item.id, value: 0 });
+
+      return updatedRatings;
+    }, []);
+  }
 
   getTableHeaders() {
     return {
@@ -74,9 +112,11 @@ class ProblemsRatingTable extends Component {
 
   getTableData() {
     const { ratings } = this.state;
+
     return this.props.problems.map(item => {
       const {id, description, location, photos, solution, rules} = item;
       const rating = find(ratings, (o) => o.problemId === id);
+
       return {
         description,
         location,
@@ -85,7 +125,7 @@ class ProblemsRatingTable extends Component {
         rating: this.renderRatingCell({ problemId: id, value: rating ? rating.value : 0 }),
         solution,
       };
-    })
+    });
   }
 
   renderPhotoCell(photos) {
@@ -100,21 +140,16 @@ class ProblemsRatingTable extends Component {
       </Image>
   }
 
-  onMouseEnter = (e, data) => {
-    const { problemId } = data;
-    console.log(e);
-    console.log(data);
-  };
-
   renderRatingCell({ problemId = null, value = 0 }) {
     const { isRatingStarted } = this.props;
 
     return <Rating
       maxRating={4}
       disabled={isRatingStarted}
-      rating={value}
+      clearable
+      defaultRating={value}
       problemId={problemId}
-      onRate={this.onMouseEnter}
+      onRate={this.handleRatingClick}
     />
   }
 

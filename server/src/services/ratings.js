@@ -18,7 +18,7 @@ module.exports = function (app) {
         .leftJoin('problem', 'problem.id', '=', 'rating.problemId')
         .where('problem.teamId', teamId)
         .andWhere('rating.evaluatorId', userId)
-        .andWhere('problem.isCombined', 1)
+        .andWhere('problem.isCombined', true)
         .then(response => {
           return response;
         });
