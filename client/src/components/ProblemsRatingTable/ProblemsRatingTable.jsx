@@ -3,8 +3,10 @@ import { map, toNumber, isArray, find } from 'lodash';
 import PropTypes from 'prop-types';
 
 import DataTable from 'components/DataTable';
-import { Image, Icon, Label, Modal, Rating } from 'semantic-ui-react';
+import { Image, Label, Modal, Rating } from 'semantic-ui-react';
 import SaveRatingsButton from './SaveRatingsButton';
+
+import { getUserRatingsByTeam } from 'actions/ratings';
 
 const propTypes = {
   problems: PropTypes.array,
@@ -21,9 +23,19 @@ const defaultProps = {
 class ProblemsRatingTable extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      ratings: [],
+      updatedRatings: [],
+    }
   }
 
   componentDidMount() {
+    this.props.getUserRatingsByTeam({ teamId })
+      .then(response => {
+        const ratings = [];
+        this.setState({ ratings });
+      })
+      .catch();
   }
 
   handleClickSave = () => {
@@ -61,14 +73,16 @@ class ProblemsRatingTable extends Component {
   }
 
   getTableData() {
+    const { ratings } = this.state;
     return this.props.problems.map(item => {
       const {id, description, location, photos, solution, rules} = item;
+      const rating = find(ratings, (o) => o.problemId === id);
       return {
         description,
         location,
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
-        rating: this.renderRatingCell(),
+        rating: this.renderRatingCell({ problemId: id, value: rating ? rating.value : 0 }),
         solution,
       };
     })
@@ -87,16 +101,27 @@ class ProblemsRatingTable extends Component {
   }
 
   onMouseEnter = (e, data) => {
+    const { problemId } = data;
     console.log(e);
     console.log(data);
   };
 
-  renderRatingCell() {
-    return <Rating maxRating={4} onRate={this.onMouseEnter} />
+  renderRatingCell({ problemId = null, value = 0 }) {
+    const { isRatingStarted } = this.props;
+
+    return <Rating
+      maxRating={4}
+      disabled={isRatingStarted}
+      rating={value}
+      problemId={problemId}
+      onRate={this.onMouseEnter}
+    />
   }
 
   renderTableActions() {
-    return <SaveRatingsButton
+    const { isRatingStarted } = this.props;
+
+    return isRatingStarted && <SaveRatingsButton
       handleClickSave={this.handleClickSave}
     />;
   }

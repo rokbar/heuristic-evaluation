@@ -44,18 +44,20 @@ class TeamRatingProblems extends Component {
   }
 
   render() {
-    const { evaluatorTeam: { state }, heuristic: { rules } } = this.props;
+    const { evaluatorTeam: { state }, heuristic: { rules }, teamId } = this.props;
     const { problems } = this.state;
 
     switch (state) {
       case evaluatorTeamState.submittedProblems:
         return <ProblemsRatingTable
+          teamId={teamId}
           problems={problems}
           isRatingStarted={false}
           rules={rules}
         />;
       case evaluatorTeamState.ratingProblems:
         return <ProblemsRatingTable
+          teamId={teamId}
           problems={problems}
           isRatingStarted={true}
           rules={rules}
