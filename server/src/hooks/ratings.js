@@ -22,6 +22,22 @@ module.exports = function ({ auth }) {
       }
     });
 
+    // TODO - check if user belong to team and if teamstatus is rating
+    app.service('ratings/createOrUpdateBatch').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+        ],
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              resolve(hook);
+            })
+          }
+        ]
+      }
+    });
+
     app.service('ratings').hooks({
       before: {
         all: [

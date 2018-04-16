@@ -29,6 +29,34 @@ module.exports = function (app) {
     }
   });
 
+  app.use('/ratings/createOrUpdateBatch', {
+    create(data, params) {
+      const { ratings } = data;
+      const evaluatorId = params.user.id;
+
+      let questionMarks = "";
+      let values = [];
+      const rows = ratings.map((item) => ({ ...item, evaluatorId }));
+
+      rows.forEach(function(value, index){
+        questionMarks += "(";
+        Object.keys(value).forEach(function(x){
+          questionMarks += "?, ";
+          values.push(value[x]);
+        });
+        questionMarks = questionMarks.substr(0, questionMarks.length - 2);
+        questionMarks += "), ";
+      });
+      questionMarks = questionMarks.substr(0, questionMarks.length - 2); //cut off last unneeded comma and space
+
+      return db.raw("INSERT INTO tablename (`value`, `evaluatorId`, `problemId`) VALUES " + questionMarks + " ON DUPLICATE KEY UPDATE value = VALUES(`value`)", values);
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
+
   app.use('/ratings', knex({
     Model: db,
     name: 'rating',

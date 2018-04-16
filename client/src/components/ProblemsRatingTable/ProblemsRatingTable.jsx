@@ -6,7 +6,7 @@ import DataTable from 'components/DataTable';
 import { Image, Label, Modal, Rating } from 'semantic-ui-react';
 import SaveRatingsButton from './SaveRatingsButton';
 
-import { getUserRatingsByTeam } from 'actions/ratings';
+import { getUserRatingsByTeam, createOrUpdateRatings } from 'actions/ratings';
 
 const propTypes = {
   problems: PropTypes.array,
@@ -65,7 +65,7 @@ class ProblemsRatingTable extends Component {
   };
 
   handleClickSave = () => {
-
+    // createOrUpdateRatings
   };
 
   getInitialRatingsState({ problems, ratings }) {
