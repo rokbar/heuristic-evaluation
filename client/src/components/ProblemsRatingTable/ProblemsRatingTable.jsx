@@ -57,15 +57,23 @@ class ProblemsRatingTable extends Component {
 
   handleRatingClick = (e, data) => {
     const { rating, problemId } = data;
-    const updatedRatings = map(this.state.updatedRatings, (item) => (
-      item.problemId === problemId ? { ...item, value: rating } : { ...item }
-    ));
 
-    this.setState({ updatedRatings });
+    this.setState(prevState => ({
+      updatedRatings: uniqBy(
+        [{ problemId, value: rating }, ...prevState.updatedRatings],
+        'problemId',
+      )
+    }));
   };
 
   handleClickSave = () => {
-    // createOrUpdateRatings
+    createOrUpdateRatings({ ratings: this.state.updatedRatings })
+      .then(response => {
+        if (response && response.length) {
+          this.setState({ updatedRatings: [] });
+        }
+      })
+      .catch()
   };
 
   getInitialRatingsState({ problems, ratings }) {
@@ -145,7 +153,7 @@ class ProblemsRatingTable extends Component {
 
     return <Rating
       maxRating={4}
-      disabled={isRatingStarted}
+      disabled={!isRatingStarted}
       clearable
       defaultRating={value}
       problemId={problemId}
