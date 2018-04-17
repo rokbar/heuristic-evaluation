@@ -19,6 +19,7 @@ export function getUserRatingsByTeam({ teamId }) {
     })
 }
 
+// TODO - check if ratings array is not empty
 export function createOrUpdateRatings({ ratings }) {
   return fetch(`/ratings/createOrUpdateBatch`, {
     body: JSON.stringify({
@@ -26,6 +27,7 @@ export function createOrUpdateRatings({ ratings }) {
     }),
     headers: {
       'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
     },
     method: 'POST',
   })

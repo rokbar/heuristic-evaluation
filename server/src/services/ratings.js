@@ -36,7 +36,8 @@ module.exports = function (app) {
 
       let questionMarks = "";
       let values = [];
-      const rows = ratings.map((item) => ({ ...item, evaluatorId }));
+      const rows = ratings.map((item) => ({ id: null, ...item, evaluatorId }));
+      console.log(rows);
 
       rows.forEach(function(value, index){
         questionMarks += "(";
@@ -49,7 +50,8 @@ module.exports = function (app) {
       });
       questionMarks = questionMarks.substr(0, questionMarks.length - 2); //cut off last unneeded comma and space
 
-      return db.raw("INSERT INTO tablename (`value`, `evaluatorId`, `problemId`) VALUES " + questionMarks + " ON DUPLICATE KEY UPDATE value = VALUES(`value`)", values);
+      // notice object's properties sequence in rows array
+      return db.raw("INSERT INTO rating (`id`, `problemId`, `value`, `evaluatorId`) VALUES " + questionMarks + " ON DUPLICATE KEY UPDATE value = VALUES(`value`)", values);
     },
 
     setup(app) {

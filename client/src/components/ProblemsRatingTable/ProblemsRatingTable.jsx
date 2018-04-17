@@ -4,20 +4,26 @@ import PropTypes from 'prop-types';
 
 import DataTable from 'components/DataTable';
 import { Image, Label, Modal, Rating } from 'semantic-ui-react';
+import StartRatingButton from './StartRatingButton';
 import SaveRatingsButton from './SaveRatingsButton';
+import FinishRatingButton from './FinishRatingButton';
 
 import { getUserRatingsByTeam, createOrUpdateRatings } from 'actions/ratings';
 
 const propTypes = {
+  startRatingProblems: PropTypes.func,
+  finishRatingProblems: PropTypes.func,
   problems: PropTypes.array,
   rules: PropTypes.array,
-  isRatingStarted: PropTypes.bool,
+  hasRatingStarted: PropTypes.bool,
 };
 
 const defaultProps = {
+  onStartRating: null,
+  onFinishRating: null,
   problems: [],
   rules: [],
-  isRatingStarted: false,
+  hasRatingStarted: false,
 };
 
 class ProblemsRatingTable extends Component {
@@ -58,9 +64,19 @@ class ProblemsRatingTable extends Component {
   handleRatingClick = (e, data) => {
     const { rating, problemId } = data;
 
+    const existingRating = find(this.state.ratings, (item) => item.problemId === problemId);
+    let newRating = {};
+
+    if (existingRating) {
+      const {id, problemId, evaluatorId} = existingRating;
+      newRating = { id, problemId, value: rating, evaluatorId };
+    } else {
+      newRating = { problemId, value: rating };
+    }
+
     this.setState(prevState => ({
       updatedRatings: uniqBy(
-        [{ problemId, value: rating }, ...prevState.updatedRatings],
+        [{ ...newRating }, ...prevState.updatedRatings],
         'problemId',
       )
     }));
@@ -69,9 +85,16 @@ class ProblemsRatingTable extends Component {
   handleClickSave = () => {
     createOrUpdateRatings({ ratings: this.state.updatedRatings })
       .then(response => {
-        if (response && response.length) {
-          this.setState({ updatedRatings: [] });
-        }
+        // response is not a array of inserted ratings
+        return response && response.length
+          ? getUserRatingsByTeam({ teamId: this.props.teamId })
+          : 0;
+      })
+      .then(ratings => {
+        return this.setState({
+          ratings: ratings && ratings.length ? ratings : [],
+          updatedRatings: []
+        });
       })
       .catch()
   };
@@ -149,11 +172,11 @@ class ProblemsRatingTable extends Component {
   }
 
   renderRatingCell({ problemId = null, value = 0 }) {
-    const { isRatingStarted } = this.props;
+    const { hasRatingStarted } = this.props;
 
     return <Rating
       maxRating={4}
-      disabled={!isRatingStarted}
+      disabled={!hasRatingStarted}
       clearable
       defaultRating={value}
       problemId={problemId}
@@ -162,15 +185,24 @@ class ProblemsRatingTable extends Component {
   }
 
   renderTableActions() {
-    const { isRatingStarted } = this.props;
+    const { hasRatingStarted } = this.props;
 
-    return isRatingStarted && <SaveRatingsButton
+    return hasRatingStarted && <SaveRatingsButton
       handleClickSave={this.handleClickSave}
     />;
   }
 
   render() {
+    const { hasRatingStarted, startRatingProblems, finishRatingProblems } = this.props;
     return [
+      !hasRatingStarted
+        ? <StartRatingButton
+          onStartRating={startRatingProblems}
+        />
+        : <FinishRatingButton
+          onFinishRating={finishRatingProblems}
+          hasSavedRatings={!this.state.updatedRatings.length} // do not let submit ratings if there are unsaved data
+        />,
       <DataTable
         actions={this.renderTableActions()}
         headers={this.getTableHeaders()}

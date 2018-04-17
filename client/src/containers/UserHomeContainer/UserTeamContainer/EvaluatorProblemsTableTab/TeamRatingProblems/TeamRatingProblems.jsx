@@ -14,6 +14,8 @@ const propTypes = {
   role: PropTypes.string,
   evaluatorTeam: PropTypes.object,
   heuristic: PropTypes.object,
+  startRatingProblems: PropTypes.func.isRequired,
+  finishRatingProblems: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -44,7 +46,13 @@ class TeamRatingProblems extends Component {
   }
 
   render() {
-    const { evaluatorTeam: { state }, heuristic: { rules }, teamId } = this.props;
+    const {
+      evaluatorTeam: { state },
+      heuristic: { rules },
+      teamId,
+      startRatingProblems,
+      finishRatingProblems,
+    } = this.props;
     const { problems } = this.state;
 
     switch (state) {
@@ -52,15 +60,17 @@ class TeamRatingProblems extends Component {
         return <ProblemsRatingTable
           teamId={teamId}
           problems={problems}
-          isRatingStarted={false}
+          hasRatingStarted={false}
           rules={rules}
+          startRatingProblems={startRatingProblems}
         />;
       case evaluatorTeamState.ratingProblems:
         return <ProblemsRatingTable
           teamId={teamId}
           problems={problems}
-          isRatingStarted={true}
+          hasRatingStarted={true}
           rules={rules}
+          finishRatingProblems={finishRatingProblems}
         />;
       case evaluatorTeamState.evaluationFinished:
         return <div>baigta</div>;

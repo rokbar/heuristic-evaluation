@@ -21,6 +21,8 @@ import {
   startUserEvaluation,
   submitUserProblems,
   cancelUserProblems,
+  startRatingProblems,
+  finishRatingProblems,
 } from 'actions/evaluatorTeam';
 
 const TeamLeaderRoutes = AuthorizationTeamHOC(['leader']);
@@ -58,6 +60,7 @@ class UserTeamContainer extends Component {
     this.props.history.push(pathName);
   };
 
+  // TODO - refactor
   onUserEvaluationStart() {
     startUserEvaluation({ id: this.state.evaluatorTeam.id })
       .then(userTeamState => {
@@ -86,6 +89,32 @@ class UserTeamContainer extends Component {
 
   onUserProblemsCancel() {
     cancelUserProblems({ id: this.state.evaluatorTeam.id })
+      .then(userTeamState => {
+        return userTeamState.state && this.setState({
+          evaluatorTeam: {
+            id: userTeamState.id,
+            state: userTeamState.state
+          }
+        });
+      })
+      .catch();
+  }
+
+  onStartRatingProblems() {
+    startRatingProblems({ id: this.state.evaluatorTeam.id })
+      .then(userTeamState => {
+        return userTeamState.state && this.setState({
+          evaluatorTeam: {
+            id: userTeamState.id,
+            state: userTeamState.state
+          }
+        });
+      })
+      .catch();
+  }
+
+  onFinishRatingProblems() {
+    finishRatingProblems({ id: this.state.evaluatorTeam.id })
       .then(userTeamState => {
         return userTeamState.state && this.setState({
           evaluatorTeam: {
@@ -210,6 +239,8 @@ class UserTeamContainer extends Component {
               startUserEvaluation: this.onUserEvaluationStart.bind(this),
               submitUserProblems: this.onUserProblemsSubmit.bind(this),
               cancelUserProblems: this.onUserProblemsCancel.bind(this),
+              startRatingProblems: this.onStartRatingProblems.bind(this),
+              finishRatingProblems: this.onFinishRatingProblems.bind(this),
             }
           )}
         />
