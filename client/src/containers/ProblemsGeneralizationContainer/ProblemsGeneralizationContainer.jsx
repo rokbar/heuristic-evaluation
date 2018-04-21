@@ -31,6 +31,7 @@ class ProblemsGeneralizationContainer extends Component {
     return new Promise((resolve, reject) => {
       const description = map(problems, 'description').join('\n');
       const location = map(problems, 'location').join('\n');
+      const solution = map(problems, 'solution').join('\n');
       const photos = reduce(problems, (mergedPhotos, item) => {
         const paths = map(item.photos, (item) => {
           let pathname = new URL(item).pathname;
@@ -40,13 +41,9 @@ class ProblemsGeneralizationContainer extends Component {
         return mergedPhotos.concat(paths);
       }, []);
       const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []));
-      const evaluatorProblems = map(problems, (item) => ({
-        evaluatorId: parseInt(item.users, 10),
-        solution: item.solution
-      }));
       const mergedProblemIds = map(problems, 'id');
 
-      const mergedProblem = {description, location, photos, rules, evaluatorProblems};
+      const mergedProblem = {description, location, solution, photos, rules};
 
       this.props.createMergedProblem({...mergedProblem, teamId: this.props.teamId, mergedProblemIds})
         .then(result => {

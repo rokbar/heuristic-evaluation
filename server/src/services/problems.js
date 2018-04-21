@@ -16,7 +16,7 @@ module.exports = function (app) {
         'problem.location',
         'problem.isCombined',
         'problem.teamId',
-        'evaluatorproblem.solution',
+        'problem.solution',
         db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'path', 'photos']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
       )
@@ -55,7 +55,7 @@ module.exports = function (app) {
         'problem.isCombined',
         'problem.teamId',
         'problem.isRevised',
-        'evaluatorproblem.solution',
+        'problem.solution',
         db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'path', 'photos']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['evaluatorproblem', 'evaluatorId', 'users']),

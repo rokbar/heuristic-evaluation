@@ -15,12 +15,12 @@ module.exports = function ({auth}) {
         ],
         create: [
           (hook) => {
-            const {description, location, photos, rules, evaluatorProblems, teamId, mergedProblemIds} = hook.data;
+            const {description, location, solution, photos, rules, teamId, mergedProblemIds} = hook.data;
             let problemId;
 
             return new Promise((resolve, reject) => {
               return hook.app.service('problems').create(
-                {description, location, isCombined: true, teamId},
+                {description, location, solution, isCombined: true, teamId},
                 {transaction: hook.params.transaction},
               )
                 .then(result => {
@@ -50,13 +50,6 @@ module.exports = function ({auth}) {
                 })
                 .then(result => {
                   hook.result.rules = rules;
-                  return hook.app.service('evaluatorproblem/createBatch').create(
-                    {problemId, evaluatorProblems},
-                    {transaction: hook.params.transaction},
-                  )
-                })
-                .then(result => {
-                  hook.result.solution = result;
                   hook.result.problemId = problemId;
                   resolve(hook);
                 })

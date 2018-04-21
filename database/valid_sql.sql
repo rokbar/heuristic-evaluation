@@ -129,9 +129,10 @@ CREATE TABLE Problem
 
 CREATE TABLE MergedProblem
 (
-  id integer,
+  id integer AUTO_INCREMENT,
   fromId integer NOT NULL,
   toId integer NOT NULL,
+  PRIMARY KEY (id)
 )
 
 CREATE TABLE ProblemPhoto

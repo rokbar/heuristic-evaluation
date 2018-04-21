@@ -109,10 +109,9 @@ class EditProblemForm extends Component {
 function mapStateToProps(state) {
   if (state.editForm.data && state.editForm.data.problem) {
     const {
-      problem: {description, location},
+      problem: {description, location, solution},
       photos,
       problemrule,
-      evaluatorproblem: {solution}
     } = state.editForm.data;
     const checkedRules = map(problemrule, (item) => item.ruleId);
 

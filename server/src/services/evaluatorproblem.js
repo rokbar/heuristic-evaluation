@@ -8,14 +8,13 @@ module.exports = function (app) {
       return new Promise((resolve, reject) => {
         const { evaluatorProblems, problemId } = data;
         const rowsToInsert = evaluatorProblems.map((item) => {
-          return { solution: item.solution, problemId, evaluatorId: item.evaluatorId }
+          return { problemId, evaluatorId: item.evaluatorId }
         });
 
         db.transacting(params.transaction.trx)
           .insert([...rowsToInsert]).into('evaluatorproblem')
           .then(response => {
-            const mergedSolutions = evaluatorProblems.map((item) => item.solution);
-            resolve(mergedSolutions.join('\n'));
+            resolve(response);
           })
           .catch();
       })
