@@ -148,7 +148,7 @@ module.exports = function ({auth}) {
     });
 
     // TODO - check if user belongs to team, restrictToOwner does not work
-    app.service('mergedproblems/edit/:mergedProblemId').hooks({
+    app.service('mergedproblems/edit/:problemId').hooks({
       before: {
         all: [
           auth.hooks.authenticate('jwt'),
@@ -156,47 +156,78 @@ module.exports = function ({auth}) {
         ],
         patch: [
           (hook) => {
-            const {mergedProblemId} = hook.params.route;
-            const {description, location} = hook.data;
+            const { problemId } = hook.params.route;
+            const evaluatorId = hook.params.user.id;
+            const { description, location, solution, photos, rules } = hook.data;
             hook.result = {};
-            // this service is meant to update one property per query,
-            // so we check which property's data we got
-            let propertyToUpdate;
-            if (description) {
-              propertyToUpdate = {description};
-            } else if (location) {
-              propertyToUpdate = {location};
-            }
+            const photosToRemove = photos && photos.length && photos.filter(item => item.removed);
+            const photosToRemoveIds = photosToRemove && photosToRemove.length && photosToRemove.map(item => item.id);
+            const photosToInsert = photos && photos.filter(item => (!item.removed && !item.id));
+            const photosToRemain = photos && photos.length && photos.filter(item => (!item.removed && item.id));
 
             return new Promise((resolve, reject) => {
-              return hook.app.service('problems').patch(
-                mergedProblemId,
-                {propertyToUpdate},
-                {transaction: hook.params.transaction},
+              hook.app.service('problemrule').remove(
+                null,
+                {
+                  query: { problemId: problemId },
+                  transaction: hook.params.transaction
+                },
               )
                 .then(result => {
+                  return hook.app.service('problemrule/createBatch').create(
+                    { problemId, rules },
+                    { transaction: hook.params.transaction },
+                  );
+                })
+                .then(result => {
+                  hook.result.rules = rules;
+                  hook.result.evaluatorId = evaluatorId;
+                  return hook.app.service('problems').patch(
+                    problemId,
+                    { description, location, solution },
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
                   const hookResult = Object.assign(hook.result, result);  // mutates hook.result
+                  return photosToRemoveIds.length && hook.app.service('problemphotos').remove(
+                    null,
+                    {
+                      query: {
+                        id: {
+                          $in: [ ...photosToRemoveIds ],
+                        },
+                      },
+                      transaction: hook.params.transaction
+                    },
+                  )
+                })
+                .then(result => {
+                  return photosToInsert && hook.app.service('imageupload/createBatch').create(
+                    { photos: photosToInsert, problemId },
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  return photosToInsert && hook.app.service('problemphotos/createBatch').create(
+                    { problemphotos: result, problemId: problemId },
+                    { transaction: hook.params.transaction, headers: hook.params.headers },
+                  );
+                })
+                .then(result => {
+                  const photosToRemainPaths = photosToRemain ? photosToRemain.map(item => item.path) : [];
+                  hook.result.photos = [ ...photosToRemainPaths, ...result ];
                   resolve(hook);
                 })
                 .catch(reject);
             })
           }
         ],
-        find: [() => {
-          throw new Error('Not implemented')
-        }],
-        get: [() => {
-          throw new Error('Not implemented')
-        }],
-        update: [() => {
-          throw new Error('Not implemented')
-        }],
-        remove: [() => {
-          throw new Error('Not implemented')
-        }],
-        create: [() => {
-          throw new Error('Not implemented')
-        }],
+        find: [() => { throw new Error('Not implemented') }],
+        get: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented')}],
+        remove: [() => { throw new Error('Not implemented') }],
+        create: [() => { throw new Error('Not implemented') }],
       },
       after: {
         all: [

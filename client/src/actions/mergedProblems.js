@@ -1,6 +1,7 @@
+import { filter } from 'lodash';
 import {getJwtToken} from 'utils/localStorage';
 
-import { SET_EVALUATOR_PROBLEMS_AS_REVISED } from './types';
+import { SET_EVALUATOR_PROBLEMS_AS_REVISED, EDIT_FORM } from './types';
 
 export function createMergedProblem({
   description,
@@ -68,32 +69,36 @@ export function getGeneralizedProblems({ teamId }) {
 }
 
 export function editMergedProblem({
-  mergedProblemId,
-  description = null,
-  location = null,
+  problemId,
+  description = '',
+  location,
+  solution,
+  photo = [],
+  rules,
 }) {
-  return (dispatch) => {
-    return fetch(`/mergedproblems/edit/${mergedProblemId}`, {
-      body: JSON.stringify({
-        description,
-        location,
-      }),
-      headers: {
-        'Authorization': getJwtToken(),
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
+  return fetch(`/mergedproblems/edit/${problemId}`, {
+    body: JSON.stringify({
+      description,
+      location,
+      solution,
+      photos: photo,
+      rules: filter(rules, item => !!item),
+    }),
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'PATCH',
+  })
+    .then(response => {
+      return response.json();
     })
-      .then(response => {
-        return response.json();
-      })
-      .then(problem => {
-        return problem;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+    .then(problem => {
+      return problem;
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 export function removeMergedProblem(mergedProblemId) {

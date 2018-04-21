@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-
+import { filter, map } from 'lodash';
 
 import TeamProblemsContainer from 'containers/TeamProblemsContainer';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import SubmitGeneralizedProblemsButton from './SubmitGeneralizedProblemsButton';
 
-import { getGeneralizedProblems } from 'actions/mergedProblems';
+import { getGeneralizedProblems, removeMergedProblem, editMergedProblem } from 'actions/mergedProblems';
 import { finishGeneralization } from 'actions/teams';
 
 import './LeaderGeneralizing.css'
@@ -52,6 +52,34 @@ class LeaderGeneralizing extends Component {
     </span>;
   };
 
+  removeProblem = (problemId) => {
+    removeMergedProblem(problemId)
+      .then(() => {
+        const filteredProblems = problemId && filter(this.state.generalizedProblems, (item) => {
+          return item.id !== problemId;
+        });
+        this.setState({
+          generalizedProblems: filteredProblems ? filteredProblems : [],
+        });
+      })
+      .catch();
+  };
+
+  editProblem = (problem) => {
+    console.log(this.state.generalizedProblems);
+    editMergedProblem({ ...problem })
+      .then((updatedProblem) => {
+        const { id } = updatedProblem;
+        const updatedProblems = updatedProblem && map(this.state.generalizedProblems, (item) => {
+          return item.id === id ? { ...updatedProblem } : { ...item };
+        });
+        this.setState({
+          generalizedProblems: updatedProblems,
+        })
+      })
+      .catch();
+  };
+
   renderProblemsList() {
     const { selectedList, generalizedProblems } = this.state;
     const { heuristicId, teamId, changeTeamState, hasGeneralizationStarted } = this.props;
@@ -73,6 +101,8 @@ class LeaderGeneralizing extends Component {
         />
         <GeneralizationProblemsTable
           problems={generalizedProblems}
+          removeProblem={this.removeProblem}
+          editProblem={this.editProblem}
         />
       </div>;
     }

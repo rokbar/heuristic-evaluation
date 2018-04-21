@@ -77,7 +77,7 @@ module.exports = function (app) {
     }
   });
 
-  app.use('/mergedproblems/edit/:mergedProblemId', knex({
+  app.use('/mergedproblems/edit/:problemId', knex({
     Model: db,
     name: 'problem',
     id: 'id',

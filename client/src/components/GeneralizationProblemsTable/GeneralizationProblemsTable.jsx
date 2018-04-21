@@ -1,10 +1,12 @@
 import React, {Component} from "react";
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AgGrid from 'ag-grid';
 
 import {AgGridReact} from "ag-grid-react";
 import PhotoCellRenderer from './PhotoCellRenderer';
 import RulesCellRenderer from './RulesCellRenderer';
+import ActionsCellRenderer from './ActionsCellRenderer';
 
 import 'ag-grid/dist/styles/ag-grid.css';
 import 'ag-grid/dist/styles/ag-theme-balham.css';
@@ -23,11 +25,12 @@ class GeneralizationProblemsTable extends Component {
 
     this.state = {
       columnDefs: [
-        {headerName: 'Aprašymas', field: 'description', editable: true},
-        {headerName: 'Lokacija', field: 'location', editable: true},
-        {headerName: 'Pažeistos euristikos', field: 'rules', editable: false, cellRenderer: 'rulesCellRenderer'},
-        {headerName: 'Nuotraukos', field: 'photos', editable: false, cellRenderer: 'photoCellRenderer'},
-        {headerName: 'Pasiūlymas taisymui', field: 'solution', editable: true},
+        {headerName: 'Aprašymas', field: 'description'},
+        {headerName: 'Lokacija', field: 'location'},
+        {headerName: 'Pažeistos euristikos', field: 'rules', cellRenderer: 'rulesCellRenderer'},
+        {headerName: 'Nuotraukos', field: 'photos', cellRenderer: 'photoCellRenderer'},
+        {headerName: 'Pasiūlymas taisymui', field: 'solution'},
+        {headerName: 'Veiksmai', field: 'actions', cellRenderer: 'actionsCellRenderer'},
       ],
       getRowNodeId: function(data) {
         return data.id;
@@ -35,6 +38,12 @@ class GeneralizationProblemsTable extends Component {
       frameworkComponents: {
         photoCellRenderer: PhotoCellRenderer,
         rulesCellRenderer: RulesCellRenderer,
+        actionsCellRenderer: (params) => <ActionsCellRenderer
+          rules={props.heuristic && props.heuristic.rules && props.heuristic.rules}
+          {...params}
+          removeProblem={props.removeProblem}
+          editProblem={props.editProblem}
+        />,
       },
     }
   }
@@ -69,4 +78,12 @@ class GeneralizationProblemsTable extends Component {
 GeneralizationProblemsTable.propTypes = propTypes;
 GeneralizationProblemsTable.defaultProps = defaultProps;
 
-export default GeneralizationProblemsTable;
+function mapStateToProps(state) {
+  return {
+    heuristic: state.heuristics.team[0],
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(GeneralizationProblemsTable);

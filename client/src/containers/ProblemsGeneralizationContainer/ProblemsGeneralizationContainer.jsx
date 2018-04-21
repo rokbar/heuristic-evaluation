@@ -7,7 +7,12 @@ import SelectedEvaluatorProblems from './SelectedEvaluatorProblems';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import './ProblemsGeneralizationContainer.css';
 
-import { createMergedProblem, getGeneralizedProblems, removeMergedProblem } from 'actions/mergedProblems';
+import {
+  createMergedProblem,
+  getGeneralizedProblems,
+  removeMergedProblem,
+  editMergedProblem,
+} from 'actions/mergedProblems';
 
 class ProblemsGeneralizationContainer extends Component {
   constructor(props) {
@@ -60,13 +65,25 @@ class ProblemsGeneralizationContainer extends Component {
     });
   };
 
-  removeProblem = (problem) => {
-    const filteredProblems = problem && filter(this.state.generalizedProblems, (item) => {
-      return item.id !== problem.id;
-    });
-    this.setState({
-      generalizedProblems: filteredProblems ? filteredProblems : [],
-    });
+  removeProblem = (problemId) => {
+    removeMergedProblem(problemId)
+      .then(() => {
+        const filteredProblems = problemId && filter(this.state.generalizedProblems, (item) => {
+          return item.id !== problemId;
+        });
+        this.setState({
+          generalizedProblems: filteredProblems ? filteredProblems : [],
+        });
+      })
+      .catch();
+  };
+
+  editProblem = (problem) => {
+    editMergedProblem()
+      .then(() => {
+
+      })
+      .catch();
   };
 
   render() {
@@ -79,6 +96,7 @@ class ProblemsGeneralizationContainer extends Component {
           <GeneralizationProblemsTable
             problems={generalizedProblems}
             removeProblem={this.removeProblem}
+            editProblem={this.editProblem}
           />
         </Segment>
         <Segment className="EvaluatorProblems">
