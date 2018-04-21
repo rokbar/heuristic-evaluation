@@ -102,22 +102,20 @@ export function editMergedProblem({
 }
 
 export function removeMergedProblem(mergedProblemId) {
-  return (dispatch) => {
-    return fetch(`/mergedproblems/remove/${mergedProblemId}`, {
-      headers: {
-        'Authorization': getJwtToken(),
-        'Content-Type': 'application/json',
-      },
-      method: 'DELETE',
+  return fetch(`/problems/remove/${mergedProblemId}`, {
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'DELETE',
+  })
+    .then(response => {
+      return response.json();
     })
-      .then(response => {
-        return response.json();
-      })
-      .then(problem => {
-        return problem;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+    .then(problem => {
+      return problem && problem.id;
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }

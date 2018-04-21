@@ -271,6 +271,15 @@ module.exports = function ({ auth }) {
                   );
                 })
                 .then(result => {
+                  return hook.app.service('mergedproblems').remove(
+                    null,
+                    {
+                      query: { toId: problemId },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
                   return hook.app.service('problemphotos').remove(
                     null,
                     {

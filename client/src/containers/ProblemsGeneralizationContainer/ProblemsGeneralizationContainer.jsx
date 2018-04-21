@@ -79,9 +79,16 @@ class ProblemsGeneralizationContainer extends Component {
   };
 
   editProblem = (problem) => {
-    editMergedProblem()
-      .then(() => {
-
+    console.log(this.state.generalizedProblems);
+    editMergedProblem({ ...problem })
+      .then((updatedProblem) => {
+        const { id } = updatedProblem;
+        const updatedProblems = updatedProblem && map(this.state.generalizedProblems, (item) => {
+          return item.id === id ? { ...updatedProblem } : { ...item };
+        });
+        this.setState({
+          generalizedProblems: updatedProblems,
+        })
       })
       .catch();
   };
