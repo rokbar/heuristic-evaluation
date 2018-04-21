@@ -37,7 +37,6 @@ module.exports = function (app) {
       let questionMarks = "";
       let values = [];
       const rows = ratings.map((item) => ({ id: null, ...item, evaluatorId }));
-      console.log(rows);
 
       rows.forEach(function(value, index){
         questionMarks += "(";

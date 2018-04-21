@@ -1,7 +1,6 @@
 CREATE TABLE Heuristic
 (
 	id integer AUTO_INCREMENT,
-	isRemoved boolean DEFAULT 0,
 	name TEXT,
 	isUnique boolean DEFAULT false,
 	PRIMARY KEY(id)
@@ -34,7 +33,6 @@ INSERT INTO TeamState(id, name) VALUES(5, 'evaluationFinished');
 CREATE TABLE Rule
 (
 	id integer AUTO_INCREMENT,
-	isRemoved boolean DEFAULT 0,
 	description varchar (255),
 	listNumber integer,
 	heuristicId integer NOT NULL,
@@ -44,7 +42,6 @@ CREATE TABLE Rule
 CREATE TABLE ProblemRule
 (
 	id integer AUTO_INCREMENT,
-	isRemoved boolean DEFAULT 0,
 	problemId integer NOT NULL,
 	ruleId integer NOT NULL,
 	PRIMARY KEY(id)
@@ -53,7 +50,6 @@ CREATE TABLE ProblemRule
 CREATE TABLE Rating
 (
 	id integer AUTO_INCREMENT,
-	isRemoved boolean DEFAULT 0,
 	value integer,
 	problemId integer NOT NULL,
 	evaluatorId integer NOT NULL,
@@ -63,7 +59,6 @@ CREATE TABLE Rating
 CREATE TABLE Team
 (
 	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	report MEDIUMBLOB,
 	plan TEXT,
@@ -80,7 +75,6 @@ CREATE TABLE Team
 CREATE TABLE User
 (
 	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	password varchar (255),
 	lastLogon date,
@@ -94,7 +88,6 @@ CREATE TABLE User
 CREATE TABLE Company
 (
 	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
 	name varchar (255),
 	country varchar (255),
 	url varchar (255),
@@ -106,17 +99,14 @@ CREATE TABLE Company
 CREATE TABLE EvaluatorProblem
 (
 	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
 	evaluatorId integer NOT NULL,
 	problemId integer NOT NULL,
-  solution TEXT,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE EvaluatorTeam
 (
 	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
 	state integer DEFAULT 1,
 	teamId integer NOT NULL,
 	evaluatorId integer NOT NULL,
@@ -126,8 +116,8 @@ CREATE TABLE EvaluatorTeam
 CREATE TABLE Problem
 (
 	id integer AUTO_INCREMENT,
-  isRemoved boolean DEFAULT 0,
 	description TEXT,
+  solution TEXT,
 	location varchar (255),
 	teamId integer NOT NULL,
 	isRevised boolean DEFAULT false,
@@ -136,6 +126,13 @@ CREATE TABLE Problem
   nextMergedProblemId integer,
 	PRIMARY KEY(id)
 );
+
+CREATE TABLE MergedProblem
+(
+  id integer,
+  fromId integer NOT NULL,
+  toId integer NOT NULL,
+)
 
 CREATE TABLE ProblemPhoto
 (
@@ -182,5 +179,9 @@ ALTER TABLE EvaluatorTeam
 ALTER TABLE Problem
 	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id),
 	ADD CONSTRAINT is_before FOREIGN KEY(nextMergedProblemId) REFERENCES Problem (id);
+
+ALTER TABLE MergedProblem
+  ADD CONSTRAINT is_made_of FOREIGN KEY(fromId) REFERENCES Problem (id),
+  ADD CONSTRAINT generalized_to FOREIGN KEY(toId) REFERENCES Problem (id);
 
 ALTER TABLE user AUTO_INCREMENT = 1
