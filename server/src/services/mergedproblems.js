@@ -3,6 +3,12 @@ const knex = require('feathers-knex');
 const db = require('../database');
 
 module.exports = function (app) {
+  app.use('/mergedproblems/merge', knex({
+    Model: db,
+    name: 'problem',
+    id: 'id',
+  }));
+
   app.use('/mergedproblems', knex({
     Model: db,
     name: 'mergedproblem',

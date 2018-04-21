@@ -119,3 +119,25 @@ export function removeMergedProblem(mergedProblemId) {
       console.log(error);
     });
 }
+
+export function mergeMergedProblems(mergedProblemIds) {
+  return fetch('/mergedproblems/merge', {
+    body: JSON.stringify({
+      mergedProblemIds,
+    }),
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(problem => {
+      return problem;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}

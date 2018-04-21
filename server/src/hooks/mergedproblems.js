@@ -7,6 +7,91 @@ const {transaction} = knexHooks;
 // TODO - all these services are available to team leader, modify access logic
 module.exports = function ({auth}) {
   return function (app) {
+    app.service('mergedproblems/merge').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
+        create: [
+          (hook) => {
+            const {description, location, solution, mergedProblemIds} = hook.data;
+            let problemId;
+
+            return new Promise((resolve, reject) => {
+              return hook.app.service('problems').create(
+                {description, location, solution, isCombined: true, teamId},
+                {transaction: hook.params.transaction},
+              )
+                .then(result => {
+                  hook.result = result;
+                  problemId = result.id;
+                  return hook.app.service('problemphotos/createBatch').create(
+                    {problemphotos: photos, problemId: problemId},
+                    {transaction: hook.params.transaction, headers: hook.params.headers},
+                  );
+                })
+                .then(result => {
+                  hook.result.photos = result;
+                  return hook.app.service('problems').patch(
+                    null,
+                    {isRevised: true},
+                    {
+                      query: {id: {$in: [...mergedProblemIds]}},
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(() => {
+                  return hook.app.service('problemrule/createBatch').create(
+                    {problemId: problemId, rules},
+                    {transaction: hook.params.transaction},
+                  );
+                })
+                .then(() => {
+                  return hook.app.service('mergedproblems/createBatch').create(
+                    {mergedProblemIds, newProblemId: problemId},
+                    {transaction: hook.params.transaction},
+                  );
+                })
+                .then(() => {
+                  hook.result.rules = rules;
+                  hook.result.problemId = problemId;
+                  hook.result.mergedProblemsIds = mergedProblemIds;
+                  resolve(hook);
+                })
+                .catch(reject);
+            })
+          }
+        ],
+        find: [() => {
+          throw new Error('Not implemented')
+        }],
+        get: [() => {
+          throw new Error('Not implemented')
+        }],
+        update: [() => {
+          throw new Error('Not implemented')
+        }],
+        patch: [() => {
+          throw new Error('Not implemented')
+        }],
+        remove: [() => {
+          throw new Error('Not implemented')
+        }],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
+    });
+
     app.service('mergedproblems').hooks({
       before: {
         all: [

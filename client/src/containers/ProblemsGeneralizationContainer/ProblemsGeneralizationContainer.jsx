@@ -79,7 +79,6 @@ class ProblemsGeneralizationContainer extends Component {
   };
 
   editProblem = (problem) => {
-    console.log(this.state.generalizedProblems);
     editMergedProblem({ ...problem })
       .then((updatedProblem) => {
         const { id } = updatedProblem;
@@ -104,6 +103,7 @@ class ProblemsGeneralizationContainer extends Component {
             problems={generalizedProblems}
             removeProblem={this.removeProblem}
             editProblem={this.editProblem}
+            mergeProblems={this.addProblems}
           />
         </Segment>
         <Segment className="EvaluatorProblems">

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { filter, map } from 'lodash';
+import { filter, map, uniq, reduce } from 'lodash';
 
 import TeamProblemsContainer from 'containers/TeamProblemsContainer';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import SubmitGeneralizedProblemsButton from './SubmitGeneralizedProblemsButton';
 
-import { getGeneralizedProblems, removeMergedProblem, editMergedProblem } from 'actions/mergedProblems';
+import { getGeneralizedProblems, removeMergedProblem, editMergedProblem, mergeMergedProblems } from 'actions/mergedProblems';
 import { finishGeneralization } from 'actions/teams';
 
 import './LeaderGeneralizing.css'
@@ -52,6 +52,38 @@ class LeaderGeneralizing extends Component {
     </span>;
   };
 
+  addProblems = (problems) => {
+    return new Promise((resolve, reject) => {
+      const description = map(problems, 'description').join('\n');
+      const location = map(problems, 'location').join('\n');
+      const solution = map(problems, 'solution').join('\n');
+      const photos = reduce(problems, (mergedPhotos, item) => {
+        const paths = map(item.photos, (item) => {
+          let pathname = new URL(item).pathname;
+          while (pathname.charAt(0) === '/') pathname = pathname.substr(1);
+          return pathname;
+        });
+        return mergedPhotos.concat(paths);
+      }, []);
+      const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []));
+      const mergedProblemIds = map(problems, 'id');
+
+      const mergedProblem = {description, location, solution, photos, rules};
+
+      mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, mergedProblemIds})
+        .then(result => {
+          result && result.description && this.setState(prevState => ({
+            generalizedProblems: [
+              ...prevState.generalizedProblems,
+              result,
+            ],
+          }));
+          resolve(mergedProblemIds);
+        })
+        .catch(reject);
+    });
+  };
+
   removeProblem = (problemId) => {
     removeMergedProblem(problemId)
       .then(() => {
@@ -66,7 +98,6 @@ class LeaderGeneralizing extends Component {
   };
 
   editProblem = (problem) => {
-    console.log(this.state.generalizedProblems);
     editMergedProblem({ ...problem })
       .then((updatedProblem) => {
         const { id } = updatedProblem;

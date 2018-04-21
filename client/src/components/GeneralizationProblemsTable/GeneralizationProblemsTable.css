@@ -1,0 +1,8 @@
+.GeneralizationProblemsTable {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.TableActionsRenderer {
+  align-self: flex-start;
+}
