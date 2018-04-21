@@ -133,7 +133,7 @@ CREATE TABLE MergedProblem
   fromId integer NOT NULL,
   toId integer NOT NULL,
   PRIMARY KEY (id)
-)
+);
 
 CREATE TABLE ProblemPhoto
 (

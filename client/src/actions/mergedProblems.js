@@ -5,6 +5,7 @@ import { SET_EVALUATOR_PROBLEMS_AS_REVISED } from './types';
 export function createMergedProblem({
   description,
   location,
+  solution,
   photos,
   rules,
   evaluatorProblems,
@@ -12,10 +13,11 @@ export function createMergedProblem({
   mergedProblemIds,
 }) {
   return (dispatch) => {
-    return fetch('/mergedproblems/create', {
+    return fetch('/problems/merge', {
       body: JSON.stringify({
         description,
         location,
+        solution,
         photos,
         rules,
         evaluatorProblems,

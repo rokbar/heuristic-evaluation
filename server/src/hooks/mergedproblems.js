@@ -1,13 +1,37 @@
 const {hooks: knexHooks} = require('feathers-knex');
 const authHooks = require('feathers-authentication-hooks');
+const { disallow } = require('feathers-hooks-common');
 
 const {transaction} = knexHooks;
 
 // TODO - all these services are available to team leader, modify access logic
 module.exports = function ({auth}) {
   return function (app) {
+    app.service('mergedproblems').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ]
+      },
+    });
+
+    app.service('/mergedproblems/createBatch').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ],
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              resolve(hook);
+            })
+          }
+        ]
+      }
+    });
+
     // TODO - check if user belongs to team
-    app.service('mergedproblems/create').hooks({
+    app.service('problems/merge').hooks({
       before: {
         all: [
           auth.hooks.authenticate('jwt'),
@@ -42,15 +66,22 @@ module.exports = function ({auth}) {
                     },
                   );
                 })
-                .then(result => {
+                .then(() => {
                   return hook.app.service('problemrule/createBatch').create(
                     {problemId: problemId, rules},
                     {transaction: hook.params.transaction},
                   );
                 })
-                .then(result => {
+                .then(() => {
+                  return hook.app.service('mergedproblems/createBatch').create(
+                    {mergedProblemIds, newProblemId: problemId},
+                    {transaction: hook.params.transaction},
+                  );
+                })
+                .then(() => {
                   hook.result.rules = rules;
                   hook.result.problemId = problemId;
+                  hook.result.mergedProblemsIds = mergedProblemIds;
                   resolve(hook);
                 })
                 .catch(reject);
