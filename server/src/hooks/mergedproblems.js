@@ -15,7 +15,7 @@ module.exports = function ({auth}) {
         ],
         create: [
           (hook) => {
-            const {description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
+            const {position, description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
             let problemId;
 
             return new Promise((resolve, reject) => {
@@ -71,6 +71,15 @@ module.exports = function ({auth}) {
                   return hook.app.service('mergedproblems/createBatch').create(
                     {problemsToMergeIds: originalProblemsIds, newProblemId: problemId},
                     {transaction: hook.params.transaction},
+                  );
+                })
+                .then(() => {
+                  return hook.app.service('mergedproblems/updatePositions').patch(
+                    null,
+                    {position: position - 1},
+                    {
+                      transaction: hook.params.transaction,
+                    },
                   );
                 })
                 .then(() => {
@@ -144,13 +153,13 @@ module.exports = function ({auth}) {
         ],
         create: [
           (hook) => {
-            const {description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
+            const {position, description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
             console.log(problemsToMergeIds);
             let problemId;
 
             return new Promise((resolve, reject) => {
               return hook.app.service('problems').create(
-                {description, location, solution, isCombined: true, teamId},
+                {position, description, location, solution, isCombined: true, teamId},
                 {transaction: hook.params.transaction},
               )
                 .then(result => {

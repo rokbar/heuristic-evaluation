@@ -54,6 +54,8 @@ class LeaderGeneralizing extends Component {
 
   mergeGeneralizedProblems = (problems) => {
     return new Promise((resolve, reject) => {
+      // highest problem's in list position, from this position all below existing problems' positions will be updated
+      const position = problems[0] && problems[0].position;
       const description = map(problems, 'description').join('\n');
       const location = map(problems, 'location').join('\n');
       const solution = map(problems, 'solution').join('\n');
@@ -78,7 +80,7 @@ class LeaderGeneralizing extends Component {
       }, []));
 
       const problemsToMergeIds = map(problems, 'id');
-      const mergedProblem = {description, location, solution, photos, rules, originalProblemsIds};
+      const mergedProblem = {position, description, location, solution, photos, rules, originalProblemsIds};
 
       mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, problemsToMergeIds})
         .then(result => {

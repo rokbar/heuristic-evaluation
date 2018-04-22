@@ -29,7 +29,7 @@ class GeneralizationProblemsTable extends Component {
 
     this.state = {
       columnDefs: [
-        {headerName: '', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true},
+        {headerName: 'Eil. Nr.', field: 'position', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true},
         {headerName: 'Aprašymas', field: 'description'},
         {headerName: 'Lokacija', field: 'location'},
         {headerName: 'Pažeistos euristikos', field: 'rules', cellRenderer: 'rulesCellRenderer'},

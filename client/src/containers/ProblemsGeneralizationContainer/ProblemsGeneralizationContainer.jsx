@@ -57,12 +57,15 @@ class ProblemsGeneralizationContainer extends Component {
     return new Promise((resolve, reject) => {
       const {problemsToMergeIds, ...mergedProblem} = this.getMergedProblemProps(problems);
 
+      // highest problem's in list position, from this position all below existing problems' positions will be updated
+      const position = problems[0] && problems[0].position;
+
       const originalProblemsIds = uniq(reduce(problems, (mergedIds, item) => {
         const idsArray = isArray(item.originalProblemsIds) ? [...item.originalProblemsIds] : item.originalProblemsIds.split(',');
         return mergedIds.concat(idsArray.map(id => parseInt(id, 10)));
       }, []));
 
-      mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, problemsToMergeIds, originalProblemsIds})
+      mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, problemsToMergeIds, originalProblemsIds, position})
         .then(result => {
           result && result.description && this.setState(prevState => ({
             generalizedProblems: [
@@ -110,6 +113,9 @@ class ProblemsGeneralizationContainer extends Component {
   };
 
   getMergedProblemProps(problems) {
+    const { generalizedProblems } = this.state;
+    // new problem's position
+    const position = generalizedProblems && generalizedProblems.length + 1;
     const description = map(problems, 'description').join('\n');
     const location = map(problems, 'location').join('\n');
     const solution = map(problems, 'solution').join('\n');
@@ -131,7 +137,7 @@ class ProblemsGeneralizationContainer extends Component {
     const originalProblemsIds = map(problems, 'id');
     const problemsToMergeIds = map(problems, 'id');
 
-    return {description, location, solution, photos, rules, problemsToMergeIds, originalProblemsIds};
+    return {position, description, location, solution, photos, rules, problemsToMergeIds, originalProblemsIds};
   }
 
   render() {

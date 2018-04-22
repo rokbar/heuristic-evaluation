@@ -120,10 +120,10 @@ CREATE TABLE Problem
   solution TEXT,
 	location varchar (255),
 	teamId integer NOT NULL,
+	position integer,
 	isRevised boolean DEFAULT false,
 	isCombined boolean DEFAULT false,
   ratingsAverage float,
-  nextMergedProblemId integer,
 	PRIMARY KEY(id)
 );
 
@@ -179,7 +179,6 @@ ALTER TABLE EvaluatorTeam
 
 ALTER TABLE Problem
 	ADD CONSTRAINT finds FOREIGN KEY(teamId) REFERENCES Team (id),
-	ADD CONSTRAINT is_before FOREIGN KEY(nextMergedProblemId) REFERENCES Problem (id);
 
 ALTER TABLE MergedProblem
   ADD CONSTRAINT is_made_of FOREIGN KEY(fromId) REFERENCES Problem (id),

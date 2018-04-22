@@ -4,6 +4,7 @@ import {getJwtToken} from 'utils/localStorage';
 import { SET_EVALUATOR_PROBLEMS_AS_REVISED, EDIT_FORM } from './types';
 
 export function createMergedProblem({
+  position,
   description,
   location,
   solution,
@@ -17,6 +18,7 @@ export function createMergedProblem({
   return (dispatch) => {
     return fetch('/problems/merge', {
       body: JSON.stringify({
+        position,
         description,
         location,
         solution,
@@ -123,6 +125,7 @@ export function removeMergedProblem(mergedProblemId) {
 }
 
 export function mergeMergedProblems({
+  position,
   description,
   location,
   solution,
@@ -134,6 +137,7 @@ export function mergeMergedProblems({
 }) {
   return fetch('/mergedproblems/merge', {
     body: JSON.stringify({
+      position,
       description,
       location,
       solution,

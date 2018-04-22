@@ -37,6 +37,36 @@ module.exports = function (app) {
     }
   });
 
+  app.use('/mergedproblems/updatePositions', {
+    patch(id, data, params) {
+      return new Promise((resolve, reject) => {
+        const { position } = data;
+
+        db.transacting(params.transaction.trx)
+          .select(
+            'problem.id',
+            'problem.position',
+          )
+          .from('problem')
+          .where('problem.position', '>=', position)
+          .then(response => {
+            let updatingPosition = position;
+            return Promise.all(response.map(item => {
+              return db.raw('UPDATE problem SET position = ? WHERE id = ?', [updatingPosition++, item.id]).transacting(params.transaction.trx);
+            }));
+          })
+          .then(response => {
+            resolve(response);
+          })
+          .catch(reject);
+      });
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
+
   app.use('/problems/merge', knex({
     Model: db,
     name: 'problem',
@@ -55,6 +85,7 @@ module.exports = function (app) {
         'problem.location',
         'problem.isCombined',
         'problem.teamId',
+        'problem.position',
         'problem.isRevised',
         'problem.solution',
         db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'path', 'photos']),
@@ -70,6 +101,7 @@ module.exports = function (app) {
         .where('problem.teamId', teamId)
         .andWhere('problem.isCombined', true)
         .groupBy('problem.id')
+        .orderBy('position', 'inc')
         .then(response => {
           const modifiedResponse = response.map(item => {
             const {photos, ...rest} = item;
