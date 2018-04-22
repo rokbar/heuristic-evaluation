@@ -40,25 +40,60 @@ module.exports = function (app) {
   app.use('/mergedproblems/updatePositions', {
     patch(id, data, params) {
       return new Promise((resolve, reject) => {
-        const { position } = data;
+        const { position, problemId } = data;
+        if (problemId) {
+          let foundProblemPosition;;
+          db.transacting(params.transaction.trx)
+            .select(
+              'problem.id',
+              'problem.position',
+              'problem.isCombined',
+            )
+            .from('problem')
+            .where('id', problemId)
+            .then(response => {
+              foundProblemPosition = response.position - 1;
+              return db.transacting(params.transaction.trx)
+                .select(
+                  'problem.id',
+                  'problem.position',
+                )
+                .from('problem')
+                .where('problem.position', '>', foundProblemPosition)
+                .andWhere('problem.isCombined', true)
+            })
+            .then(response => {
+              let updatingPosition = foundProblemPosition;
+              return Promise.all(response.map(item => {
+                return db.raw('UPDATE problem SET position = ? WHERE id = ?', [updatingPosition++, item.id]).transacting(params.transaction.trx);
+              }));
+            })
+            .then(response => {
+              resolve(response);
+            })
+            .catch(reject);
+        }
 
-        db.transacting(params.transaction.trx)
-          .select(
-            'problem.id',
-            'problem.position',
-          )
-          .from('problem')
-          .where('problem.position', '>=', position)
-          .then(response => {
-            let updatingPosition = position;
-            return Promise.all(response.map(item => {
-              return db.raw('UPDATE problem SET position = ? WHERE id = ?', [updatingPosition++, item.id]).transacting(params.transaction.trx);
-            }));
-          })
-          .then(response => {
-            resolve(response);
-          })
-          .catch(reject);
+        if (position >= 0) {
+          db.transacting(params.transaction.trx)
+            .select(
+              'problem.id',
+              'problem.position',
+            )
+            .from('problem')
+            .where('problem.position', '>', position)
+            .andWhere('problem.isCombined', true)
+            .then(response => {
+              let updatingPosition = position;
+              return Promise.all(response.map(item => {
+                return db.raw('UPDATE problem SET position = ? WHERE id = ?', [updatingPosition++, item.id]).transacting(params.transaction.trx);
+              }));
+            })
+            .then(response => {
+              resolve(response);
+            })
+            .catch(reject);
+        }
       });
     },
 
@@ -118,6 +153,12 @@ module.exports = function (app) {
   });
 
   app.use('/mergedproblems/edit/:problemId', knex({
+    Model: db,
+    name: 'problem',
+    id: 'id',
+  }));
+
+  app.use('/mergedproblems/remove/:problemId', knex({
     Model: db,
     name: 'problem',
     id: 'id',

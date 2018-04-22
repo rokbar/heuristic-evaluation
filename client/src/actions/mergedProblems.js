@@ -106,7 +106,7 @@ export function editMergedProblem({
 }
 
 export function removeMergedProblem(mergedProblemId) {
-  return fetch(`/problems/remove/${mergedProblemId}`, {
+  return fetch(`/mergedproblems/remove/${mergedProblemId}`, {
     headers: {
       'Authorization': getJwtToken(),
       'Content-Type': 'application/json',

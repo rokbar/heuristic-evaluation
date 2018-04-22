@@ -20,7 +20,7 @@ module.exports = function ({auth}) {
 
             return new Promise((resolve, reject) => {
               return hook.app.service('problems').create(
-                {description, location, solution, isCombined: true, teamId},
+                {position: 2147483647, description, location, solution, isCombined: true, teamId},
                 {transaction: hook.params.transaction},
               )
                 .then(result => {
@@ -354,6 +354,89 @@ module.exports = function ({auth}) {
         create: [() => {
           throw new Error('Not implemented')
         }],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
+    });
+
+    // TODO - check if leader belongs to team
+    app.service('mergedproblems/remove/:problemId').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
+        remove: [
+          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
+          (hook) => {
+            // params.route is available when service is called from front-end
+            // when service is called from back-end, params is available
+            const { problemId } = hook.params.route;
+            let position;
+
+            return new Promise((resolve, reject) => {
+              hook.app.service('problemrule').remove(
+                null,
+                {
+                  query: { problemId: problemId },
+                  transaction: hook.params.transaction
+                },
+              )
+                .then(result => {
+                  return hook.app.service('mergedproblems').remove(
+                    null,
+                    {
+                      query: { toId: problemId },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
+                  return hook.app.service('problemphotos').remove(
+                    null,
+                    {
+                      query: { problemId: problemId },
+                      transaction: hook.params.transaction
+                    },
+                  );
+                })
+                .then(result => {
+                  return hook.app.service('problems').remove(
+                    problemId,
+                    { transaction: hook.params.transaction },
+                  )
+                })
+                .then(result => {
+                  hook.result = result;
+                  position = result.position;
+                  return hook.app.service('mergedproblems/updatePositions').patch(
+                    null,
+                    {position},
+                    {
+                      transaction: hook.params.transaction,
+                    },
+                  );
+                })
+                .then(result => {
+                  resolve(hook);
+                })
+                .catch(reject);
+            })
+          }
+        ],
+        find: [() => { throw new Error('Not implemented') }],
+        get: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented')}],
+        patch: [() => { throw new Error('Not implemented') }],
+        create: [() => { throw new Error('Not implemented') }],
       },
       after: {
         all: [

@@ -29,7 +29,8 @@ class GeneralizationProblemsTable extends Component {
 
     this.state = {
       columnDefs: [
-        {headerName: 'Eil. Nr.', field: 'position', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true},
+        // TODO - add order number column (currently UI doesn't sync order number with back-end after problem removal)
+        {headerName: '', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true},
         {headerName: 'Aprašymas', field: 'description'},
         {headerName: 'Lokacija', field: 'location'},
         {headerName: 'Pažeistos euristikos', field: 'rules', cellRenderer: 'rulesCellRenderer'},
