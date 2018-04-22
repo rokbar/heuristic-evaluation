@@ -18,8 +18,8 @@ module.exports = function (app) {
   app.use('/mergedproblems/createBatch', {
     create(data, params) {
       return new Promise((resolve, reject) => {
-        const { mergedProblemIds, newProblemId } = data;
-        const rowsToInsert = mergedProblemIds && mergedProblemIds.map((item) => {
+        const { problemsToMergeIds, newProblemId } = data;
+        const rowsToInsert = problemsToMergeIds && problemsToMergeIds.map((item) => {
           return { fromId: item, toId: newProblemId }
         });
 
@@ -60,11 +60,13 @@ module.exports = function (app) {
         db.raw('GROUP_CONCAT(DISTINCT ??.??) as ??', ['problemphoto', 'path', 'photos']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['problemrule', 'ruleId', 'rules']),
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['evaluatorproblem', 'evaluatorId', 'users']),
+        db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['mergedproblem', 'fromId', 'originalProblemsIds']),
       )
         .from('problem')
         .leftJoin('evaluatorproblem', 'problem.id', '=', 'evaluatorproblem.problemId')
         .leftJoin('problemrule', 'problem.id', '=', 'problemrule.problemId')
         .leftJoin('problemphoto', 'problem.id', '=', 'problemphoto.problemId')
+        .leftJoin('mergedproblem', 'problem.id', '=', 'mergedproblem.toId')
         .where('problem.teamId', teamId)
         .andWhere('problem.isCombined', true)
         .groupBy('problem.id')

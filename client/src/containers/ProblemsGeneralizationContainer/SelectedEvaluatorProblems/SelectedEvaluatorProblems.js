@@ -72,14 +72,14 @@ class SelectedEvaluatorProblems extends Component {
     }
   };
 
-  handleMoveProblemsClick = () => {
-    const { moveProblems } = this.props;
+  handleMergeProblemsClick = () => {
+    const { mergeProblems } = this.props;
     const { filteredProblems, checkedProblems } = this.state;
     const problemsToMove = filter(filteredProblems, (item) => {
       return item && includes(checkedProblems, item.id);
     });
 
-    moveProblems(problemsToMove)
+    mergeProblems(problemsToMove)
       .then(problemIds => {
         const updatedProblems = map(this.state.filteredProblems, (item) => includes(problemIds, item.id)
           ? { ...item, isRevised: true }
@@ -187,7 +187,7 @@ class SelectedEvaluatorProblems extends Component {
         </span>
         <MoveToGeneralizedProblemsButton
           checkedProblems={this.state.checkedProblems}
-          handleMoveProblemsClick={this.handleMoveProblemsClick}
+          handleMergeProblemsClick={this.handleMergeProblemsClick}
         />
       </div>
     );

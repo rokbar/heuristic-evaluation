@@ -251,7 +251,9 @@ module.exports = function ({ auth }) {
         remove: [
           authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
           (hook) => {
-            const { problemId } = hook.params.route;
+            // params.route is available when service is called from front-end
+            // when service is called from back-end, params is available
+            const { problemId } = hook.params.route || hook.params;
 
             return new Promise((resolve, reject) => {
               hook.app.service('evaluatorproblem').remove(

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { filter, map, uniq, reduce } from 'lodash';
+import { filter, map, uniq, reduce, isArray, includes } from 'lodash';
 
 import TeamProblemsContainer from 'containers/TeamProblemsContainer';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
@@ -52,11 +52,12 @@ class LeaderGeneralizing extends Component {
     </span>;
   };
 
-  addProblems = (problems) => {
+  mergeGeneralizedProblems = (problems) => {
     return new Promise((resolve, reject) => {
       const description = map(problems, 'description').join('\n');
       const location = map(problems, 'location').join('\n');
       const solution = map(problems, 'solution').join('\n');
+
       const photos = reduce(problems, (mergedPhotos, item) => {
         const paths = map(item.photos, (item) => {
           let pathname = new URL(item).pathname;
@@ -65,23 +66,36 @@ class LeaderGeneralizing extends Component {
         });
         return mergedPhotos.concat(paths);
       }, []);
-      const rules = uniq(reduce(problems, (mergedRules, item) => mergedRules.concat(item.rules.split(',').map((id) => parseInt(id, 10))), []));
-      const mergedProblemIds = map(problems, 'id');
 
-      const mergedProblem = {description, location, solution, photos, rules};
+      const rules = uniq(reduce(problems, (mergedRules, item) => {
+        const rulesArray = isArray(item.rules) ? [...item.rules] : item.rules.split(',');
+        return mergedRules.concat(rulesArray.map(id => parseInt(id, 10)));
+      }, []));
 
-      mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, mergedProblemIds})
+      const originalProblemsIds = uniq(reduce(problems, (mergedIds, item) => {
+        const idsArray = isArray(item.originalProblemsIds) ? [...item.originalProblemsIds] : item.originalProblemsIds.split(',');
+        return mergedIds.concat(idsArray.map(id => parseInt(id, 10)));
+      }, []));
+
+      const problemsToMergeIds = map(problems, 'id');
+      const mergedProblem = {description, location, solution, photos, rules, originalProblemsIds};
+
+      mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, problemsToMergeIds})
         .then(result => {
           result && result.description && this.setState(prevState => ({
             generalizedProblems: [
-              ...prevState.generalizedProblems,
+              ...this.filterMergedProblems([...prevState.generalizedProblems], result.mergedProblemsIds),
               result,
             ],
           }));
-          resolve(mergedProblemIds);
+          resolve(problemsToMergeIds);
         })
         .catch(reject);
     });
+  };
+
+  filterMergedProblems = (previousProblems, mergedProblemsIds = []) => {
+    return filter(previousProblems, (item) => !includes(mergedProblemsIds, item.id));
   };
 
   removeProblem = (problemId) => {
@@ -102,7 +116,9 @@ class LeaderGeneralizing extends Component {
       .then((updatedProblem) => {
         const { id } = updatedProblem;
         const updatedProblems = updatedProblem && map(this.state.generalizedProblems, (item) => {
-          return item.id === id ? { ...updatedProblem } : { ...item };
+          // destructuring item object in both cases, because it contains originalProblemsIds
+          // updateProblem lacks originalProblemsIds
+          return item.id === id ? { ...item, ...updatedProblem } : { ...item };
         });
         this.setState({
           generalizedProblems: updatedProblems,
@@ -134,6 +150,7 @@ class LeaderGeneralizing extends Component {
           problems={generalizedProblems}
           removeProblem={this.removeProblem}
           editProblem={this.editProblem}
+          mergeProblems={this.mergeGeneralizedProblems}
         />
       </div>;
     }

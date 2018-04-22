@@ -12,14 +12,14 @@ const defaultProps = {
   handleMoveProblemsClick: null,
 };
 
-function MoveToGeneralizedProblemsButton({ checkedProblems, handleMoveProblemsClick }) {
+function MoveToGeneralizedProblemsButton({ checkedProblems, handleMergeProblemsClick }) {
   return (
     <Button
       color="teal"
       floated="right"
       size="small"
       disabled={!checkedProblems.length || !checkedProblems}
-      onClick={handleMoveProblemsClick}
+      onClick={handleMergeProblemsClick}
     >
       <Icon name="long arrow left" /> Perkelti apibendrinimui
     </Button>

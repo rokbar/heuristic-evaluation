@@ -11,7 +11,8 @@ export function createMergedProblem({
   rules,
   evaluatorProblems,
   teamId,
-  mergedProblemIds,
+  problemsToMergeIds,
+  originalProblemsIds,
 }) {
   return (dispatch) => {
     return fetch('/problems/merge', {
@@ -23,7 +24,8 @@ export function createMergedProblem({
         rules,
         evaluatorProblems,
         teamId,
-        mergedProblemIds,
+        problemsToMergeIds,
+        originalProblemsIds,
       }),
       headers: {
         'Authorization': getJwtToken(),
@@ -38,7 +40,7 @@ export function createMergedProblem({
         console.log(problem);
         dispatch({
           type: SET_EVALUATOR_PROBLEMS_AS_REVISED,
-          payload: { mergedProblemIds },
+          payload: { problemsToMergeIds },
         });
         return problem;
       })
@@ -120,10 +122,26 @@ export function removeMergedProblem(mergedProblemId) {
     });
 }
 
-export function mergeMergedProblems(mergedProblemIds) {
+export function mergeMergedProblems({
+  description,
+  location,
+  solution,
+  photos,
+  rules,
+  teamId,
+  problemsToMergeIds,
+  originalProblemsIds,
+}) {
   return fetch('/mergedproblems/merge', {
     body: JSON.stringify({
-      mergedProblemIds,
+      description,
+      location,
+      solution,
+      photos,
+      rules,
+      teamId,
+      problemsToMergeIds,
+      originalProblemsIds,
     }),
     headers: {
       'Authorization': getJwtToken(),

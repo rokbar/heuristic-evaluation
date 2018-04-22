@@ -1,6 +1,6 @@
 const {hooks: knexHooks} = require('feathers-knex');
 const authHooks = require('feathers-authentication-hooks');
-const { disallow } = require('feathers-hooks-common');
+const {disallow} = require('feathers-hooks-common');
 
 const {transaction} = knexHooks;
 
@@ -15,7 +15,7 @@ module.exports = function ({auth}) {
         ],
         create: [
           (hook) => {
-            const {description, location, solution, mergedProblemIds} = hook.data;
+            const {description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
             let problemId;
 
             return new Promise((resolve, reject) => {
@@ -31,13 +31,32 @@ module.exports = function ({auth}) {
                     {transaction: hook.params.transaction, headers: hook.params.headers},
                   );
                 })
-                .then(result => {
+                .then((result) => {
                   hook.result.photos = result;
+                  return new Promise((resolveAll, rejectAll) => {
+                    Promise.all(
+                      problemsToMergeIds.map(itemId => {
+                        return hook.app.service(`/problems/remove/:problemId`).remove(
+                          null,
+                          {
+                            problemId: itemId,
+                            transaction: hook.params.transaction
+                          },
+                        );
+                      })
+                    )
+                      .then(result => {
+                        resolveAll(result);
+                      })
+                      .catch(rejectAll);
+                  });
+                })
+                .then((result) => {
                   return hook.app.service('problems').patch(
                     null,
                     {isRevised: true},
                     {
-                      query: {id: {$in: [...mergedProblemIds]}},
+                      query: {id: {$in: [...problemsToMergeIds]}},
                       transaction: hook.params.transaction
                     },
                   );
@@ -50,14 +69,15 @@ module.exports = function ({auth}) {
                 })
                 .then(() => {
                   return hook.app.service('mergedproblems/createBatch').create(
-                    {mergedProblemIds, newProblemId: problemId},
+                    {problemsToMergeIds: originalProblemsIds, newProblemId: problemId},
                     {transaction: hook.params.transaction},
                   );
                 })
                 .then(() => {
                   hook.result.rules = rules;
                   hook.result.problemId = problemId;
-                  hook.result.mergedProblemsIds = mergedProblemIds;
+                  hook.result.mergedProblemsIds = problemsToMergeIds;
+                  hook.result.originalProblemsIds = originalProblemsIds;
                   resolve(hook);
                 })
                 .catch(reject);
@@ -124,7 +144,8 @@ module.exports = function ({auth}) {
         ],
         create: [
           (hook) => {
-            const {description, location, solution, photos, rules, teamId, mergedProblemIds} = hook.data;
+            const {description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
+            console.log(problemsToMergeIds);
             let problemId;
 
             return new Promise((resolve, reject) => {
@@ -146,7 +167,7 @@ module.exports = function ({auth}) {
                     null,
                     {isRevised: true},
                     {
-                      query: {id: {$in: [...mergedProblemIds]}},
+                      query: {id: {$in: [...problemsToMergeIds]}},
                       transaction: hook.params.transaction
                     },
                   );
@@ -159,14 +180,15 @@ module.exports = function ({auth}) {
                 })
                 .then(() => {
                   return hook.app.service('mergedproblems/createBatch').create(
-                    {mergedProblemIds, newProblemId: problemId},
+                    {problemsToMergeIds, newProblemId: problemId},
                     {transaction: hook.params.transaction},
                   );
                 })
                 .then(() => {
                   hook.result.rules = rules;
                   hook.result.problemId = problemId;
-                  hook.result.mergedProblemsIds = mergedProblemIds;
+                  hook.result.mergedProblemsIds = problemsToMergeIds;
+                  hook.result.originalProblemsIds = originalProblemsIds;
                   resolve(hook);
                 })
                 .catch(reject);
@@ -241,9 +263,9 @@ module.exports = function ({auth}) {
         ],
         patch: [
           (hook) => {
-            const { problemId } = hook.params.route;
+            const {problemId} = hook.params.route;
             const evaluatorId = hook.params.user.id;
-            const { description, location, solution, photos, rules } = hook.data;
+            const {description, location, solution, photos, rules} = hook.data;
             hook.result = {};
             const photosToRemove = photos && photos.length && photos.filter(item => item.removed);
             const photosToRemoveIds = photosToRemove && photosToRemove.length && photosToRemove.map(item => item.id);
@@ -254,14 +276,14 @@ module.exports = function ({auth}) {
               hook.app.service('problemrule').remove(
                 null,
                 {
-                  query: { problemId: problemId },
+                  query: {problemId: problemId},
                   transaction: hook.params.transaction
                 },
               )
                 .then(result => {
                   return hook.app.service('problemrule/createBatch').create(
-                    { problemId, rules },
-                    { transaction: hook.params.transaction },
+                    {problemId, rules},
+                    {transaction: hook.params.transaction},
                   );
                 })
                 .then(result => {
@@ -269,8 +291,8 @@ module.exports = function ({auth}) {
                   hook.result.evaluatorId = evaluatorId;
                   return hook.app.service('problems').patch(
                     problemId,
-                    { description, location, solution },
-                    { transaction: hook.params.transaction },
+                    {description, location, solution},
+                    {transaction: hook.params.transaction},
                   )
                 })
                 .then(result => {
@@ -280,7 +302,7 @@ module.exports = function ({auth}) {
                     {
                       query: {
                         id: {
-                          $in: [ ...photosToRemoveIds ],
+                          $in: [...photosToRemoveIds],
                         },
                       },
                       transaction: hook.params.transaction
@@ -289,30 +311,40 @@ module.exports = function ({auth}) {
                 })
                 .then(result => {
                   return photosToInsert && hook.app.service('imageupload/createBatch').create(
-                    { photos: photosToInsert, problemId },
-                    { transaction: hook.params.transaction },
+                    {photos: photosToInsert, problemId},
+                    {transaction: hook.params.transaction},
                   )
                 })
                 .then(result => {
                   return photosToInsert && hook.app.service('problemphotos/createBatch').create(
-                    { problemphotos: result, problemId: problemId },
-                    { transaction: hook.params.transaction, headers: hook.params.headers },
+                    {problemphotos: result, problemId: problemId},
+                    {transaction: hook.params.transaction, headers: hook.params.headers},
                   );
                 })
                 .then(result => {
                   const photosToRemainPaths = photosToRemain ? photosToRemain.map(item => item.path) : [];
-                  hook.result.photos = [ ...photosToRemainPaths, ...result ];
+                  hook.result.photos = [...photosToRemainPaths, ...result];
                   resolve(hook);
                 })
                 .catch(reject);
             })
           }
         ],
-        find: [() => { throw new Error('Not implemented') }],
-        get: [() => { throw new Error('Not implemented') }],
-        update: [() => { throw new Error('Not implemented')}],
-        remove: [() => { throw new Error('Not implemented') }],
-        create: [() => { throw new Error('Not implemented') }],
+        find: [() => {
+          throw new Error('Not implemented')
+        }],
+        get: [() => {
+          throw new Error('Not implemented')
+        }],
+        update: [() => {
+          throw new Error('Not implemented')
+        }],
+        remove: [() => {
+          throw new Error('Not implemented')
+        }],
+        create: [() => {
+          throw new Error('Not implemented')
+        }],
       },
       after: {
         all: [
