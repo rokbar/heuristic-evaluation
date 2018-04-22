@@ -112,8 +112,6 @@ module.exports = function ({ auth, local }) {
                     resolve(hook);
                   })
                   .catch(err => {
-                    console.log('err');
-                    console.log(err);
                     reject(err);
                   });
               } else {

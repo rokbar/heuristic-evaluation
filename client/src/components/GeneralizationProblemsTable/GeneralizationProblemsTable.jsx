@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from 'react-redux';
-import { map } from 'lodash';
+import {map} from 'lodash';
 import PropTypes from 'prop-types';
 import AgGrid from 'ag-grid';
 
@@ -17,6 +17,7 @@ import './GeneralizationProblemsTable.css';
 const propTypes = {
   problems: PropTypes.array,
   mergeProblems: PropTypes.func.isRequired,
+  dragProblem: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -30,7 +31,7 @@ class GeneralizationProblemsTable extends Component {
     this.state = {
       columnDefs: [
         // TODO - add order number column (currently UI doesn't sync order number with back-end after problem removal)
-        {headerName: '', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true},
+        {headerName: '', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, rowDrag: true},
         {headerName: 'Aprašymas', field: 'description'},
         {headerName: 'Lokacija', field: 'location'},
         {headerName: 'Pažeistos euristikos', field: 'rules', cellRenderer: 'rulesCellRenderer'},
@@ -67,8 +68,14 @@ class GeneralizationProblemsTable extends Component {
     this.setState({isAnyRowSelected: selectedRowCount !== 0})
   }
 
+  onRowDragEnd(event) {
+    const {node: {data: {id},}, overIndex} = event;
+    const {dragProblem} = this.props;
+    dragProblem(id, overIndex + 1);
+  }
+
   handleOnMergeProblemsClick = () => {
-    const { mergeProblems } = this.props;
+    const {mergeProblems} = this.props;
     const selectedRows = this.gridApi.getSelectedRows();
 
     mergeProblems(selectedRows);
@@ -91,10 +98,14 @@ class GeneralizationProblemsTable extends Component {
             rowData={problems}
             columnDefs={this.state.columnDefs}
             rowSelection={this.state.rowSelection}
+            rowDragManaged={true}
+            animateRows={true}
+            enableFilter={true}
             frameworkComponents={this.state.frameworkComponents}
             getRowNodeId={this.state.getRowNodeId}
             onGridReady={this.onGridReady.bind(this)}
             onSelectionChanged={this.onSelectionChanged.bind(this)}
+            onRowDragEnd={this.onRowDragEnd.bind(this)}
           />
         </div>
       </div>

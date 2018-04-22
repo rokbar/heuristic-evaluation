@@ -121,15 +121,22 @@ module.exports = function ({auth}) {
       }
     });
 
-    app.service('mergedproblems').hooks({
+    app.service('/mergedproblems/createBatch').hooks({
       before: {
         all: [
           disallow('external'),
+        ],
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              resolve(hook);
+            })
+          }
         ]
-      },
+      }
     });
 
-    app.service('/mergedproblems/createBatch').hooks({
+    app.service('/mergedproblems/updatePositions').hooks({
       before: {
         all: [
           disallow('external'),
@@ -154,7 +161,6 @@ module.exports = function ({auth}) {
         create: [
           (hook) => {
             const {position, description, location, solution, photos, rules, teamId, problemsToMergeIds, originalProblemsIds} = hook.data;
-            console.log(problemsToMergeIds);
             let problemId;
 
             return new Promise((resolve, reject) => {
@@ -375,18 +381,18 @@ module.exports = function ({auth}) {
           transaction.start(),
         ],
         remove: [
-          authHooks.restrictToOwner({ idField: 'id', ownerField: 'evaluatorId'}),
+          authHooks.restrictToOwner({idField: 'id', ownerField: 'evaluatorId'}),
           (hook) => {
             // params.route is available when service is called from front-end
             // when service is called from back-end, params is available
-            const { problemId } = hook.params.route;
+            const {problemId} = hook.params.route;
             let position;
 
             return new Promise((resolve, reject) => {
               hook.app.service('problemrule').remove(
                 null,
                 {
-                  query: { problemId: problemId },
+                  query: {problemId: problemId},
                   transaction: hook.params.transaction
                 },
               )
@@ -394,7 +400,7 @@ module.exports = function ({auth}) {
                   return hook.app.service('mergedproblems').remove(
                     null,
                     {
-                      query: { toId: problemId },
+                      query: {toId: problemId},
                       transaction: hook.params.transaction
                     },
                   );
@@ -403,7 +409,7 @@ module.exports = function ({auth}) {
                   return hook.app.service('problemphotos').remove(
                     null,
                     {
-                      query: { problemId: problemId },
+                      query: {problemId: problemId},
                       transaction: hook.params.transaction
                     },
                   );
@@ -411,7 +417,7 @@ module.exports = function ({auth}) {
                 .then(result => {
                   return hook.app.service('problems').remove(
                     problemId,
-                    { transaction: hook.params.transaction },
+                    {transaction: hook.params.transaction},
                   )
                 })
                 .then(result => {
@@ -419,7 +425,7 @@ module.exports = function ({auth}) {
                   position = result.position;
                   return hook.app.service('mergedproblems/updatePositions').patch(
                     null,
-                    {position},
+                    {position: position - 1},
                     {
                       transaction: hook.params.transaction,
                     },
@@ -432,11 +438,21 @@ module.exports = function ({auth}) {
             })
           }
         ],
-        find: [() => { throw new Error('Not implemented') }],
-        get: [() => { throw new Error('Not implemented') }],
-        update: [() => { throw new Error('Not implemented')}],
-        patch: [() => { throw new Error('Not implemented') }],
-        create: [() => { throw new Error('Not implemented') }],
+        find: [() => {
+          throw new Error('Not implemented')
+        }],
+        get: [() => {
+          throw new Error('Not implemented')
+        }],
+        update: [() => {
+          throw new Error('Not implemented')
+        }],
+        patch: [() => {
+          throw new Error('Not implemented')
+        }],
+        create: [() => {
+          throw new Error('Not implemented')
+        }],
       },
       after: {
         all: [
@@ -448,6 +464,80 @@ module.exports = function ({auth}) {
           transaction.rollback()
         ],
       }
+    });
+
+    // TODO - check if leader of a team
+    app.service('/mergedproblems/changeProblemPosition').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
+        patch: [
+          authHooks.restrictToRoles({
+            roles: ['evaluator'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+          (hook) => {
+            const {problemId, toPosition} = hook.data;
+            return new Promise((resolve, reject) => {
+              hook.app.service('problems').patch(
+                problemId,
+                {position: toPosition},
+                {transaction: hook.params.transaction},
+              )
+                .then(result => {
+                  return hook.app.service('mergedproblems/updatePositions').patch(
+                    null,
+                    {position: toPosition, problemId},
+                    {
+                      transaction: hook.params.transaction,
+                    },
+                  );
+                })
+                .then(result => {
+                  hook.result = problemId;
+                  resolve(hook);
+                })
+                .catch(reject);
+            })
+          }
+        ],
+        find: [() => {
+          throw new Error('Not implemented')
+        }],
+        get: [() => {
+          throw new Error('Not implemented')
+        }],
+        update: [() => {
+          throw new Error('Not implemented')
+        }],
+        create: [() => {
+          throw new Error('Not implemented')
+        }],
+        remove: [() => {
+          throw new Error('Not implemented')
+        }],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
+    });
+
+    app.service('mergedproblems').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ]
+      },
     });
   }
 };

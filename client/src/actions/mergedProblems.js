@@ -163,3 +163,26 @@ export function mergeMergedProblems({
       console.log(error);
     });
 }
+
+export function changeProblemPosition({ problemId, toPosition }) {
+  return fetch(`/mergedproblems/changeProblemPosition`, {
+    body: JSON.stringify({
+      problemId,
+      toPosition,
+    }),
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'PATCH',
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(problem => {
+      return problem;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}

@@ -6,7 +6,13 @@ import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable'
 import { Dropdown, Icon } from 'semantic-ui-react';
 import SubmitGeneralizedProblemsButton from './SubmitGeneralizedProblemsButton';
 
-import { getGeneralizedProblems, removeMergedProblem, editMergedProblem, mergeMergedProblems } from 'actions/mergedProblems';
+import {
+  getGeneralizedProblems,
+  removeMergedProblem,
+  editMergedProblem,
+  mergeMergedProblems,
+  changeProblemPosition,
+} from 'actions/mergedProblems';
 import { finishGeneralization } from 'actions/teams';
 
 import './LeaderGeneralizing.css'
@@ -96,6 +102,14 @@ class LeaderGeneralizing extends Component {
     });
   };
 
+  dragGeneralizedProblem = (problemId, toPosition) => {
+    changeProblemPosition({problemId, toPosition})
+      .then(response => {
+        console.log(response);
+      })
+      .catch();
+  };
+
   filterMergedProblems = (previousProblems, mergedProblemsIds = []) => {
     return filter(previousProblems, (item) => !includes(mergedProblemsIds, item.id));
   };
@@ -153,6 +167,7 @@ class LeaderGeneralizing extends Component {
           removeProblem={this.removeProblem}
           editProblem={this.editProblem}
           mergeProblems={this.mergeGeneralizedProblems}
+          dragProblem={this.dragGeneralizedProblem}
         />
       </div>;
     }

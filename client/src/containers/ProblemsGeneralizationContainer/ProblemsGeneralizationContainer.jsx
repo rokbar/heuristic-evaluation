@@ -13,6 +13,7 @@ import {
   removeMergedProblem,
   editMergedProblem,
   mergeMergedProblems,
+  changeProblemPosition,
 } from 'actions/mergedProblems';
 
 class ProblemsGeneralizationContainer extends Component {
@@ -65,7 +66,13 @@ class ProblemsGeneralizationContainer extends Component {
         return mergedIds.concat(idsArray.map(id => parseInt(id, 10)));
       }, []));
 
-      mergeMergedProblems({...mergedProblem, teamId: this.props.teamId, problemsToMergeIds, originalProblemsIds, position})
+      mergeMergedProblems({
+        ...mergedProblem,
+        teamId: this.props.teamId,
+        problemsToMergeIds,
+        originalProblemsIds,
+        position
+      })
         .then(result => {
           result && result.description && this.setState(prevState => ({
             generalizedProblems: [
@@ -77,6 +84,14 @@ class ProblemsGeneralizationContainer extends Component {
         })
         .catch(reject);
     });
+  };
+
+  dragGeneralizedProblem = (problemId, toPosition) => {
+    changeProblemPosition({problemId, toPosition})
+      .then(response => {
+        console.log(response);
+      })
+      .catch();
   };
 
   filterMergedProblems = (previousProblems, mergedProblemsIds = []) => {
@@ -113,7 +128,7 @@ class ProblemsGeneralizationContainer extends Component {
   };
 
   getMergedProblemProps(problems) {
-    const { generalizedProblems } = this.state;
+    const {generalizedProblems} = this.state;
     // new problem's position
     const position = generalizedProblems && generalizedProblems.length + 1;
     const description = map(problems, 'description').join('\n');
@@ -152,6 +167,7 @@ class ProblemsGeneralizationContainer extends Component {
             removeProblem={this.removeProblem}
             editProblem={this.editProblem}
             mergeProblems={this.mergeGeneralizedProblems}
+            dragProblem={this.dragGeneralizedProblem}
           />
         </Segment>
         <Segment className="EvaluatorProblems">

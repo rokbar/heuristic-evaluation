@@ -19,11 +19,9 @@ export function localAuth({ username, password }) {
       password: password,
     })
       .then(response => {
-        console.log('Authenticated!', response);
         return feathersClient.passport.verifyJWT(response.accessToken);
       })
       .then(payload => {
-        console.log('JWT Payload', payload);
         const { name, role, userId, companyId } = payload;
         dispatch({
           type: AUTH_USER,
@@ -39,7 +37,6 @@ export function localAuth({ username, password }) {
       })
       .then(user => {
         feathersClient.set('user', user);
-        console.log('User', feathersClient.get('user'));
         dispatch(push(`${user.role}`));
       })
       .catch(function (error) {
@@ -56,11 +53,9 @@ export function jwtAuth({ token }) {
       accessToken: token,
     })
       .then(response => {
-        console.log('Authenticated!', response);
         return feathersClient.passport.verifyJWT(response.accessToken);
       })
       .then(payload => {
-        console.log('JWT Payload', payload);
         const { name, role, userId, companyId } = payload;
         dispatch({
           type: AUTH_USER,
@@ -76,7 +71,6 @@ export function jwtAuth({ token }) {
       })
       .then(user => {
         feathersClient.set('user', user);
-        console.log('User', feathersClient.get('user'));
         dispatch(push(`${user.role}`));
       })
       .catch(function (error) {
