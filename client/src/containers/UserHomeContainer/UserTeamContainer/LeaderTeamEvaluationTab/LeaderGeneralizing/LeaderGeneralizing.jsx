@@ -17,6 +17,7 @@ import { finishGeneralization } from 'actions/teams';
 
 import './LeaderGeneralizing.css'
 
+// TODO - duplicate with ProblemsGeneralizationContainer, refactor
 class LeaderGeneralizing extends Component {
   constructor(props) {
     super(props);

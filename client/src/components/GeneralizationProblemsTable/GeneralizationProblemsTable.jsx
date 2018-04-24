@@ -31,14 +31,99 @@ class GeneralizationProblemsTable extends Component {
     this.state = {
       columnDefs: [
         // TODO - add order number column (currently UI doesn't sync order number with back-end after problem removal)
-        {headerName: '', headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, rowDrag: true},
-        {headerName: 'Aprašymas', field: 'description'},
-        {headerName: 'Lokacija', field: 'location'},
-        {headerName: 'Pažeistos euristikos', field: 'rules', cellRenderer: 'rulesCellRenderer'},
-        {headerName: 'Nuotraukos', field: 'photos', cellRenderer: 'photoCellRenderer'},
-        {headerName: 'Pasiūlymas taisymui', field: 'solution'},
-        {headerName: 'Veiksmai', field: 'actions', cellRenderer: 'actionsCellRenderer'},
+        {
+          headerName: '',
+          headerCheckboxSelectionFilteredOnly: true,
+          checkboxSelection: true,
+          rowDrag: true,
+          width: 80,
+          suppressSizeToFit: true,
+          suppressFilter: true,
+        },
+        {
+          headerName: 'Aprašymas',
+          field: 'description',
+        },
+        {
+          headerName: 'Lokacija',
+          field: 'location',
+        },
+        {
+          headerName: 'Pažeistos euristikos',
+          field: 'rules',
+          cellRenderer: 'rulesCellRenderer',
+        },
+        {
+          headerName: 'Nuotraukos',
+          field: 'photos',
+          cellRenderer: 'photoCellRenderer',
+          suppressFilter: true,
+        },
+        {
+          headerName: 'Pasiūlymas taisymui',
+          field: 'solution',
+        },
+        {
+          headerName: 'Veiksmai',
+          field: 'actions',
+          cellRenderer: 'actionsCellRenderer',
+          suppressFilter: true,
+        },
       ],
+      localeText: {
+        page: "Puslapis",
+        more: "Daugiau",
+        to: "Iki",
+        next: "Kitas",
+        last: "Paskutinis",
+        first: "Pirmas",
+        previous: "Ankstesnis",
+        loadingOoo: "Kraunasi...",
+        selectAll: "Pasirinkti viską",
+        searchOoo: "Ieškoti...",
+        blanks: "Tuščias",
+        filterOoo: "Filtruoti...",
+        applyFilter: "Pritaikyti filtrą...",
+        equals: "Lygu",
+        notEqual: "Nelygu",
+        lessThanOrEqual: "Mažiau arba lygu",
+        greaterThanOrEqual: "Daugiau arba lygu",
+        inRange: "Rėžyje",
+        lessThan: "Mažiau nei",
+        greaterThan: "Daugiau nei",
+        contains: "Susideda iš",
+        notContains: "Nesusideda iš",
+        startsWith: "Prasideda su",
+        endsWith: "Baigiasi su",
+        group: "Grupė",
+        columns: "Stulpelis",
+        groups: "Grupės",
+        values: "Reikšmės",
+        noRowsToShow: "Nėra duomenų",
+        autosizeThiscolumn: "Pataisyti stulpelio dydį",
+        autosizeAllColumns: "Pataisyti stulpelių dydį",
+        resetColumns: "Atstatyti stulpelius",
+        expandAll: "Išskleisti visus",
+        collapseAll: "Sutraukti visus",
+        sum: "Suma",
+        min: "Min",
+        max: "Max",
+        first: "Pirmas",
+        last: "Paskutinis",
+        none: "Nėra",
+        count: "Kiekis",
+        average: "Vidurkis",
+        copy: "Kopijuoti",
+        ctrlC: "Ctrl + C",
+        paste: "Įklijuoti",
+        ctrlV: "Ctrl + V",
+      },
+      defaultColDef: {
+        width: 150,
+        editable: true,
+        filter: "agTextColumnFilter"
+      },
+      defaultColGroupDef: { marryChildren: true },
       getRowNodeId: function (data) {
         return data.id;
       },
@@ -104,11 +189,16 @@ class GeneralizationProblemsTable extends Component {
           <AgGridReact
             rowData={problems}
             columnDefs={this.state.columnDefs}
+            defaultColDef={this.state.defaultColDef}
+            defaultColGroupDef={this.state.defaultColGroupDef}
             rowSelection={this.state.rowSelection}
             rowDragManaged={true}
             animateRows={true}
             enableFilter={true}
+            enableColResize={true}
+            enableSorting={true}
             frameworkComponents={this.state.frameworkComponents}
+            localeText={this.state.localeText}
             getRowNodeId={this.state.getRowNodeId}
             onGridReady={this.onGridReady.bind(this)}
             onSelectionChanged={this.onSelectionChanged.bind(this)}
