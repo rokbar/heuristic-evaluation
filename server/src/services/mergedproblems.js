@@ -40,7 +40,7 @@ module.exports = function (app) {
   app.use('/mergedproblems/updatePositions', {
     patch(id, data, params) {
       return new Promise((resolve, reject) => {
-        const {position, problemId} = data;
+        const {position, problemId, wasDraggedUp} = data;
         db.transacting(params.transaction.trx)
           .select(
             'problem.id',
@@ -49,13 +49,28 @@ module.exports = function (app) {
           .from('problem')
           .where('problem.position', '>=', position)
           .andWhere('problem.isCombined', true)
-          .andWhereNot('problem.id', problemId || -1) // when new row is inserted to position, we need to skip that problem
-          .orderBy('position', 'inc')
+          // .andWhereNot('problem.id', problemId || -1) // when new row is inserted to position, we need to skip that problem
+          .orderByRaw(
+            problemId
+              ? db.raw(`position, FIELD(id, ?) ${ wasDraggedUp ? 'DESC' : ''}`, [problemId])
+              : 'position'
+          )
           .then(response => {
             let updatingPosition = position;
             return Promise.all(response.map(item => {
-              return db.raw('UPDATE problem SET position = ? WHERE id = ?', [++updatingPosition, item.id]).transacting(params.transaction.trx);
+              return db.raw('UPDATE problem SET position = ? WHERE id = ?', [updatingPosition++, item.id]).transacting(params.transaction.trx);
             }));
+          })
+          .then(response => {
+            // returning problems' positions to remap positions in UI
+            return db.transacting(params.transaction.trx)
+              .select(
+                'problem.id',
+                'problem.position',
+              )
+              .from('problem')
+              .where('problem.isCombined', true)
+              .orderBy('position', 'inc')
           })
           .then(response => {
             resolve(response);

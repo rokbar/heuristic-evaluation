@@ -20,7 +20,8 @@ module.exports = function ({auth}) {
 
             return new Promise((resolve, reject) => {
               return hook.app.service('problems').create(
-                {position: 2147483647, description, location, solution, isCombined: true, teamId},
+                // position - INT(11)
+                {position: position, description, location, solution, isCombined: true, teamId},
                 {transaction: hook.params.transaction},
               )
                 .then(result => {
@@ -480,7 +481,7 @@ module.exports = function ({auth}) {
             idField: 'id',
           }),
           (hook) => {
-            const {problemId, toPosition} = hook.data;
+            const {problemId, toPosition, wasDraggedUp} = hook.data;
             return new Promise((resolve, reject) => {
               hook.app.service('problems').patch(
                 problemId,
@@ -490,14 +491,14 @@ module.exports = function ({auth}) {
                 .then(result => {
                   return hook.app.service('mergedproblems/updatePositions').patch(
                     null,
-                    {position: toPosition, problemId},
+                    {position: 1, problemId, wasDraggedUp},
                     {
                       transaction: hook.params.transaction,
                     },
                   );
                 })
                 .then(result => {
-                  hook.result = problemId;
+                  hook.result = result;
                   resolve(hook);
                 })
                 .catch(reject);

@@ -164,11 +164,12 @@ export function mergeMergedProblems({
     });
 }
 
-export function changeProblemPosition({ problemId, toPosition }) {
+export function changeProblemPosition({ problemId, toPosition, wasDraggedUp }) {
   return fetch(`/mergedproblems/changeProblemPosition`, {
     body: JSON.stringify({
       problemId,
       toPosition,
+      wasDraggedUp,
     }),
     headers: {
       'Authorization': getJwtToken(),
@@ -179,8 +180,8 @@ export function changeProblemPosition({ problemId, toPosition }) {
     .then(response => {
       return response.json();
     })
-    .then(problem => {
-      return problem;
+    .then(positions => {
+      return positions;
     })
     .catch(error => {
       console.log(error);

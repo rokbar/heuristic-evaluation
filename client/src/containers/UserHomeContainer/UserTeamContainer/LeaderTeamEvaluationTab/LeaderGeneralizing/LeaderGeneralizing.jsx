@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { filter, map, uniq, reduce, isArray, includes } from 'lodash';
+import { filter, map, uniq, reduce, isArray, includes, find, sortBy, get } from 'lodash';
 
 import TeamProblemsContainer from 'containers/TeamProblemsContainer';
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
@@ -61,7 +61,7 @@ class LeaderGeneralizing extends Component {
   mergeGeneralizedProblems = (problems) => {
     return new Promise((resolve, reject) => {
       // highest problem's in list position, from this position all below existing problems' positions will be updated
-      const position = problems[0] && problems[0].position;
+      const position = problems.length && get(sortBy(problems, 'position')[0], 'position');
       const description = map(problems, 'description').join('\n');
       const location = map(problems, 'location').join('\n');
       const solution = map(problems, 'solution').join('\n');
@@ -92,8 +92,7 @@ class LeaderGeneralizing extends Component {
         .then(result => {
           result && result.description && this.setState(prevState => ({
             generalizedProblems: [
-              ...this.filterMergedProblems([...prevState.generalizedProblems], result.mergedProblemsIds),
-              result,
+              ...this.filterMergedProblems([...prevState.generalizedProblems, result], result.mergedProblemsIds),
             ],
           }));
           resolve(problemsToMergeIds);
@@ -102,16 +101,24 @@ class LeaderGeneralizing extends Component {
     });
   };
 
-  dragGeneralizedProblem = (problemId, toPosition) => {
-    changeProblemPosition({problemId, toPosition})
-      .then(response => {
-        console.log(response);
+  dragGeneralizedProblem = (problemId, toPosition, wasDraggedUp) => {
+    changeProblemPosition({problemId, toPosition, wasDraggedUp})
+      .then(positions => {
+        const remappedPositions = map(this.state.generalizedProblems, (prob) => {
+          const positionFromResponse = get(find(positions, pos => pos.id === prob.id), 'position');
+          prob.position = positionFromResponse || prob.position;
+          return prob;
+        });
+
+        this.setState({ generalizedProblems: sortBy(remappedPositions, 'position') });
       })
       .catch();
   };
 
   filterMergedProblems = (previousProblems, mergedProblemsIds = []) => {
-    return filter(previousProblems, (item) => !includes(mergedProblemsIds, item.id));
+    const filteredProblems = filter(previousProblems, (item) => !includes(mergedProblemsIds, item.id));
+    let position = 1;
+    return map(sortBy(filteredProblems, 'position'), (item => ({ ...item, position: position++ }))); // recalculate positions
   };
 
   removeProblem = (problemId) => {
@@ -120,8 +127,10 @@ class LeaderGeneralizing extends Component {
         const filteredProblems = problemId && filter(this.state.generalizedProblems, (item) => {
           return item.id !== problemId;
         });
+        let position = 1;
+        const recalculatedPositions = map(filteredProblems, (item => ({ ...item, position: position++ }))); // recalculate positions
         this.setState({
-          generalizedProblems: filteredProblems ? filteredProblems : [],
+          generalizedProblems: recalculatedPositions ? recalculatedPositions : [],
         });
       })
       .catch();

@@ -69,9 +69,16 @@ class GeneralizationProblemsTable extends Component {
   }
 
   onRowDragEnd(event) {
-    const {node: {data: {id},}, overIndex} = event;
+    const {node: {data: {id, position},}, overIndex} = event;
     const {dragProblem} = this.props;
-    dragProblem(id, overIndex + 1);
+    // position count starts from 1, overIndex starts from 0
+    if (position === overIndex + 1) {
+      // if position was not changed we do not bother to make a request to api
+      return 0;
+    } else {
+      const wasDraggedUp = position > overIndex + 1;
+      dragProblem(id, overIndex + 1, wasDraggedUp);
+    }
   }
 
   handleOnMergeProblemsClick = () => {
