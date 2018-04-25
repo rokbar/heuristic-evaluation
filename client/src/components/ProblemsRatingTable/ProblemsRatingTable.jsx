@@ -16,6 +16,7 @@ const propTypes = {
   problems: PropTypes.array,
   rules: PropTypes.array,
   hasRatingStarted: PropTypes.bool,
+  hasEvaluatorFinishedRating: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -24,6 +25,7 @@ const defaultProps = {
   problems: [],
   rules: [],
   hasRatingStarted: false,
+  hasEvaluatorFinishedRating: false,
 };
 
 class ProblemsRatingTable extends Component {
@@ -172,11 +174,11 @@ class ProblemsRatingTable extends Component {
   }
 
   renderRatingCell({ problemId = null, value = 0 }) {
-    const { hasRatingStarted } = this.props;
+    const { hasRatingStarted, hasEvaluatorFinishedRating } = this.props;
 
     return <Rating
       maxRating={4}
-      disabled={!hasRatingStarted}
+      disabled={!hasRatingStarted || hasEvaluatorFinishedRating}
       clearable
       defaultRating={value}
       problemId={problemId}
@@ -185,24 +187,26 @@ class ProblemsRatingTable extends Component {
   }
 
   renderTableActions() {
-    const { hasRatingStarted } = this.props;
+    const { hasRatingStarted, hasEvaluatorFinishedRating } = this.props;
 
-    return hasRatingStarted && <SaveRatingsButton
+    return hasRatingStarted && !hasEvaluatorFinishedRating && <SaveRatingsButton
       handleClickSave={this.handleClickSave}
     />;
   }
 
   render() {
-    const { hasRatingStarted, startRatingProblems, finishRatingProblems } = this.props;
+    const { hasRatingStarted, hasEvaluatorFinishedRating, startRatingProblems, finishRatingProblems } = this.props;
     return [
-      !hasRatingStarted
-        ? <StartRatingButton
-          onStartRating={startRatingProblems}
-        />
-        : <FinishRatingButton
-          onFinishRating={finishRatingProblems}
-          hasSavedRatings={!this.state.updatedRatings.length} // do not let submit ratings if there are unsaved data
-        />,
+      !hasEvaluatorFinishedRating
+        ? !hasRatingStarted
+          ? <StartRatingButton
+            onStartRating={startRatingProblems}
+          />
+          : <FinishRatingButton
+            onFinishRating={finishRatingProblems}
+            hasSavedRatings={!this.state.updatedRatings.length} // do not let submit ratings if there are unsaved data
+          />
+        : null,
       <DataTable
         actions={this.renderTableActions()}
         headers={this.getTableHeaders()}

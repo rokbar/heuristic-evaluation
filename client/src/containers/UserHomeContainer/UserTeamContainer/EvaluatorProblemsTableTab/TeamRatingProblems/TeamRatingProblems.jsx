@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import ProblemsRatingTable from 'components/ProblemsRatingTable';
+import RatingFinished from './RatingFinished';
 
 import { getGeneralizedProblems } from 'actions/mergedProblems';
 import { getHeuristicsRules } from 'actions/heuristics';
@@ -61,6 +62,7 @@ class TeamRatingProblems extends Component {
           teamId={teamId}
           problems={problems}
           hasRatingStarted={false}
+          hasEvaluatorFinishedRating={false}
           rules={rules}
           startRatingProblems={startRatingProblems}
         />;
@@ -69,11 +71,21 @@ class TeamRatingProblems extends Component {
           teamId={teamId}
           problems={problems}
           hasRatingStarted={true}
+          hasEvaluatorFinishedRating={false}
           rules={rules}
           finishRatingProblems={finishRatingProblems}
         />;
       case evaluatorTeamState.evaluationFinished:
-        return <div>baigta</div>;
+        return [
+          <RatingFinished />,
+          <ProblemsRatingTable
+            teamId={teamId}
+            problems={problems}
+            hasRatingStarted={true}
+            hasEvaluatorFinishedRating={true}
+            rules={rules}
+          />
+        ];
     }
     return <ProblemsRatingTable />
   }

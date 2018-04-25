@@ -6,3 +6,7 @@
 .TableActionsRenderer {
   align-self: flex-start;
 }
+
+.cell-wrap-text {
+  white-space: normal;
+}

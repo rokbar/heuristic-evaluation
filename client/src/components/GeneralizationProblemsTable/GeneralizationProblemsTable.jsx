@@ -39,35 +39,49 @@ class GeneralizationProblemsTable extends Component {
           width: 80,
           suppressSizeToFit: true,
           suppressFilter: true,
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
         {
           headerName: 'Aprašymas',
           field: 'description',
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
         {
           headerName: 'Lokacija',
           field: 'location',
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
         {
           headerName: 'Pažeistos euristikos',
           field: 'rules',
           cellRenderer: 'rulesCellRenderer',
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
         {
           headerName: 'Nuotraukos',
           field: 'photos',
           cellRenderer: 'photoCellRenderer',
           suppressFilter: true,
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
         {
           headerName: 'Pasiūlymas taisymui',
           field: 'solution',
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
         {
           headerName: 'Veiksmai',
           field: 'actions',
           cellRenderer: 'actionsCellRenderer',
           suppressFilter: true,
+          cellClass: "cell-wrap-text",
+          autoHeight: true,
         },
       ],
       localeText: {
@@ -139,6 +153,9 @@ class GeneralizationProblemsTable extends Component {
         />,
       },
       isAnyRowSelected: false,
+      getRowHeight: function(params) {
+        return 100;
+      }
     }
   }
 
@@ -146,6 +163,10 @@ class GeneralizationProblemsTable extends Component {
     this.gridApi = params.api;
     this.columnApi = params.columnApi;
     this.gridApi.sizeColumnsToFit();
+
+    setTimeout(function() {
+      params.api.resetRowHeights();
+    }, 500);
   }
 
   onSelectionChanged(event) {
@@ -176,12 +197,13 @@ class GeneralizationProblemsTable extends Component {
   render() {
     const {problems} = this.props;
     let containerStyle = {
+      boxSizing: "border-box",
       height: 500,
-      width: '100%',
+      width: "100%"
     };
-
+    console.log(this);
     return (
-      <div className="GeneralizationProblemsTable">
+      <div className="GeneralizationProblemsTable" style={{ width: "100%", height: "100%" }}>
         <TableActionsRenderer
           mergeProblems={this.handleOnMergeProblemsClick.bind(this)}
         />
