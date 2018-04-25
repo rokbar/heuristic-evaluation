@@ -1,10 +1,11 @@
 import React from 'react';
 import { map } from 'lodash';
-import { List, Label, Button, Icon } from 'semantic-ui-react';
+import { List, Label, Grid, Icon, Header } from 'semantic-ui-react';
 
 import { evaluatorTeamState } from 'utils/enums';
 
-export default function EvaluatorTeamMembersList(props) {
+// TODO - duplice EvaluatorTeamMembersList, refactor
+export default function LeaderRating(props) {
   const renderListRows = (props) => {
     const { teamUsers, leaderId } = props;
     return map(teamUsers, (user, key) => (
@@ -23,8 +24,17 @@ export default function EvaluatorTeamMembersList(props) {
   };
 
   return (
-    <List celled>
-      {renderListRows(props)}
-    </List>
+    <Grid
+      textAlign="center"
+      style={{height: "100%"}}
+      verticalAlign="middle"
+    >
+      <Grid.Column style={{maxWidth: 450}}>
+        <Header size='medium'>Vertintojai</Header>
+        <List celled>
+          {renderListRows(props)}
+        </List>
+      </Grid.Column>
+    </Grid>
   )
 }

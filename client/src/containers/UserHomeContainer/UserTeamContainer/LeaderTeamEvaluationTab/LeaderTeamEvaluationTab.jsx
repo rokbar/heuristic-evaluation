@@ -8,6 +8,9 @@ import StartEvaluationForm from './StartEvaluationForm';
 import LeaderEvaluationNotFinished from './LeaderEvaluationNotFinished';
 import LeaderSubmitted from './LeaderSubmitted'
 import LeaderGeneralizing from './LeaderGeneralizing';
+import LeaderRating from './LeaderRating';
+
+import { getUsersByTeam } from 'actions/teams';
 
 import { teamState, evaluatorTeamState } from 'utils/enums';
 
@@ -23,7 +26,9 @@ const defaultProps = {
 
 class LeaderTeamEvaluationTab extends Component {
   componentDidMount() {
+    const { teamId } = this.props.match.params;
     this.props.getSharedHeuristics();
+    this.props.getUsersByTeam({ teamId });
   }
 
   renderContent() {
@@ -66,7 +71,10 @@ class LeaderTeamEvaluationTab extends Component {
     }
 
     if (state === teamState.ratingProblems) {
-      return <div>Reitingavimas</div>
+      return <LeaderRating
+        teamUsers={this.props.teamUsers}
+        leaderId={this.props.leaderId}
+      />
     }
   }
 
@@ -91,10 +99,14 @@ LeaderTeamEvaluationTab.propTypes = propTypes;
 LeaderTeamEvaluationTab.defaultProps = defaultProps;
 
 function mapStateToProps(state) {
-  return { heuristics: state.heuristics.shared };
+  return {
+    heuristics: state.heuristics.shared,
+    teamUsers: state.users.teamUsers,
+    leaderId: state.auth.userId,
+  };
 }
 
 export default connect(
   mapStateToProps,
-  { getSharedHeuristics }
+  { getSharedHeuristics, getUsersByTeam }
 )(LeaderTeamEvaluationTab);

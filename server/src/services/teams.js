@@ -13,7 +13,7 @@ module.exports = function (app) {
   app.use('/teams/:teamId/users', {
     find(params) {
       const teamId = params.route.teamId;
-      return db.select('user.id', 'name', 'email', 'lastLogon', 'companyId', 'systemAdminId', 'role').from('user')
+      return db.select('user.id', 'name', 'email', 'lastLogon', 'companyId', 'systemAdminId', 'role', 'evaluatorteam.state').from('user')
         .innerJoin('evaluatorteam', 'user.id', '=', 'evaluatorteam.evaluatorId')
         .where('evaluatorteam.teamId', teamId)
         .then(response => {
