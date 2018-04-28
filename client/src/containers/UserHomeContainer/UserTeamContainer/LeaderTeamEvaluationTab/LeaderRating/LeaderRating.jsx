@@ -1,11 +1,24 @@
 import React from 'react';
-import { map } from 'lodash';
+import { map, reduce } from 'lodash';
+
 import { List, Label, Grid, Icon, Header } from 'semantic-ui-react';
+import TeamFinishRatingButton from './TeamFinishRatingButton';
+import TeamRatingNotFinishedMessage from './TeamRatingNotFinishedMessage';
 
 import { evaluatorTeamState } from 'utils/enums';
 
+import { finishRating } from 'actions/teams';
+
 // TODO - duplice EvaluatorTeamMembersList, refactor
 export default function LeaderRating(props) {
+  const hasAllMembersFinishedRating = ({ teamUsers = [] }) => {
+    const finishedCount = reduce(teamUsers, (result, user) => {
+      result += user.state === evaluatorTeamState.evaluationFinished ? 1 : 0;
+      return result;
+    }, 0);
+    return finishedCount === teamUsers.length;
+  };
+
   const renderListRows = (props) => {
     const { teamUsers, leaderId } = props;
     return map(teamUsers, (user, key) => (
@@ -23,7 +36,14 @@ export default function LeaderRating(props) {
     ))
   };
 
-  return (
+  return [
+    <TeamRatingNotFinishedMessage />,
+    <TeamFinishRatingButton
+      changeTeamState={props.changeTeamState}
+      disabled={!hasAllMembersFinishedRating({ ...props })}
+      finishRating={finishRating}
+      teamId={props.teamId}
+    />,
     <Grid
       textAlign="center"
       style={{height: "100%"}}
@@ -36,5 +56,5 @@ export default function LeaderRating(props) {
         </List>
       </Grid.Column>
     </Grid>
-  )
+  ];
 }

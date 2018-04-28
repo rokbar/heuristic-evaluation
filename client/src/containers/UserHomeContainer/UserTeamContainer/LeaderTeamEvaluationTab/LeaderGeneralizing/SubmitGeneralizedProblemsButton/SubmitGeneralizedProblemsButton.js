@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 import { teamState } from 'utils/enums'
 
-export default function RedirectToMergeProblemsPageButton({ teamId, changeTeamState, finishGeneralization }) {
+export default function SubmitGeneralizedProblemsButton({ teamId, changeTeamState, finishGeneralization }) {
   const handleClick = ({ teamId, finishGeneralization, changeTeamState }) => {
     finishGeneralization({ teamId })
       .then(response => {

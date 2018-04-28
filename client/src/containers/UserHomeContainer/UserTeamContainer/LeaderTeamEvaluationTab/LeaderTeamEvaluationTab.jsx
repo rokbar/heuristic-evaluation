@@ -9,6 +9,7 @@ import LeaderEvaluationNotFinished from './LeaderEvaluationNotFinished';
 import LeaderSubmitted from './LeaderSubmitted'
 import LeaderGeneralizing from './LeaderGeneralizing';
 import LeaderRating from './LeaderRating';
+import LeaderTeamEvaluationFinished from './LeaderTeamEvaluationFinished';
 
 import { getUsersByTeam } from 'actions/teams';
 
@@ -74,6 +75,13 @@ class LeaderTeamEvaluationTab extends Component {
       return <LeaderRating
         teamUsers={this.props.teamUsers}
         leaderId={this.props.leaderId}
+        teamId={this.props.teamId}
+        changeTeamState={this.props.changeTeamState}
+      />
+    }
+
+    if (state === teamState.evaluationFinished) {
+      return <LeaderTeamEvaluationFinished
       />
     }
   }

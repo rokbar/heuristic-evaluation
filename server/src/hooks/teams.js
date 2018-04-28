@@ -174,5 +174,19 @@ module.exports = function ({ auth, local }) {
         ],
       },
     });
+
+    // TODO - add restriction, only available to group leader, check if team state === 3
+    app.service('teams/:teamId/finishRating').hooks({
+      before: {
+        all: [ auth.hooks.authenticate('jwt') ],
+        create: [
+          authHooks.restrictToRoles({
+            roles: ['evaluator'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+      },
+    });
   }
 };

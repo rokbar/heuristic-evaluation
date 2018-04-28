@@ -203,3 +203,22 @@ export function finishGeneralization({ teamId }) {
       console.log(error);
     });
 }
+
+export function finishRating({ teamId }) {
+  return fetch(`/teams/${teamId}/finishRating`, {
+    headers: {
+      'Authorization': getJwtToken(),
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
+    .then(response => {
+      return response.json();
+    })
+    .then(teams => {
+      console.log(teams);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
