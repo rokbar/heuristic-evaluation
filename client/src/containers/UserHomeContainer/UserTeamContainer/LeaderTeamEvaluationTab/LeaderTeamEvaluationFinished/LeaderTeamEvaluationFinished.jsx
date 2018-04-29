@@ -4,6 +4,7 @@ import {map, find, sortBy, get} from 'lodash';
 
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import LeaderTeamEvaluationFinishedMessage from './LeaderTeamEvaluationFinishedMessage';
+import LeaderGenerateReportButton from './LeaderGenerateReportButton';
 
 import {
   getGeneralizedProblems,
@@ -70,6 +71,10 @@ class LeaderTeamEvaluationFinished extends Component {
     const {teamId} = this.props;
     return [
       <LeaderTeamEvaluationFinishedMessage/>,
+      <LeaderGenerateReportButton
+        teamId={teamId}
+        disabled={false}
+      />,
       <div
         className="GeneralizationProblemsTable"
       >
