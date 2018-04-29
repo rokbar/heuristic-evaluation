@@ -16,12 +16,18 @@ import './GeneralizationProblemsTable.css';
 
 const propTypes = {
   problems: PropTypes.array,
-  mergeProblems: PropTypes.func.isRequired,
-  dragProblem: PropTypes.func.isRequired,
+  editProblem: PropTypes.func,
+  removeProblem: PropTypes.func,
+  mergeProblems: PropTypes.func,
+  dragProblem: PropTypes.func,
 };
 
 const defaultProps = {
   problems: [],
+  editProblem: null,
+  removeProblem: null,
+  mergeProblems: null,
+  dragProblem: null,
 };
 
 class GeneralizationProblemsTable extends Component {
@@ -34,8 +40,8 @@ class GeneralizationProblemsTable extends Component {
         {
           headerName: '',
           headerCheckboxSelectionFilteredOnly: true,
-          checkboxSelection: true,
-          rowDrag: true,
+          checkboxSelection: props.mergeProblems && true,
+          rowDrag: props.dragProblem && true,
           width: 80,
           suppressSizeToFit: true,
           suppressFilter: true,
@@ -67,6 +73,11 @@ class GeneralizationProblemsTable extends Component {
           cellRenderer: 'photoCellRenderer',
           suppressFilter: true,
           cellClass: "cell-wrap-text",
+          autoHeight: true,
+        },
+        {
+          headerName: 'Aktualumo įvertis',
+          field: 'ratingsAverage',
           autoHeight: true,
         },
         {
@@ -195,18 +206,17 @@ class GeneralizationProblemsTable extends Component {
   };
 
   render() {
-    const {problems} = this.props;
+    const {problems, mergeProblems} = this.props;
     let containerStyle = {
       boxSizing: "border-box",
       height: 500,
       width: "100%"
     };
-    console.log(this);
     return (
       <div className="GeneralizationProblemsTable" style={{ width: "100%", height: "100%" }}>
-        <TableActionsRenderer
+        {mergeProblems && <TableActionsRenderer
           mergeProblems={this.handleOnMergeProblemsClick.bind(this)}
-        />
+        />}
         <div style={containerStyle} className="ag-theme-balham">
           <AgGridReact
             rowData={problems}

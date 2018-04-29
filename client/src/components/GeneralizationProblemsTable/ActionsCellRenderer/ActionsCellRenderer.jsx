@@ -13,9 +13,9 @@ export default function ActionsCellRenderer(props) {
         problemId={id}
         editProblem={editProblem}
       />
-      <Button onClick={() => removeProblem(id)}>
+      {removeProblem && <Button onClick={() => removeProblem(id)}>
         <Icon name="trash" />
-      </Button>
+      </Button>}
     </Button.Group>
   )
 }

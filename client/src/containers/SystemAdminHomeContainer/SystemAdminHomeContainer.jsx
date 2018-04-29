@@ -5,7 +5,6 @@ import { Segment } from 'semantic-ui-react';
 import Layout from 'components/Layout';
 import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
-import FilterContainer from 'containers/FilterContainer';
 import UsersTableContainer from './UsersTableContainer';
 import AddUserForm from './UsersTableContainer/AddUserForm';
 import EditUserForm from './UsersTableContainer/EditUserForm';
@@ -23,11 +22,6 @@ export default class SystemAdminHomeContainer extends Component {
       {name: 'Naudotojai', pathName: '/systemadmin/users'},
       {name: 'Įmonės', pathName: '/systemadmin/companies'},
     ]
-  }
-
-  renderAsideContent() {
-    return <FilterContainer
-    />;
   }
 
   renderArticleSegment(Component, props) {
@@ -84,7 +78,6 @@ export default class SystemAdminHomeContainer extends Component {
       <Layout
         header={SharedMenuContainer}
         article={this.renderArticleContent()}
-        aside={this.renderAsideContent()}
       />
     )
   }

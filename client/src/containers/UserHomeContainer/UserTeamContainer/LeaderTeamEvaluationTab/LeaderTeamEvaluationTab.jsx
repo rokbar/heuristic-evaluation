@@ -75,13 +75,15 @@ class LeaderTeamEvaluationTab extends Component {
       return <LeaderRating
         teamUsers={this.props.teamUsers}
         leaderId={this.props.leaderId}
-        teamId={this.props.teamId}
+        teamId={teamId}
         changeTeamState={this.props.changeTeamState}
       />
     }
 
     if (state === teamState.evaluationFinished) {
       return <LeaderTeamEvaluationFinished
+        teamId={teamId}
+        heuristicId={heuristicId}
       />
     }
   }

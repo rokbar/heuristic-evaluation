@@ -4,7 +4,6 @@ import { Segment, Transition } from 'semantic-ui-react';
 
 import Layout from 'components/Layout';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
-import FilterContainer from 'containers/FilterContainer';
 import UserTeamTableContainer from './UserTeamsTableContainer';
 import UserTeamContainer from './UserTeamContainer';
 import EditAccountContainer from '../EditAccountContainer';
@@ -12,11 +11,6 @@ import EditAccountContainer from '../EditAccountContainer';
 class UserHomeContainer extends Component {
   pushHistory(pathName) {
     this.props.history.push(pathName);
-  }
-
-  renderAsideContent() {
-    return <FilterContainer
-    />;
   }
 
   renderArticleSegment(Component, props) {
@@ -55,7 +49,6 @@ class UserHomeContainer extends Component {
       <Layout
         header={SharedMenuContainer}
         article={this.renderArticleContent()}
-        aside={this.renderAsideContent()}
       />
     )
   }
