@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import TeamNotStarted from './TeamNotStarted';
 import TeamEvaluationStarted from './TeamEvaluationStarted';
@@ -14,7 +14,7 @@ class EvaluatorProblemsTableTab extends Component {
   render() {
     const {
       role,
-      team: { state, heuristicId },
+      team: {state, heuristicId},
       evaluatorTeam,
       startUserEvaluation,
       submitUserProblems,
@@ -24,9 +24,9 @@ class EvaluatorProblemsTableTab extends Component {
       teamId
     } = this.props;
 
-    switch(state) {
+    switch (state) {
       case 1:
-        return <TeamNotStarted />;
+        return <TeamNotStarted/>;
       case 2:
         return <TeamEvaluationStarted
           role={role}
@@ -56,11 +56,12 @@ class EvaluatorProblemsTableTab extends Component {
         />;
       case 5:
         return <TeamEvaluationFinished
-        role={role}
-        state={state}
-        evaluatorTeam={evaluatorTeam}
-      />;
-      default: return <div>Puslapis yra nepasiekiamas.</div>
+          teamId={teamId}
+          role={role}
+          heuristicId={heuristicId}
+        />;
+      default:
+        return <div>Puslapis yra nepasiekiamas.</div>
     }
   }
 }

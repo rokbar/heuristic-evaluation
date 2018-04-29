@@ -87,7 +87,14 @@ class TeamRatingProblems extends Component {
           />
         ];
     }
-    return <ProblemsRatingTable />
+    return <ProblemsRatingTable
+      teamId={teamId}
+      problems={problems}
+      hasRatingStarted={false}
+      hasEvaluatorFinishedRating={false}
+      rules={rules}
+      startRatingProblems={startRatingProblems}
+    />
   }
 }
 

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {map, find, sortBy, get} from 'lodash';
 
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
+import LeaderTeamEvaluationFinishedMessage from './LeaderTeamEvaluationFinishedMessage';
 
 import {
   getGeneralizedProblems,
@@ -67,15 +68,18 @@ class LeaderTeamEvaluationFinished extends Component {
   renderProblemsList() {
     const {generalizedProblems} = this.state;
     const {teamId} = this.props;
-    return <div
-      className="GeneralizationProblemsTable"
-    >
-      <GeneralizationProblemsTable
-        problems={generalizedProblems}
-        editProblem={this.editProblem}
-        dragProblem={this.dragGeneralizedProblem}
-      />
-    </div>;
+    return [
+      <LeaderTeamEvaluationFinishedMessage/>,
+      <div
+        className="GeneralizationProblemsTable"
+      >
+        <GeneralizationProblemsTable
+          problems={generalizedProblems}
+          editProblem={this.editProblem}
+          dragProblem={this.dragGeneralizedProblem}
+        />
+      </div>
+    ];
   }
 
   render() {
@@ -85,4 +89,4 @@ class LeaderTeamEvaluationFinished extends Component {
   }
 }
 
-export default connect(null, { getHeuristicsRules })(LeaderTeamEvaluationFinished);
+export default connect(null, {getHeuristicsRules})(LeaderTeamEvaluationFinished);
