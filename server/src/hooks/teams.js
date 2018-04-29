@@ -1,5 +1,6 @@
 const authHooks = require('feathers-authentication-hooks');
 const { hooks: knexHooks } = require('feathers-knex');
+const { disallow } = require('feathers-hooks-common');
 
 const { teamState } = require('../utils/enums');
 const { transaction } = knexHooks;
@@ -7,56 +8,6 @@ const { transaction } = knexHooks;
 // TODO - adjust restriction (separate leaders from evaluators)
 module.exports = function ({ auth, local }) {
   return function (app) {
-    app.service('teams').hooks({
-      before: {
-        all: [
-          auth.hooks.authenticate('jwt'),
-        ],
-        find: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin', 'evaluator'],
-            fieldName: 'role',
-            idField: 'id',
-          }),
-        ],
-        get: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin', 'evaluator'],
-            fieldName: 'role',
-            idField: 'id',
-          }),
-        ],
-        create: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin'],
-            fieldName: 'role',
-            idField: 'id',
-          }),
-        ],
-        update: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin'],
-            fieldName: 'role',
-            idField: 'id',
-          }),
-        ],
-        patch: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin'],
-            fieldName: 'role',
-            idField: 'id',
-          }),
-        ],
-        remove: [
-          authHooks.restrictToRoles({
-            roles: ['companyadmin'],
-            fieldName: 'role',
-            idField: 'id',
-          }),
-        ],
-      },
-    });
-
     app.service('teams/:teamId/users').hooks({
       before: {
         all: [
@@ -178,10 +129,101 @@ module.exports = function ({ auth, local }) {
     // TODO - add restriction, only available to group leader, check if team state === 3
     app.service('teams/:teamId/finishRating').hooks({
       before: {
-        all: [ auth.hooks.authenticate('jwt') ],
+        all: [
+          auth.hooks.authenticate('jwt'),
+          transaction.start(),
+        ],
         create: [
           authHooks.restrictToRoles({
             roles: ['evaluator'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+          (hook) => {
+            const teamId = hook.params.route.teamId;
+            return new Promise((resolve, reject) => {
+              app.service('teams').patch(
+                teamId,
+                { state: teamState.evaluationFinished },
+                { transaction: hook.params.transaction },
+              )
+                .then(response => {
+                  return app.service('mergedproblems/ratingsAverage').create(
+                    { teamId },
+                    { transaction: hook.params.transaction },
+                  );
+                })
+                .then(response => {
+                  hook.result = teamId;
+                  resolve(hook);
+                })
+                .catch(error => {
+                  reject(error);
+                });
+            });
+          }
+        ],
+        find: [() => { throw new Error('Not implemented') }],
+        get: [() => { throw new Error('Not implemented') }],
+        update: [() => { throw new Error('Not implemented') }],
+        patch: [() => { throw new Error('Not implemented') }],
+        remove: [() => { throw new Error('Not implemented') }],
+      },
+      after: {
+        all: [
+          transaction.end()
+        ],
+      },
+      error: {
+        all: [
+          transaction.rollback()
+        ],
+      }
+    });
+
+    app.service('teams').hooks({
+      before: {
+        all: [
+          auth.hooks.authenticate('jwt'),
+        ],
+        find: [
+          authHooks.restrictToRoles({
+            roles: ['companyadmin', 'evaluator'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+        get: [
+          authHooks.restrictToRoles({
+            roles: ['companyadmin', 'evaluator'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+        create: [
+          authHooks.restrictToRoles({
+            roles: ['companyadmin'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+        update: [
+          authHooks.restrictToRoles({
+            roles: ['companyadmin'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+        patch: [
+          authHooks.restrictToRoles({
+            roles: ['companyadmin'],
+            fieldName: 'role',
+            idField: 'id',
+          }),
+        ],
+        remove: [
+          authHooks.restrictToRoles({
+            roles: ['companyadmin'],
             fieldName: 'role',
             idField: 'id',
           }),

@@ -4,12 +4,6 @@ const db = require('../database');
 const { teamState } = require('../utils/enums');
 
 module.exports = function (app) {
-  app.use('/teams', knex({
-    Model: db,
-    name: 'team',
-    id: 'id',
-  }));
-
   app.use('/teams/:teamId/users', {
     find(params) {
       const teamId = params.route.teamId;
@@ -76,25 +70,15 @@ module.exports = function (app) {
     }
   });
 
-  app.use('/teams/:teamId/finishRating', {
-    create(data, params) {
-      const teamId = params.route.teamId;
-      return new Promise((resolve, reject) => {
-        app.service('teams').patch(
-          teamId,
-          { state: teamState.evaluationFinished },
-        )
-          .then(response => {
-            return resolve(response);
-          })
-          .catch(error => {
-            reject(error);
-          });
-      });
-    },
+  app.use('/teams/:teamId/finishRating', knex({
+    Model: db,
+    name: 'team',
+    id: 'id',
+  }));
 
-    setup(app) {
-      this.app = app;
-    }
-  });
+  app.use('/teams', knex({
+    Model: db,
+    name: 'team',
+    id: 'id',
+  }));
 };

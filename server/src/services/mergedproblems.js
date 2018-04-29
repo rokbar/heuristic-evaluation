@@ -146,6 +146,40 @@ module.exports = function (app) {
     id: 'id',
   }));
 
+  app.use('/mergedproblems/ratingsAverage', {
+    create(data, params) {
+      const { teamId } = data;
+      return new Promise((resolve, reject) => {
+        db.transacting(params.transaction.trx)
+          .select(
+            'rating.problemId',
+            db.raw('ROUND(AVG(??.??), 2) as ??', ['rating', 'value', 'ratingsAverage']),
+          )
+          .from('rating')
+          .leftJoin('problem', 'problem.id', '=', 'rating.problemId')
+          .where('problem.teamId', teamId)
+          .groupBy('rating.problemId')
+          .then(response => {
+            return Promise.all(response.map(item => {
+              return db
+                .raw('UPDATE problem SET ratingsAverage = ? WHERE id = ?', [item.ratingsAverage, item.problemId])
+                .transacting(params.transaction.trx);
+            }));
+          })
+          .then(response => {
+            resolve(response);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+
+    setup(app) {
+      this.app = app;
+    }
+  });
+
   app.use('/mergedproblems', knex({
     Model: db,
     name: 'mergedproblem',

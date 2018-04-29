@@ -533,6 +533,21 @@ module.exports = function ({auth}) {
       }
     });
 
+    app.service('/mergedproblems/ratingsAverage').hooks({
+      before: {
+        all: [
+          disallow('external'),
+        ],
+        create: [
+          (hook) => {
+            return new Promise((resolve, reject) => {
+              resolve(hook);
+            })
+          }
+        ]
+      }
+    });
+
     app.service('mergedproblems').hooks({
       before: {
         all: [
