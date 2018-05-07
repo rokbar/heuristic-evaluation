@@ -1,12 +1,13 @@
-import feathers from '@feathersjs/feathers';
-import rest from '@feathersjs/rest-client';
-import auth from '@feathersjs/authentication-client';
+import feathers from '@feathersjs/client';
 import { push } from 'react-router-redux'
 
 import {
   AUTH_USER,
   UNAUTH_USER,
 } from './types';
+
+const rest = feathers.rest;
+const auth = feathers.authentication;
 
 const feathersClient = feathers();
 feathersClient.configure(rest().fetch(fetch)).configure(auth({ storage: localStorage }));
