@@ -112,3 +112,4 @@ lib/
 data/
 src/config.js
 public/*
+build/*
