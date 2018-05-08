@@ -94,7 +94,7 @@ module.exports = function (app) {
     find(params) {
       const teamId = params.route.teamId;
       const host = params.headers.host;
-      const proto = params.headers['x-forwarded-proto'];
+      const proto = params.headers['x-forwarded-proto'] || 'http';
 
       return db.select(
         'problem.id',

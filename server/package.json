@@ -23,6 +23,7 @@
   "scripts": {
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint src/. test/. --config .eslintrc.json",
+    "start": "node src/",
     "start dev win": "SET NODE_ENV=development & node src/",
     "start prod lin": "NODE_ENV=production node src/",
     "mocha": "mocha test/ --recursive --exit"

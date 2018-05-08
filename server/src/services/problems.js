@@ -8,7 +8,7 @@ module.exports = function (app) {
       const teamId = params.route.teamId;
       const userId = params.user.id;
       const host = params.headers.host;
-      const proto = params.headers['x-forwarded-proto'];
+      const proto = params.headers['x-forwarded-proto'] || 'http';
 
       return db.select(
         'problem.id',
@@ -46,7 +46,7 @@ module.exports = function (app) {
     find(params) {
       const teamId = params.route.teamId;
       const host = params.headers.host;
-      const proto = params.headers['x-forwarded-proto'];
+      const proto = params.headers['x-forwarded-proto'] || 'http';
 
       return db.select(
         'problem.id',
@@ -94,7 +94,7 @@ module.exports = function (app) {
       const {problemId} = params.route;
       const problem = {};
       const host = params.headers && params.headers.host;
-      const proto = params.headers && params.headers['x-forwarded-proto'];
+      const proto = params.headers && (params.headers['x-forwarded-proto'] || 'http');
 
       return new Promise((resolve, reject) => {
         app.service('problemrule').find(

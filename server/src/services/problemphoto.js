@@ -6,7 +6,7 @@ module.exports = function (app) {
   app.use('/problemphotos/createBatch', {
     create(data, params) {
       const host = params.headers.host;
-      const proto = params.headers['x-forwarded-proto'];
+      const proto = params.headers['x-forwarded-proto'] || 'http';
 
       return new Promise((resolve, reject) => {
         const { problemphotos, problemId } = data;
