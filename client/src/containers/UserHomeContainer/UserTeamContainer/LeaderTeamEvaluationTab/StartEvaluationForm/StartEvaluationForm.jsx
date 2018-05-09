@@ -12,6 +12,8 @@ import { startEvaluation } from 'actions/teams';
 import HeuristicSelect from './HeuristicSelect';
 import PlanList from './PlanList';
 
+import { teamState } from 'utils/enums';
+
 class StartEvaluationForm extends Component {
   constructor(props) {
     super(props);
@@ -33,15 +35,24 @@ class StartEvaluationForm extends Component {
     this.setState({ checkedHeuristic: newIndex });
   };
 
+  onFormSubmit = (data) => {
+    const { startEvaluation, changeTeamState } = this.props;
+    startEvaluation({ ...data })
+      .then((response) => {
+        return changeTeamState(teamState.evaluationStarted);
+      })
+      .catch();
+  };
+
   render() {
-    const { handleSubmit, startEvaluation, heuristics } = this.props;
+    const { handleSubmit, heuristics } = this.props;
     const { checkedHeuristic } = this.state;
 
     return [
       <Header as="h2" color="teal" textAlign="center">
         Pradėti vertinimą
       </Header>,
-      <Form onSubmit={handleSubmit(startEvaluation)} size="large">
+      <Form onSubmit={handleSubmit(this.onFormSubmit)} size="large">
         <Segment>
           <HeuristicSelect
             heuristics={heuristics}

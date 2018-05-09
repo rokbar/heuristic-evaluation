@@ -44,6 +44,7 @@ class LeaderTeamEvaluationTab extends Component {
           className="StartEvaluationForm"
           heuristics={this.props.heuristics}
           teamId={teamId}
+          changeTeamState={this.props.changeTeamState}
         />
       );
     }
