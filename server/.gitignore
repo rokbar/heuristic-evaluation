@@ -108,8 +108,8 @@ $RECYCLE.BIN/
 *.lnk
 
 # Others
+.env
 lib/
 data/
-src/config.js
 public/*
 build/*

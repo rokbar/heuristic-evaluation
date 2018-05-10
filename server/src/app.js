@@ -13,6 +13,8 @@ const auth = require('@feathersjs/authentication');
 const local = require('@feathersjs/authentication-local');
 const jwt = require('@feathersjs/authentication-jwt');
 
+require('dotenv').config();
+
 const middleware = require('./middleware');
 const services = require('./services');
 

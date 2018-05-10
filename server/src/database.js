@@ -4,6 +4,6 @@ const { connection } = require('./config');
 module.exports = (function() {
   return knex({
     client: 'mysql',
-    connection,
+    connection: connection(),
   });
 })();
