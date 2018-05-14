@@ -1,11 +1,16 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-export default function getReportMarkup(problems) {
+import ReportDataTable from './ReportDataTable';
+
+export default function getReportMarkup({ problems = [], heuristic }) {
   return renderToStaticMarkup(
     <html>
       <body>
-        <div>labas</div>
+        <ReportDataTable
+          problems={problems}
+          heuristic={heuristic}
+        />
       </body>
     </html>
   );

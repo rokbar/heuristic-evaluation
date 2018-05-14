@@ -74,6 +74,7 @@ class LeaderTeamEvaluationFinished extends Component {
       <LeaderGenerateReportButton
         teamId={teamId}
         disabled={false}
+        problems={generalizedProblems}
       />,
       <div
         className="GeneralizationProblemsTable"

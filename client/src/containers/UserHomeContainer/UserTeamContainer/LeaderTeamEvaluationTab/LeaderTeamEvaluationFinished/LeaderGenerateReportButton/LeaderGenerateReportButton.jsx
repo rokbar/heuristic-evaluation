@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import {Button, Icon} from 'semantic-ui-react';
 import getReportMarkup from './ReportMarkup';
@@ -10,12 +11,13 @@ class LeaderGenerateReportButton extends Component {
   }
 
   handleClick = () => {
-    this.setState({ reportMarkup: getReportMarkup() })
+    const { problems, heuristic } = this.props;
+    this.setState({ reportMarkup: getReportMarkup({problems, heuristic}) })
   };
-S
+
   render() {
     const { disabled, teamId } = this.props;
-    console.log(this.state.reportMarkup);
+
     return [
       <Button
         disabled={disabled}
@@ -32,4 +34,12 @@ S
   }
 }
 
-export default LeaderGenerateReportButton;
+function mapStateToProps(state) {
+  return {
+    heuristic: state.heuristics.team[0],
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(LeaderGenerateReportButton);
