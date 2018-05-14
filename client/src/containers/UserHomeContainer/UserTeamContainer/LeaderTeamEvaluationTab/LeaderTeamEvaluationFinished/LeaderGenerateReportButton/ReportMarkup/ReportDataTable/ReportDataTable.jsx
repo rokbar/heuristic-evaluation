@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { find, isArray, map, toNumber } from 'lodash';
+import { find, isArray, map, toNumber, forEach } from 'lodash';
 
 import DataTable from 'components/DataTable';
+import { Label } from 'semantic-ui-react';
 
 class ReportDataTable extends Component {
+  constructor(props) {
+    super(props);
+    this.renderPhotoCell = this.renderPhotoCell.bind(this);
+  }
+
   getRulesDescriptionsList(problemRules) {
-    const {rules} = this.props.heuristic;
+    const { rules } = this.props.heuristic;
     let mappedRules;
 
     if (isArray(problemRules)) {
@@ -26,22 +32,59 @@ class ReportDataTable extends Component {
   getTableHeaders() {
     return {
       description: 'Aprašymas',
-      location: 'Lokacija',
       rules: 'Pažeistos euristikos',
+      location: 'Lokacija',
+      photo: 'Nuotrauka',
       solution: 'Pasiūlymas taisymui',
     }
   }
 
   getTableData() {
-    return this.props.problems.map(item => {
-      const {description, location, solution, rules} = item;
+    return this.props.problems.map(async (item) => {
+      const { description, location, photos, solution, rules } = item;
+      const renderedPhoto = await this.renderPhotoCell(photos);
       return {
         description,
-        location,
         rules: this.getRulesDescriptionsList(rules),
+        location,
+        photo: renderedPhoto,
         solution,
       };
     })
+  }
+
+  renderImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      let width = 45;
+      let height = 0;
+      img.onload = function() {
+        height = this.height / (this.width / 45);
+        resolve({ width, height });
+      };
+      img.src = src;
+    });
+  }
+
+  renderPhotoCell(photos) {
+    let promises = [];
+
+
+    forEach(photos, (photo => {
+      promises.push(
+        new Promise((resolve, reject) => <div>{map(photos, (item, key) => {
+          return this.renderImage(item)
+            .then(({ width, height }) => {
+              return resolve(<img height={height} width={width} src={item}/>);
+            })
+        })}</div>),
+      )
+      // : <Label content="Nuotrauka nerasta." icon="warning"/>;
+    }));
+
+    return Promise.all(promises)
+      .then(photos => photos)
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -49,7 +92,7 @@ class ReportDataTable extends Component {
       <DataTable
         headers={this.getTableHeaders()}
         data={this.getTableData()}
-      />
+      />,
     ];
   }
 }
