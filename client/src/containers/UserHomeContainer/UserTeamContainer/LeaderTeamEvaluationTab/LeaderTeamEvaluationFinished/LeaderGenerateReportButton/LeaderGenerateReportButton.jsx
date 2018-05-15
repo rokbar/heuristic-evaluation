@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isArray, map, toNumber, forEach, find } from 'lodash';
+import { isArray, map, toNumber, reduce, find } from 'lodash';
 
 import { Button, Icon } from 'semantic-ui-react';
 import getReportMarkup from './ReportMarkup';
@@ -12,13 +12,48 @@ class LeaderGenerateReportButton extends Component {
   }
 
   handleClick = () => {
-    const { heuristic } = this.props;
+    let problems, photos;
     this.getTableData()
-      .then((problems) => {
-        this.setState({ reportMarkup: getReportMarkup({ problems, heuristic }) })
+      .then(problemsResponse => {
+        problems = problemsResponse;
+        return this.mapPhotosNumbers();
+      })
+      .then(photosResponse => {
+        this.setState({
+          reportMarkup: getReportMarkup({
+            problems,
+            photos: photosResponse,
+          })
+        })
       })
       .catch();
   };
+
+  mapPhotosNumbers() {
+    const { problems } = this.props;
+    let lastProblemNumber = 0;
+
+    return new Promise((resolve, reject) => {
+      return Promise.all(
+        reduce(problems, (result, item) => {
+          const { photos } = item;
+          return result.concat(map(photos, async (photo) => {
+            const { width, height } = await this.renderImage(photo, 500);
+            return {
+              url: photo,
+              width,
+              height,
+              number: ++lastProblemNumber,
+            }
+          }));
+        }, [])
+      )
+        .then(mappedProblems => {
+          resolve(mappedProblems);
+        });
+    });
+
+  }
 
   getRulesDescriptionsList(problemRules) {
     const { rules } = this.props.heuristic;
@@ -52,19 +87,18 @@ class LeaderGenerateReportButton extends Component {
           solution,
         };
       }))
-        .then(problems => {
-          console.log(problems);
-          resolve(problems);
-        })
+        .then(problems => resolve(problems))
         .catch(reject);
     });
   }
 
   renderPhotoCell(photos) {
     return new Promise((resolve, reject) => {
-      return Promise.all(map(photos, async (item) => this.renderImage(item)
+      return Promise.all(map(photos, async (item) => this.renderImage(item, 80)
         .then(({ width, height }) => {
-          return <img height={height} width={width} src={item}/>;
+          return item
+            ? <img height={height} width={width} src={item}/>
+            : <label>-</label>;
         }),
       ))
         .then((photoCell) => resolve(<div>{photoCell}</div>))
@@ -72,10 +106,9 @@ class LeaderGenerateReportButton extends Component {
     });
   }
 
-  renderImage(src) {
+  renderImage(src, width = 80) {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      let width = 80;
       let height = 0;
       img.onload = function() {
         height = this.height / (this.width / width);

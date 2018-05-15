@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { find, isArray, map, toNumber } from 'lodash';
+import { map } from 'lodash';
+
 
 import DataTable from 'components/DataTable';
 
@@ -14,12 +15,24 @@ class ReportDataTable extends Component {
     }
   }
 
+  renderPhotos() {
+    const { photos } = this.props;
+    return map(photos, (item) => {
+      const { url, width, height, number } = item;
+      return <div>
+        <img src={url} width={width} height={height} />
+        {number} pav.
+      </div>;
+    });
+  }
+
   render() {
     return [
       <DataTable
         headers={this.getTableHeaders()}
         data={this.props.problems}
       />,
+      this.renderPhotos(),
     ];
   }
 }
