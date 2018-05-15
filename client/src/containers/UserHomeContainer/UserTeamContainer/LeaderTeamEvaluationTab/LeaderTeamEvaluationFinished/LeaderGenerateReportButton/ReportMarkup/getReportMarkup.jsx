@@ -3,13 +3,12 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import ReportDataTable from './ReportDataTable';
 
-export default function getReportMarkup({ problems = [], heuristic }) {
+export default function getReportMarkup({ problems = [] }) {
   return renderToStaticMarkup(
     <html>
       <body>
         <ReportDataTable
           problems={problems}
-          heuristic={heuristic}
         />
       </body>
     </html>
