@@ -2,7 +2,7 @@
   "name": "heuristic-evaluation",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://ktu-heuristic-evaluation.herokuapp.com",
+  "proxy": "http://localhost:3030",
   "dependencies": {
     "@feathersjs/client": "^3.4.5",
     "ag-grid": "^17.0.0",
