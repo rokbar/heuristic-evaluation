@@ -11,7 +11,7 @@ exports.connection = function() {
 };
 
 exports.initUser = {
-  name: process.env.SYSADMIN_NAME,
+  name: process.env.SYSADMIN_LOGIN,
   password: process.env.SYSADMIN_PASSWORD,
   email: process.env.SYSADMIN_EMAIL,
   systemAdminId: 1,
