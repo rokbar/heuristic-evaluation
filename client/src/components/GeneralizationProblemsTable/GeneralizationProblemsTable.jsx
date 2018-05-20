@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {connect} from 'react-redux';
-import {map} from 'lodash';
 import PropTypes from 'prop-types';
 import AgGrid from 'ag-grid';
 
@@ -8,6 +7,7 @@ import {AgGridReact} from "ag-grid-react";
 import TableActionsRenderer from './TableActionsRenderer';
 import PhotoCellRenderer from './PhotoCellRenderer';
 import RulesCellRenderer from './RulesCellRenderer';
+import UsersRatingsCellRenderer from './UsersRatingsCellRenderer';
 import ActionsCellRenderer from './ActionsCellRenderer';
 
 import 'ag-grid/dist/styles/ag-grid.css';
@@ -73,6 +73,13 @@ class GeneralizationProblemsTable extends Component {
           cellRenderer: 'photoCellRenderer',
           suppressFilter: true,
           cellClass: "cell-wrap-text",
+          autoHeight: true,
+        },
+        {
+          headerName: 'Aptiko, Įvertinimas',
+          groupId: 'usersRatings',
+          suppressFilter: true,
+          children: [...props.usersRatingsColDefs],
           autoHeight: true,
         },
         {
@@ -148,7 +155,7 @@ class GeneralizationProblemsTable extends Component {
         editable: true,
         filter: "agTextColumnFilter"
       },
-      defaultColGroupDef: { marryChildren: true },
+      defaultColGroupDef: {marryChildren: true},
       getRowNodeId: function (data) {
         return data.id;
       },
@@ -156,6 +163,7 @@ class GeneralizationProblemsTable extends Component {
       frameworkComponents: {
         photoCellRenderer: PhotoCellRenderer,
         rulesCellRenderer: RulesCellRenderer,
+        usersRatingsCellRenderer: UsersRatingsCellRenderer,
         actionsCellRenderer: (params) => <ActionsCellRenderer
           rules={props.heuristic && props.heuristic.rules && props.heuristic.rules}
           {...params}
@@ -164,7 +172,7 @@ class GeneralizationProblemsTable extends Component {
         />,
       },
       isAnyRowSelected: false,
-      getRowHeight: function(params) {
+      getRowHeight: function (params) {
         return 100;
       }
     }
@@ -175,7 +183,7 @@ class GeneralizationProblemsTable extends Component {
     this.columnApi = params.columnApi;
     this.gridApi.sizeColumnsToFit();
 
-    setTimeout(function() {
+    setTimeout(function () {
       params.api.resetRowHeights();
     }, 500);
   }
@@ -213,7 +221,7 @@ class GeneralizationProblemsTable extends Component {
       width: "100%"
     };
     return (
-      <div className="GeneralizationProblemsTable" style={{ width: "100%", height: "100%" }}>
+      <div className="GeneralizationProblemsTable" style={{width: "100%", height: "100%"}}>
         {mergeProblems && <TableActionsRenderer
           mergeProblems={this.handleOnMergeProblemsClick.bind(this)}
         />}

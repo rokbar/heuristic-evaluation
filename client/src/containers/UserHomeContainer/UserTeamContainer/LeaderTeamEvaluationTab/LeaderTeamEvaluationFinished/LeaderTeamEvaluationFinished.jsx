@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {map, find, sortBy, get} from 'lodash';
+import {map, find, sortBy, get, reduce, filter} from 'lodash';
 
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import LeaderTeamEvaluationFinishedMessage from './LeaderTeamEvaluationFinishedMessage';
@@ -12,6 +12,7 @@ import {
   changeProblemPosition,
 } from 'actions/mergedProblems';
 import {getHeuristicsRules} from 'actions/heuristics';
+import {getUsersByTeam} from 'actions/teams';
 
 import './LeaderTeamEvaluationFinished.css'
 
@@ -25,7 +26,7 @@ class LeaderTeamEvaluationFinished extends Component {
   }
 
   componentDidMount() {
-    const {getHeuristicsRules, teamId, heuristicId} = this.props;
+    const {getHeuristicsRules, getUsersByTeam, teamId, heuristicId} = this.props;
     getGeneralizedProblems({teamId})
       .then(response => {
         this.setState({
@@ -33,6 +34,7 @@ class LeaderTeamEvaluationFinished extends Component {
         });
         return getHeuristicsRules({heuristicId})
       })
+      .then(() => getUsersByTeam({teamId}))
       .catch();
   }
 
@@ -66,9 +68,35 @@ class LeaderTeamEvaluationFinished extends Component {
       .catch();
   };
 
+  getUsersRatingsColDefs = () => {
+    const {teamUsers} = this.props;
+
+    const colDefs = reduce(teamUsers, (result, user) => {
+      const {name, surname} = user;
+      const evaluatorInitials = `${name.charAt(0)}${surname.charAt(0)}`;
+      const sameInitialsInResult = result && result.length && filter(result, ({ field }) => {
+        return field.substring(0, 1) === evaluatorInitials;
+      });
+      const evaluatorInitialToSet = sameInitialsInResult && sameInitialsInResult.length ? `${evaluatorInitials}${sameInitialsInResult}` : evaluatorInitials;
+
+      result.push({
+        headerName: evaluatorInitialToSet.toUpperCase(),
+        field: evaluatorInitialToSet,
+        width: 30,
+        suppressFilter: true,
+        suppressMenu: true,
+        cellRenderer: 'usersRatingsCellRenderer',
+      });
+
+      return result;
+    }, []);
+
+    return colDefs || [];
+  };
+
   renderProblemsList() {
     const {generalizedProblems} = this.state;
-    const {teamId} = this.props;
+    const {teamId, teamUsers} = this.props;
     return [
       <LeaderTeamEvaluationFinishedMessage/>,
       <LeaderGenerateReportButton
@@ -81,6 +109,9 @@ class LeaderTeamEvaluationFinished extends Component {
       >
         <GeneralizationProblemsTable
           problems={generalizedProblems}
+          teamUsers={teamUsers}
+
+          usersRatingsColDefs={this.getUsersRatingsColDefs()}
           editProblem={this.editProblem}
           dragProblem={this.dragGeneralizedProblem}
         />
@@ -95,4 +126,13 @@ class LeaderTeamEvaluationFinished extends Component {
   }
 }
 
-export default connect(null, {getHeuristicsRules})(LeaderTeamEvaluationFinished);
+function mapStateToProps(state) {
+  return {
+    teamUsers: state.users.teamUsers,
+  };
+}
+
+export default connect(mapStateToProps, {
+  getHeuristicsRules,
+  getUsersByTeam,
+})(LeaderTeamEvaluationFinished);
