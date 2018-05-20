@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {map, find, sortBy, get, reduce, filter} from 'lodash';
+import {map, find, sortBy, get, reduce, filter, isArray, keyBy, toString} from 'lodash';
 
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
 import LeaderTeamEvaluationFinishedMessage from './LeaderTeamEvaluationFinishedMessage';
@@ -68,20 +68,39 @@ class LeaderTeamEvaluationFinished extends Component {
       .catch();
   };
 
+  formatUsersRatings = (problems) => {
+    return map(problems, (problemProps) => {
+      const { ratings, users } = problemProps;
+      const usersWhoFound = isArray(users) ? [...users] : map(users.split(','), userId => parseInt(userId, 10));
+      const usersRatings = map(ratings, (ratingProps) => {
+        const {value, evaluatorId} = ratingProps;
+        return {
+          evaluatorId,
+          value,
+          hasFoundProblem: usersWhoFound.includes(evaluatorId),
+        };
+      });
+      return {
+        ...problemProps,
+        ...keyBy(usersRatings, ({ evaluatorId }) => toString(evaluatorId)),
+      }
+    });
+  };
+
   getUsersRatingsColDefs = () => {
     const {teamUsers} = this.props;
 
     const colDefs = reduce(teamUsers, (result, user) => {
-      const {name, surname} = user;
+      const {id, name, surname} = user;
       const evaluatorInitials = `${name.charAt(0)}${surname.charAt(0)}`;
-      const sameInitialsInResult = result && result.length && filter(result, ({ field }) => {
-        return field.substring(0, 1) === evaluatorInitials;
+      const existingUsersInResult = result && result.length && filter(result, ({ field }) => {
+        return field === id;
       });
-      const evaluatorInitialToSet = sameInitialsInResult && sameInitialsInResult.length ? `${evaluatorInitials}${sameInitialsInResult}` : evaluatorInitials;
+      const evaluatorInitialToSet = existingUsersInResult && existingUsersInResult.length ? `${evaluatorInitials}${existingUsersInResult}` : evaluatorInitials;
 
       result.push({
         headerName: evaluatorInitialToSet.toUpperCase(),
-        field: evaluatorInitialToSet,
+        field: toString(id),
         width: 30,
         suppressFilter: true,
         suppressMenu: true,
@@ -108,9 +127,8 @@ class LeaderTeamEvaluationFinished extends Component {
         className="GeneralizationProblemsTable"
       >
         <GeneralizationProblemsTable
-          problems={generalizedProblems}
+          problems={this.formatUsersRatings(generalizedProblems)}
           teamUsers={teamUsers}
-
           usersRatingsColDefs={this.getUsersRatingsColDefs()}
           editProblem={this.editProblem}
           dragProblem={this.dragGeneralizedProblem}

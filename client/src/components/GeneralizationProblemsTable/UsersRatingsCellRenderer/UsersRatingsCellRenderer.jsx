@@ -1,8 +1,16 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 class UsersCellRenderer extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    return <div>x</div>
+    const {value: {hasFoundProblem, value}} = this.props;
+    return <div>
+      {hasFoundProblem ? <p>x</p> : <p> </p>}
+      <p>{value}</p>
+    </div>;
   }
 }
 
