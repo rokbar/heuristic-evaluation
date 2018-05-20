@@ -64,8 +64,9 @@ module.exports = function (app) {
     create(data, params) {
       return new Promise((resolve, reject) => {
         const { rules, heuristicId } = data;
-        const rowsToInsert = rules.map((item) => {
-          return { description: item, heuristicId }
+        const rowsToInsert = rules.map((item, key) => {
+          // TODO - set listNumber on StartEvaluationForm at HeuristicSelect component
+          return { description: item, heuristicId, listNumber: key + 1 }
         });
 
         db.transacting(params.transaction.trx)
