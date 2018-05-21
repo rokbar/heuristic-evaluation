@@ -5,7 +5,7 @@ import ReportDataTable from './ReportDataTable';
 
 import './ReportDataTable/ReportDataTable.css';
 
-export default function getReportMarkup({ problems = [], photos }) {
+export default function getReportMarkup({ problems = [], photos, teamUsers }) {
   const getHeadMarkup = () => {
     return <head
       dangerouslySetInnerHTML={{ __html: '<xml>' +
@@ -16,7 +16,9 @@ export default function getReportMarkup({ problems = [], photos }) {
       '</xml>' +
       '<style>' +
       'table, th, td {border: 1px solid black;}' +
-      'th, td {text-align: left; vertical-align: top;}' +
+      'th {text-align: left; vertical-align: center;}' +
+      'td {text-align: left; vertical-align: top;}' +
+      '.images {margin: 0 auto; text-align: center;}' +
       'table {margin: -50px;}' +
       '</style>'}}>
 
@@ -42,6 +44,7 @@ export default function getReportMarkup({ problems = [], photos }) {
         <ReportDataTable
           problems={problems}
           photos={photos}
+          teamUsers={teamUsers}
         />
       </div>
       </body>

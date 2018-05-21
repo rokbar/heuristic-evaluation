@@ -8,7 +8,7 @@ export default function TableBody({ data, headers }) {
       return (
         <Table.Row key={index} style={{backgroundColor: item['completed'] ? '#d6efd6b8' : ''}}>
           {map(headers, (value, key) => {
-            return <Table.Cell key={key}>{item[key]}</Table.Cell>
+            return item[key] ? <Table.Cell key={key}>{item[key]}</Table.Cell> : null;
           })}
         </Table.Row>
       )

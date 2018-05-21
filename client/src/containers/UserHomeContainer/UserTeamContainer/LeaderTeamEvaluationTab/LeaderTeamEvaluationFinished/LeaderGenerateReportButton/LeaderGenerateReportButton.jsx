@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {isArray, map, toNumber, reduce, find} from 'lodash';
+import {isArray, map, toNumber, reduce, find, keyBy} from 'lodash';
 
 import {Button, Icon} from 'semantic-ui-react';
 import getReportMarkup from './ReportMarkup';
@@ -13,6 +13,8 @@ class LeaderGenerateReportButton extends Component {
 
   handleClick = () => {
     let problems, photos;
+    const {teamUsers} = this.props;
+
     this.getTableData()
       .then(problemsResponse => {
         problems = problemsResponse;
@@ -23,6 +25,7 @@ class LeaderGenerateReportButton extends Component {
           reportMarkup: getReportMarkup({
             problems,
             photos: photosResponse,
+            teamUsers,
           })
         })
       })
@@ -74,15 +77,34 @@ class LeaderGenerateReportButton extends Component {
     return mappedRules && mappedRules.join(' ');
   }
 
+  formatUsersRatings(problemProps)  {
+    const {ratings, users} = problemProps;
+    const usersWhoFound = isArray(users) ? [...users] : map(users.split(','), userId => parseInt(userId, 10));
+    const usersRatings = map(ratings, (ratingProps) => {
+      const {value, evaluatorId} = ratingProps;
+      return {
+        belongsToHeaderGroup: true,
+        evaluatorId,
+        value,
+        hasFoundProblem: usersWhoFound.includes(evaluatorId),
+      };
+    });
+    return {
+      ...keyBy(usersRatings, ({evaluatorId}) => toString(evaluatorId)),
+    }
+  };
+
   getTableData() {
     return new Promise((resolve, reject) => {
       return Promise.all(this.props.problems.map(async (item) => {
         const {description, location, photos, solution, rules} = item;
         const renderedPhoto = await this.renderPhotoCell(photos);
+        const users = this.formatUsersRatings(item);
         return {
           description,
           rules: this.getRulesDescriptionsList(rules),
           location: this.renderLocationCell(location, renderedPhoto),
+          ...users,
           solution,
         };
       }))

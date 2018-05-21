@@ -1,26 +1,56 @@
 import React, { Component } from 'react';
-import { map } from 'lodash';
-
+import { map, toString, reduce, filter } from 'lodash';
 
 import DataTable from 'components/DataTable';
 
 class ReportDataTable extends Component {
   getTableHeaders() {
+    const userRatingsColDefs = this.getUsersRatingsColDefs();
+    const usersIdsMappedToHeaderNames = map(userRatingsColDefs, (item) => ({[item.headerName]: item.field}));
     return {
       description: 'Aprašymas',
       rules: 'Pažeistos euristikos',
       location: 'Lokacija',
+      userRatings: {
+        headerName: 'Aptiko, Įvertinimas',
+        children: userRatingsColDefs,
+      },
+      // ...usersIdsMappedToHeaderNames,
       solution: 'Pasiūlymas taisymui',
     }
   }
+
+  getUsersRatingsColDefs = () => {
+    const {teamUsers} = this.props;
+
+    const colDefs = reduce(teamUsers, (result, user) => {
+      const {id, name, surname} = user;
+      const evaluatorInitials = `${name.charAt(0)}${surname.charAt(0)}`;
+      const existingUsersInResult = result && result.length && filter(result, ({field}) => {
+        return field === id;
+      });
+      const evaluatorInitialToSet = existingUsersInResult && existingUsersInResult.length ? `${evaluatorInitials}${existingUsersInResult}` : evaluatorInitials;
+
+      result.push({
+        headerName: evaluatorInitialToSet.toUpperCase(),
+        field: toString(id),
+        isChildHeader: true,
+      });
+
+      return result;
+    }, []);
+
+    return colDefs || [];
+  };
 
   renderPhotos() {
     const { photos } = this.props;
     return map(photos, (item) => {
       const { url, width, height, number } = item;
-      return <div>
+      return <div className="images">
         <img src={url} width={width} height={height} />
-        {number} pav.
+        <div>{number} pav.</div>
+        <br />
       </div>;
     });
   }
@@ -28,6 +58,7 @@ class ReportDataTable extends Component {
   render() {
     return [
       <DataTable
+        hasGroupedHeaders
         headers={this.getTableHeaders()}
         data={this.props.problems}
       />,

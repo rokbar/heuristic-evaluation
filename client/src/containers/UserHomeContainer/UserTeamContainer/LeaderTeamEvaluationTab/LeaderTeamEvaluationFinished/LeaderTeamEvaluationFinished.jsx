@@ -126,6 +126,7 @@ class LeaderTeamEvaluationFinished extends Component {
           teamId={teamId}
           disabled={false}
           problems={generalizedProblems}
+          teamUsers={teamUsers}
         />
         <TableCellColorLegend />
       </div>,
