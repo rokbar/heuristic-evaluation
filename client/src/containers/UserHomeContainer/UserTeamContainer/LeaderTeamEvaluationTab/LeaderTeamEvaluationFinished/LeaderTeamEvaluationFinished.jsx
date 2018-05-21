@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {map, find, sortBy, get, reduce, filter, isArray, keyBy, toString} from 'lodash';
 
 import GeneralizationProblemsTable from 'components/GeneralizationProblemsTable';
+import TableCellColorLegend from 'components/GeneralizationProblemsTable/TableCellColorLegend';
 import LeaderTeamEvaluationFinishedMessage from './LeaderTeamEvaluationFinishedMessage';
 import LeaderGenerateReportButton from './LeaderGenerateReportButton';
 
@@ -70,7 +71,7 @@ class LeaderTeamEvaluationFinished extends Component {
 
   formatUsersRatings = (problems) => {
     return map(problems, (problemProps) => {
-      const { ratings, users } = problemProps;
+      const {ratings, users} = problemProps;
       const usersWhoFound = isArray(users) ? [...users] : map(users.split(','), userId => parseInt(userId, 10));
       const usersRatings = map(ratings, (ratingProps) => {
         const {value, evaluatorId} = ratingProps;
@@ -82,7 +83,7 @@ class LeaderTeamEvaluationFinished extends Component {
       });
       return {
         ...problemProps,
-        ...keyBy(usersRatings, ({ evaluatorId }) => toString(evaluatorId)),
+        ...keyBy(usersRatings, ({evaluatorId}) => toString(evaluatorId)),
       }
     });
   };
@@ -93,7 +94,7 @@ class LeaderTeamEvaluationFinished extends Component {
     const colDefs = reduce(teamUsers, (result, user) => {
       const {id, name, surname} = user;
       const evaluatorInitials = `${name.charAt(0)}${surname.charAt(0)}`;
-      const existingUsersInResult = result && result.length && filter(result, ({ field }) => {
+      const existingUsersInResult = result && result.length && filter(result, ({field}) => {
         return field === id;
       });
       const evaluatorInitialToSet = existingUsersInResult && existingUsersInResult.length ? `${evaluatorInitials}${existingUsersInResult}` : evaluatorInitials;
@@ -104,7 +105,8 @@ class LeaderTeamEvaluationFinished extends Component {
         width: 30,
         suppressFilter: true,
         suppressMenu: true,
-        cellRenderer: 'usersRatingsCellRenderer',
+        cellRenderer: ({value: {value}}) => `<div>${value}</div>`,
+        cellClassRules: {'color--found-problem': ({value: {hasFoundProblem}}) => hasFoundProblem},
       });
 
       return result;
@@ -118,14 +120,15 @@ class LeaderTeamEvaluationFinished extends Component {
     const {teamId, teamUsers} = this.props;
     return [
       <LeaderTeamEvaluationFinishedMessage/>,
-      <LeaderGenerateReportButton
-        teamId={teamId}
-        disabled={false}
-        problems={generalizedProblems}
-      />,
-      <div
-        className="GeneralizationProblemsTable"
-      >
+      <div className="GeneralizationProblemsTable__toolbar">
+        <LeaderGenerateReportButton
+          teamId={teamId}
+          disabled={false}
+          problems={generalizedProblems}
+        />
+        <TableCellColorLegend />
+      </div>,
+      <div className="GeneralizationProblemsTable">
         <GeneralizationProblemsTable
           problems={this.formatUsersRatings(generalizedProblems)}
           teamUsers={teamUsers}

@@ -7,7 +7,6 @@ import {AgGridReact} from "ag-grid-react";
 import TableActionsRenderer from './TableActionsRenderer';
 import PhotoCellRenderer from './PhotoCellRenderer';
 import RulesCellRenderer from './RulesCellRenderer';
-import UsersRatingsCellRenderer from './UsersRatingsCellRenderer';
 import ActionsCellRenderer from './ActionsCellRenderer';
 
 import 'ag-grid/dist/styles/ag-grid.css';
@@ -163,7 +162,6 @@ class GeneralizationProblemsTable extends Component {
       frameworkComponents: {
         photoCellRenderer: PhotoCellRenderer,
         rulesCellRenderer: RulesCellRenderer,
-        usersRatingsCellRenderer: UsersRatingsCellRenderer,
         actionsCellRenderer: (params) => <ActionsCellRenderer
           rules={props.heuristic && props.heuristic.rules && props.heuristic.rules}
           {...params}
