@@ -41,7 +41,7 @@ class GeneralizationProblemsTable extends Component {
           headerCheckboxSelectionFilteredOnly: true,
           checkboxSelection: props.mergeProblems && true,
           rowDrag: props.dragProblem && true,
-          width: 80,
+          width: 40,
           suppressSizeToFit: true,
           suppressFilter: true,
           cellClass: "cell-wrap-text",
@@ -71,7 +71,7 @@ class GeneralizationProblemsTable extends Component {
           field: 'photos',
           cellRenderer: 'photoCellRenderer',
           suppressFilter: true,
-          cellClass: "cell-wrap-text",
+          cellClass: 'cell-wrap-text',
           autoHeight: true,
         },
         {
@@ -82,9 +82,10 @@ class GeneralizationProblemsTable extends Component {
           autoHeight: true,
         },
         {
-          headerName: 'Aktualumo įvertis',
+          headerName: 'Vid.',
           field: 'ratingsAverage',
           autoHeight: true,
+          width: 60,
         },
         {
           headerName: 'Pasiūlymas taisymui',

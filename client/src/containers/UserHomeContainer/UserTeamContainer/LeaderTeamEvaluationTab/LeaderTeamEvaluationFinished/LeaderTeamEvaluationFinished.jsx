@@ -101,6 +101,7 @@ class LeaderTeamEvaluationFinished extends Component {
 
       result.push({
         headerName: evaluatorInitialToSet.toUpperCase(),
+        headerClass: 'header-text-center header-no-padding',
         field: toString(id),
         width: 30,
         suppressFilter: true,
