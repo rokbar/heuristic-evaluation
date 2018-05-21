@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { map, toString, reduce, filter } from 'lodash';
+import { map, toString, reduce, filter, keyBy } from 'lodash';
 
 import DataTable from 'components/DataTable';
 
 class ReportDataTable extends Component {
   getTableHeaders() {
     const userRatingsColDefs = this.getUsersRatingsColDefs();
-    const usersIdsMappedToHeaderNames = map(userRatingsColDefs, (item) => ({[item.headerName]: item.field}));
+    const usersIdsMappedToHeaderNames = keyBy(userRatingsColDefs, ({field}) => toString(field));
+    const objectKeys = Object.getOwnPropertyNames(usersIdsMappedToHeaderNames);
     return {
       description: 'Aprašymas',
       rules: 'Pažeistos euristikos',
@@ -15,8 +16,9 @@ class ReportDataTable extends Component {
         headerName: 'Aptiko, Įvertinimas',
         children: userRatingsColDefs,
       },
-      // ...usersIdsMappedToHeaderNames,
+      ...usersIdsMappedToHeaderNames,
       solution: 'Pasiūlymas taisymui',
+      dataOrder: ['description', 'rules', 'location', ...objectKeys, 'solution'],
     }
   }
 

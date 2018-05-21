@@ -19,6 +19,7 @@ export default function getReportMarkup({ problems = [], photos, teamUsers }) {
       'th {text-align: left; vertical-align: center;}' +
       'td {text-align: left; vertical-align: top;}' +
       '.images {margin: 0 auto; text-align: center;}' +
+      '.hasFoundProblem {background-color: #a6c5c4;}' +
       'table {margin: -50px;}' +
       '</style>'}}>
 

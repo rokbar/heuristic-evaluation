@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {isArray, map, toNumber, reduce, find, keyBy} from 'lodash';
+import {isArray, map, toNumber, reduce, find, keyBy, toString} from 'lodash';
 
 import {Button, Icon} from 'semantic-ui-react';
 import getReportMarkup from './ReportMarkup';
@@ -104,13 +104,22 @@ class LeaderGenerateReportButton extends Component {
           description,
           rules: this.getRulesDescriptionsList(rules),
           location: this.renderLocationCell(location, renderedPhoto),
-          ...users,
+          ...this.renderUsersRatingsCells(users),
           solution,
         };
       }))
         .then(problems => resolve(problems))
         .catch(reject);
     });
+  }
+
+  renderUsersRatingsCells(users) {
+    const cellArray = map(users, (item) => {
+      return {
+        [toString(item.evaluatorId)]: <div className={item.hasFoundProblem ? 'hasFoundProblem' : ''}>{item.value}</div>,
+      };
+    });
+    return Object.assign({}, ...cellArray);
   }
 
   renderLocationCell(location, photos) {

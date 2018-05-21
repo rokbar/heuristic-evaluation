@@ -7,7 +7,10 @@ export default function TableHeaders({headers, hasGroupedHeaders = false}) {
     if (!isString(item) && !item.isChildHeader) {
       return <Table.HeaderCell colSpan={item.children && item.children.length} key={key}>{item && item.headerName}</Table.HeaderCell>;
     }
-    return <Table.HeaderCell rowSpan={hasGroupedHeaders ? '2' : '1'} key={key}>{item}</Table.HeaderCell>;
+
+    return !item.isChildHeader
+      ? <Table.HeaderCell rowSpan={hasGroupedHeaders ? '2' : '1'} key={key}>{item}</Table.HeaderCell>
+      : null;
   });
 
   const renderHeaderGroupChildrenRows = (headers) => reduce(headers, (result, header) => {
