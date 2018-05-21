@@ -10,7 +10,6 @@ class ReportDataTable extends Component {
       description: 'Aprašymas',
       rules: 'Pažeistos euristikos',
       location: 'Lokacija',
-      photo: 'Nuotrauka',
       solution: 'Pasiūlymas taisymui',
     }
   }

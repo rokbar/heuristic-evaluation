@@ -1,0 +1,7 @@
+@page {
+  size: landscape;
+}
+
+#ReportDataTable {
+  writing-mode: tb-rl;
+}
