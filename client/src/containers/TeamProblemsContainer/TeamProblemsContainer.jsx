@@ -11,8 +11,7 @@ import RedirectToMergeProblemsPageButton from './RedirectToMergeProblemsPageButt
 
 import { getSelectedEvaluatorProblems } from 'actions/problems';
 import { getHeuristicsRules } from 'actions/heuristics';
-import { startGeneralization } from 'actions/teams';
-import { getUsersByCompanyId } from 'actions/users';
+import { startGeneralization, getUsersByTeam } from 'actions/teams';
 
 import './TeamProblemsContainer.css';
 
@@ -44,7 +43,7 @@ class TeamProblemsContainer extends Component {
     let userOptions = [];
 
     this.props.getHeuristicsRules({heuristicId});
-    this.props.getUsersByCompanyId()
+    this.props.getUsersByTeam({ teamId })
       .then(() => {
         userOptions = map(this.props.users, (item) => ({
           value: item.id,
@@ -182,14 +181,14 @@ function mapStateToProps(state) {
   return {
     problems: state.evaluatorProblems,
     heuristic: state.heuristics.team[0],
-    users: state.users.companyUsers,
+    users: state.users.teamUsers,
   }
 }
 
 TeamProblemsContainer = withRouter(TeamProblemsContainer);
 
 export default connect(mapStateToProps, {
-  getUsersByCompanyId,
+  getUsersByTeam,
   getSelectedEvaluatorProblems,
   getHeuristicsRules,
   startGeneralization,
