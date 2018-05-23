@@ -8,5 +8,23 @@
 }
 
 .cell-wrap-text {
-  white-space: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: start;
+}
+
+.header-text-center .ag-cell-label-container,
+.header-text-center .ag-header-cell-label {
+  display: flex;
+  justify-content: center;
+}
+
+.ag-header-cell-menu-button {
+  opacity: 1 !important;
+}
+
+.header-no-padding {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }

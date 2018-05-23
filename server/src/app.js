@@ -52,9 +52,11 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Host the public folder
 app.use('/', express.static(app.get('public')));
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'index.html'));
+  });
+}
 
 // Set up Plugins and providers
 app.configure(express.rest());

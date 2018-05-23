@@ -25,6 +25,8 @@ import {
   finishRatingProblems,
 } from 'actions/evaluatorTeam';
 
+import './UserTeamContainer.css';
+
 const TeamLeaderRoutes = AuthorizationTeamHOC(['leader']);
 const EvaluatorRoutes = AuthorizationTeamHOC(['leader', 'evaluator']);
 
@@ -54,6 +56,14 @@ class UserTeamContainer extends Component {
     const { teamId } = this.props.match.params;
     this.props.getTeamStates();
     this.getAndSetTeamState(teamId);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.team.state !== this.state.team.state) {
+      const { teamId } = this.props.match.params;
+      this.props.getTeamStates();
+      this.getAndSetTeamState(teamId);
+    }
   }
 
   pushHistory(pathName) {
@@ -182,7 +192,7 @@ class UserTeamContainer extends Component {
 
   renderArticleSegment(Component, props) {
     return (
-      <Segment attached="bottom">
+      <Segment attached="bottom" className="TabPaneDefault">
         <Component
           {...props}
           role={this.state.role}

@@ -90,11 +90,13 @@ module.exports = function (app) {
     id: 'id',
   }));
 
+  // TODO - refactor to single query
   app.use('/teammergedproblems/:teamId', {
     find(params) {
       const teamId = params.route.teamId;
       const host = params.headers.host;
       const proto = params.headers['x-forwarded-proto'] || 'http';
+      let problemsResponse = [];
 
       return db.select(
         'problem.id',
@@ -112,21 +114,38 @@ module.exports = function (app) {
         db.raw('GROUP_CONCAT(DISTINCT CAST(??.?? as SIGNED)) as ??', ['mergedproblem', 'fromId', 'originalProblemsIds']),
       )
         .from('problem')
-        .leftJoin('evaluatorproblem', 'problem.id', '=', 'evaluatorproblem.problemId')
         .leftJoin('problemrule', 'problem.id', '=', 'problemrule.problemId')
         .leftJoin('problemphoto', 'problem.id', '=', 'problemphoto.problemId')
         .leftJoin('mergedproblem', 'problem.id', '=', 'mergedproblem.toId')
+        .leftJoin('evaluatorproblem', 'mergedproblem.fromId', '=', 'evaluatorproblem.problemId')
+        .leftJoin('rating', 'rating.problemId', '=', 'problem.id')
         .where('problem.teamId', teamId)
         .andWhere('problem.isCombined', true)
         .groupBy('problem.id')
         .orderBy('position', 'inc')
-        .then(response => {
-          const modifiedResponse = response.map(item => {
+        .then(problems => {
+          problemsResponse = problems.map(item => {
             const {photos, ...rest} = item;
             return {...rest, photos: photos && photos.split(',').map(photo => `${proto}://${host}/${photo}`)};
           });
 
-          return modifiedResponse;
+          return db.select(
+            'rating.id',
+            'rating.problemId',
+            'rating.value',
+            'rating.evaluatorId',
+          )
+            .from('rating')
+            .leftJoin('problem', function () {
+              this.on('problem.id', '=', 'rating.problemId')
+            })
+        })
+        .then(ratings => {
+          const finalProblemsResponse = problemsResponse.map(problem => {
+            const ratingProps = ratings.filter(rating => rating.problemId === problem.id);
+            return {...problem, ratings: ratingProps};
+          });
+          return finalProblemsResponse;
         });
     },
 
@@ -149,7 +168,7 @@ module.exports = function (app) {
 
   app.use('/mergedproblems/ratingsAverage', {
     create(data, params) {
-      const { teamId } = data;
+      const {teamId} = data;
       return new Promise((resolve, reject) => {
         db.transacting(params.transaction.trx)
           .select(

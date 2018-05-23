@@ -34,7 +34,7 @@ class RulesCellRenderer extends Component {
       });
     }
 
-    return mappedRules && mappedRules.join(' ');
+    return <div className="cell-wrap-text">{mappedRules && mappedRules.join(' ')}</div>;
   }
 }
 

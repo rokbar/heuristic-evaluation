@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { Segment, Dimmer, Loader } from 'semantic-ui-react';
+
 export default function AuthorizationHOC(allowedRoles) {
   return (WrappedComponent) => {
     class WithAuthorization extends React.Component {
@@ -12,8 +14,14 @@ export default function AuthorizationHOC(allowedRoles) {
         const { role } = this.props;
         if (allowedRoles.includes(role)) {
           return <WrappedComponent {...this.props} />
+        } if (!role) {
+          return <div style={{height: "100%"}}>
+            <Dimmer active inverted>
+              <Loader size='large'>Kraunasi...</Loader>
+            </Dimmer>
+          </div>
         } else {
-          return <h1>No page for you!</h1>
+          return <h1>Puslapis negalimas!</h1>
         }
       }
     }

@@ -1,7 +1,6 @@
 .Layout {
   display: flex;
   flex-flow: column nowrap;
-  font-weight: bold;
   text-align: center;
   height: 100%;
 }

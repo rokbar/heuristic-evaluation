@@ -9,3 +9,15 @@
   flex-flow: column nowrap;
   width: 100%;
 }
+
+.GeneralizationProblemsTable__toolbar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.GeneralizationProblemsTable__toolbar__legend {
+  margin-left: auto;
+  margin-right: 0;
+}

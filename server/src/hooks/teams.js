@@ -39,7 +39,7 @@ module.exports = function ({ auth, local }) {
             let { heuristicId } = hook.data;
 
             return new Promise((resolve, reject) => {
-              if (customHeuristics && !heuristicId) {
+              if (customHeuristics && (!heuristicId || heuristicId === 'custom')) {
                 hook.app.service('heuristics').create(
                   {name, isUnique: 1},
                   {transaction: hook.params.transaction},

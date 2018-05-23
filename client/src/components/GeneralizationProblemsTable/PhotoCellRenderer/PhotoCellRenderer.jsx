@@ -18,7 +18,7 @@ class PhotoCellRenderer extends Component {
         </Modal>)}
       </Image.Group>
       : <Image size="small">
-        <Label content="Nuotrauka nerasta." icon="warning" />
+        <Label size="tiny" content="Nuotrauka nerasta." icon="warning" />
       </Image>
   }
 }
