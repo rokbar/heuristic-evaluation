@@ -58,6 +58,14 @@ class UserTeamContainer extends Component {
     this.getAndSetTeamState(teamId);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.team.state !== this.state.team.state) {
+      const { teamId } = this.props.match.params;
+      this.props.getTeamStates();
+      this.getAndSetTeamState(teamId);
+    }
+  }
+
   pushHistory(pathName) {
     this.props.history.push(pathName);
   };
