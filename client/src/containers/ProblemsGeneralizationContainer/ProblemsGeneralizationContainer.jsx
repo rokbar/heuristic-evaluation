@@ -16,6 +16,8 @@ import {
   changeProblemPosition,
 } from 'actions/mergedProblems';
 
+import { teamState } from 'utils/enums';
+
 class ProblemsGeneralizationContainer extends Component {
   constructor(props) {
     super(props);
@@ -173,6 +175,7 @@ class ProblemsGeneralizationContainer extends Component {
         <Segment className="MergedProblems">
           <GeneralizationProblemsTable
             problems={generalizedProblems}
+            teamState={teamState.generalization}
             removeProblem={this.removeProblem}
             editProblem={this.editProblem}
             mergeProblems={this.mergeGeneralizedProblems}

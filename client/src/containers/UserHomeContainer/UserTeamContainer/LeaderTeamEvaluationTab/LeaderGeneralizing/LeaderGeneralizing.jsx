@@ -15,6 +15,8 @@ import {
 } from 'actions/mergedProblems';
 import { finishGeneralization } from 'actions/teams';
 
+import { teamState } from 'utils/enums';
+
 import './LeaderGeneralizing.css'
 
 // TODO - duplicate with ProblemsGeneralizationContainer, refactor
@@ -174,6 +176,7 @@ class LeaderGeneralizing extends Component {
         />
         <GeneralizationProblemsTable
           problems={generalizedProblems}
+          teamState={teamState.generalization}
           removeProblem={this.removeProblem}
           editProblem={this.editProblem}
           mergeProblems={this.mergeGeneralizedProblems}

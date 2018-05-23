@@ -9,16 +9,20 @@ import PhotoCellRenderer from './PhotoCellRenderer';
 import RulesCellRenderer from './RulesCellRenderer';
 import ActionsCellRenderer from './ActionsCellRenderer';
 
+import {teamState} from 'utils/enums'
+
 import 'ag-grid/dist/styles/ag-grid.css';
 import 'ag-grid/dist/styles/ag-theme-balham.css';
 import './GeneralizationProblemsTable.css';
 
 const propTypes = {
+  teamState: teamState.generalization,
   problems: PropTypes.array,
   editProblem: PropTypes.func,
   removeProblem: PropTypes.func,
   mergeProblems: PropTypes.func,
   dragProblem: PropTypes.func,
+  usersRatingsColDefs: PropTypes.array,
 };
 
 const defaultProps = {
@@ -27,6 +31,7 @@ const defaultProps = {
   removeProblem: null,
   mergeProblems: null,
   dragProblem: null,
+  usersRatingsColDefs: [],
 };
 
 class GeneralizationProblemsTable extends Component {
@@ -41,7 +46,7 @@ class GeneralizationProblemsTable extends Component {
           headerCheckboxSelectionFilteredOnly: true,
           checkboxSelection: props.mergeProblems && true,
           rowDrag: props.dragProblem && true,
-          width: 40,
+          width: 80,
           suppressSizeToFit: true,
           suppressFilter: true,
           cellClass: "cell-wrap-text",
@@ -86,6 +91,7 @@ class GeneralizationProblemsTable extends Component {
           field: 'ratingsAverage',
           autoHeight: true,
           width: 60,
+          hide: props.teamState !== teamState.evaluationFinished,
         },
         {
           headerName: 'Pasiūlymas taisymui',

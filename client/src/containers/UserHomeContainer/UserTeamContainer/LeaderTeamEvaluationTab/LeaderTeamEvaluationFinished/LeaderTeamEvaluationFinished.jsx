@@ -15,6 +15,8 @@ import {
 import {getHeuristicsRules} from 'actions/heuristics';
 import {getUsersByTeam} from 'actions/teams';
 
+import { teamState } from 'utils/enums';
+
 import './LeaderTeamEvaluationFinished.css'
 
 // TODO - duplicate with ProblemsGeneralizationContainer, refactor
@@ -133,6 +135,7 @@ class LeaderTeamEvaluationFinished extends Component {
       <div className="GeneralizationProblemsTable">
         <GeneralizationProblemsTable
           problems={this.formatUsersRatings(generalizedProblems)}
+          teamState={teamState.evaluationFinished}
           teamUsers={teamUsers}
           usersRatingsColDefs={this.getUsersRatingsColDefs()}
           editProblem={this.editProblem}

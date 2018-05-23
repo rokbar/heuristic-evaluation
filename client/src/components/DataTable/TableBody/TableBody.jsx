@@ -10,10 +10,10 @@ export default function TableBody({data, headers}) {
           {
             isArray(headers)
               ? map(headers, (value) => {
-                return item[value] ? <Table.Cell key={value}>{item[value]}</Table.Cell> : null;
+                return <Table.Cell key={value}>{item[value]}</Table.Cell>;
               })
               : map(headers, (value, key) => {
-                return item[key] ? <Table.Cell key={key}>{item[key]}</Table.Cell> : null;
+                return <Table.Cell key={key}>{item[key]}</Table.Cell>;
               })
           }
         </Table.Row>

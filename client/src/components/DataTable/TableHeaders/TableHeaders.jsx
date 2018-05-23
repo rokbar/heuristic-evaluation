@@ -4,6 +4,10 @@ import { Table } from 'semantic-ui-react';
 
 export default function TableHeaders({headers, hasGroupedHeaders = false}) {
   const renderHeaderRow = (headers) => map(headers, (item, key) => {
+    if (!item) {
+      return <Table.HeaderCell key={key}>{item}</Table.HeaderCell>;
+    }
+
     if (!isString(item) && !item.isChildHeader) {
       return <Table.HeaderCell colSpan={item.children && item.children.length} key={key}>{item && item.headerName}</Table.HeaderCell>;
     }
