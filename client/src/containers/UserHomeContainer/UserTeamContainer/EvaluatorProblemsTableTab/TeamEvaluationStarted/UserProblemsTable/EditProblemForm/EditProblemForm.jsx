@@ -65,12 +65,14 @@ class EditProblemForm extends Component {
                   component={TextAreaFormField}
                   label="Aprašymas"
                   placeholder="Aprašymas"
+                  required
                 />
                 <Field
                   name="location"
                   component={TextAreaFormField}
                   label="Problemos lokacija"
                   placeholder="Problemos lokacija"
+                  required
                 />
                 <Field
                   name="solution"
@@ -78,6 +80,9 @@ class EditProblemForm extends Component {
                   label="Taisymo pasiūlymas"
                   placeholder="Taisymo pasiūlymas"
                 />
+                <div className="field">
+                  <label>Pažeistos euristikos</label>
+                </div>
                 <FieldArray
                   name="rules"
                   component={CheckHeuristicsFormField}
