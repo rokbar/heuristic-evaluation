@@ -12,7 +12,11 @@ export default ({
 }) => (
   <Route { ...props } render={ routeProps => (
     <ReactBreadcrumb data={{
-      title: <SemanticUIBreadcrumb.Section >{props.title}</SemanticUIBreadcrumb.Section>,
+      title: <SemanticUIBreadcrumb.Section
+        link
+        active={isRouteActive(routeProps)}
+      >{props.title}
+      </SemanticUIBreadcrumb.Section>,
       pathname: routeProps.match.url,
       search: includeSearch ? routeProps.location.search : null,
     }}>
@@ -20,3 +24,5 @@ export default ({
     </ReactBreadcrumb>
   )} />
 )
+
+const isRouteActive = ({ location: { pathname }, match: { url } }) => pathname === url;
