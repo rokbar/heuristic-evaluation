@@ -15,6 +15,6 @@ export default function EvaluatorTeamPlanTab({ plan }) {
         Vertinimo planas
       </Header>
       <Divider />
-      <p className="EvaluatorTeamPlanTab pre-line">{plan}</p>
+      <p className="EvaluatorTeamPlanTab pre-line">{plan || '-'}</p>
     </Container>;
 }
