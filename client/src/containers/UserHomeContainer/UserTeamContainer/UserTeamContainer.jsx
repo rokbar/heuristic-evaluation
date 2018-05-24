@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
 import { Segment } from 'semantic-ui-react';
+import BreadcrumbRoute from 'components/Breadcrumbs/BreadcrumbRoute';
 import AuthorizationTeamHOC from 'components/AuthorizationTeamHOC';
 import Tabs from 'components/Tabs';
 import EvaluatorTeamInfoTab from './EvaluatorTeamInfoTab';
@@ -212,15 +213,17 @@ class UserTeamContainer extends Component {
         currentLocation={location.pathname}
       />,
       <Switch key="UserTeamContainerRoutes">
-        <Route
-          path='/evaluator/teams/:teamId/info'
+        <BreadcrumbRoute
+          title="Informacija"
+          path="/evaluator/teams/:teamId/info"
           component={(props) => this.renderArticleSegment(
             EvaluatorRoutes(EvaluatorTeamInfoTab),
             { ...props, team: this.state.team },
           )}
         />
-        <Route
-          path='/evaluator/teams/:teamId/evaluation'
+        <BreadcrumbRoute
+          title="Vertinimo administravimas"
+          path="/evaluator/teams/:teamId/evaluation"
           component={(props) => this.renderArticleSegment(
             TeamLeaderRoutes(LeaderTeamEvaluationTab),
             {
@@ -230,8 +233,9 @@ class UserTeamContainer extends Component {
             },
           )}
         />
-        <Route
-          path='/evaluator/teams/:teamId/generalization'
+        <BreadcrumbRoute
+          title="Problemų apibendrinimas"
+          path="/evaluator/teams/:teamId/generalization"
           component={(props) => this.renderArticleSegment(
             TeamLeaderRoutes(ProblemsGeneralizationContainer),
             {
@@ -240,8 +244,9 @@ class UserTeamContainer extends Component {
             },
           )}
         />
-        <Route
-          path='/evaluator/teams/:teamId/problems'
+        <BreadcrumbRoute
+          title="Problemos"
+          path="/evaluator/teams/:teamId/problems"
           component={() => this.renderArticleSegment(
             EvaluatorRoutes(EvaluatorProblemsTableTab),
             {
@@ -254,15 +259,17 @@ class UserTeamContainer extends Component {
             }
           )}
         />
-        <Route
-          path='/evaluator/teams/:teamId/heuristics'
+        <BreadcrumbRoute
+          title="Euristikos"
+          path="/evaluator/teams/:teamId/heuristics"
           component={() => this.renderArticleSegment(
             EvaluatorRoutes(EvaluatorTeamHeuristicsTab),
             { heuristicId: this.state.team && this.state.team.heuristicId },
           )}
         />
-        <Route
-          path='/evaluator/teams/:teamId/plan'
+        <BreadcrumbRoute
+          title="Vertinimo planas"
+          path="/evaluator/teams/:teamId/plan"
           component={(props) => this.renderArticleSegment(
             EvaluatorRoutes(EvaluatorTeamPlanTab),
             { plan: this.state.team && this.state.team.plan },

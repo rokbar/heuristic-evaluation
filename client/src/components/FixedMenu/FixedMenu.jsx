@@ -15,7 +15,7 @@ export default function FixedMenu({ name, role, logout }) {
             <Icon name="user" size="large" />Paskyra
           </Menu.Item>
           <Menu.Item as={Link} to={`/${role}`} position='right'>
-            <Icon name="home" size="large" />Pagrindinis
+            <Icon name="home" size="large" />Pradinis
           </Menu.Item>
           <Dropdown item simple position='right' text='Meniu'>
             <Dropdown.Menu>

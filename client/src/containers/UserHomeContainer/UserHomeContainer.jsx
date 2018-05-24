@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 
 import { Segment } from 'semantic-ui-react';
 
@@ -36,7 +36,7 @@ class UserHomeContainer extends Component {
           render={() => this.renderArticleSegment(UserTeamTableContainer)}
         />
         <BreadcrumbRoute
-          title='Komandos informacija'
+          title='Komanda'
           path='/evaluator/teams/:teamId'
           render={(props) => this.renderArticleSegment(UserTeamContainer, props)}
         />

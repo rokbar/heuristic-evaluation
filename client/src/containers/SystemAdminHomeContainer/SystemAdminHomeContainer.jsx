@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
 
+import BreadcrumbRoute from 'components/Breadcrumbs/BreadcrumbRoute';
 import Layout from 'components/Layout';
 import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
@@ -43,29 +44,35 @@ export default class SystemAdminHomeContainer extends Component {
         currentLocation={location.pathname}
       />,
       <Switch>
-        <Route
+        <BreadcrumbRoute
           exact
-          path='/systemadmin/users'
+          title="Naudotojų sąrašas"
+          path="/systemadmin/users"
           component={() => this.renderArticleSegment(UsersTableContainer)}
         />
-        <Route
-          path='/systemadmin/users/add'
+        <BreadcrumbRoute
+          title="Sukurti naudotoją"
+          path="/systemadmin/users/add"
           component={() => this.renderArticleSegment(AddUserForm)}
         />
-        <Route
-          path='/systemadmin/users/edit/:userId'
+        <BreadcrumbRoute
+          title="Redaguoti naudotoją"
+          path="/systemadmin/users/edit/:userId"
           component={(props) => this.renderArticleSegment(EditUserForm, props)}
         />
-        <Route
+        <BreadcrumbRoute
           exact
-          path='/systemadmin/companies'
+          title="Organizacijų sąrašas"
+          path="/systemadmin/companies"
           component={() => this.renderArticleSegment(CompaniesTableContainer)}
         />
-        <Route
-          path='/systemadmin/companies/add'
+        <BreadcrumbRoute
+          title="Sukurti organizaciją"
+          path="/systemadmin/companies/add"
           component={() => this.renderArticleSegment(AddCompanyForm)}
         />
-        <Route
+        <BreadcrumbRoute
+          title="Redaguoti paskyrą"
           path='/systemadmin/editAccount'
           render={() => this.renderArticleSegment(EditAccountContainer)}
         />
