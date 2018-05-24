@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
-import { Segment, Transition } from 'semantic-ui-react';
+
+import { Segment } from 'semantic-ui-react';
 
 import Layout from 'components/Layout';
+import BreadcrumbRoute from 'components/Breadcrumbs/BreadcrumbRoute';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
 import UserTeamTableContainer from './UserTeamsTableContainer';
 import UserTeamContainer from './UserTeamContainer';
@@ -27,16 +29,19 @@ class UserHomeContainer extends Component {
   renderArticleContent() {
     return [
       <Switch key="UserHomeContainerRoutes">
-        <Route
+        <BreadcrumbRoute
           exact
+          title='Komandų sąrašas'
           path='/evaluator'
           render={() => this.renderArticleSegment(UserTeamTableContainer)}
         />
-        <Route
+        <BreadcrumbRoute
+          title='Komandos informacija'
           path='/evaluator/teams/:teamId'
           render={(props) => this.renderArticleSegment(UserTeamContainer, props)}
         />
-        <Route
+        <BreadcrumbRoute
+          title='Redaguoti paskyrą'
           path='/evaluator/editAccount'
           render={() => this.renderArticleSegment(EditAccountContainer)}
         />

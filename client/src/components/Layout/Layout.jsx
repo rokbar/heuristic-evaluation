@@ -1,5 +1,10 @@
 import React from 'react';
+
 import Footer from 'components/Footer';
+import { Breadcrumbs as ReactBreadcrumbs} from 'react-breadcrumbs/dist/react-breadcrumbs.min';
+import { Breadcrumb as SemanticUIBreadcrumb } from 'semantic-ui-react';
+import BreadcrumbsWrapper from 'components/Breadcrumbs';
+
 import './Layout.css';
 
 export default function Layout(props) {
@@ -8,6 +13,11 @@ export default function Layout(props) {
     <div className="Layout">
       <Menu />
       <div className="Layout__row-layout">
+        <ReactBreadcrumbs
+          className="Breadcrumbs"
+          separator={<SemanticUIBreadcrumb.Divider icon='right chevron'/>}
+          wrapper={BreadcrumbsWrapper}
+        />
         <aside className="Aside">
           {aside}
         </aside>
