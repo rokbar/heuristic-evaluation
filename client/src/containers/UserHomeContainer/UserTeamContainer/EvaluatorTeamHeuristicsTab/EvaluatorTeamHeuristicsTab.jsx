@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
 
-import { Header, List, Icon, Segment, Loader } from 'semantic-ui-react';
+import { Header, List, Icon, Segment, Loader, Divider } from 'semantic-ui-react';
 
 import { getHeuristicsRules } from 'actions/heuristics';
 
@@ -35,8 +35,9 @@ class EvaluatorTeamHeuristicsTab extends Component {
           </Header.Subheader>
         </Header>
       </Segment>,
+      <Divider />,
       <Segment basic textAlign="left">
-        <List as="ol">
+        <List as="ol" size="big">
           {(rules && rules.length && map(rules, (item, index) => <List.Item key={index}>{item.listNumber}. {item.description}</List.Item>))
           || <Loader active inline />}
         </List>

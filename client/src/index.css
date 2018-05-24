@@ -15,3 +15,18 @@ body {
 .color--found-problem {
   background-color: #a6c5c4;
 }
+
+.table-cell {
+  white-space: pre-line;
+  vertical-align: top;
+}
+
+.pre-line {
+  white-space: pre-line;
+}
+
+.font-size--big {
+  font-size: 1.28571429em;
+  padding: .21428571em 0;
+  line-height: 1.14285714em;
+}
