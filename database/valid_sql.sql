@@ -1,7 +1,7 @@
 CREATE TABLE Heuristic
 (
 	id integer AUTO_INCREMENT,
-	name TEXT,
+	name varchar(100) NOT NULL,
 	isUnique boolean DEFAULT false,
 	PRIMARY KEY(id)
 );
@@ -33,8 +33,8 @@ INSERT INTO TeamState(id, name) VALUES(5, 'evaluationFinished');
 CREATE TABLE Rule
 (
 	id integer AUTO_INCREMENT,
-	description varchar (255),
-	listNumber integer,
+	description varchar (255) NOT NULL,
+	listNumber integer NOT NULL,
 	heuristicId integer NOT NULL,
 	PRIMARY KEY(id)
 );
@@ -59,39 +59,45 @@ CREATE TABLE Rating
 CREATE TABLE Team
 (
 	id integer AUTO_INCREMENT,
-	name varchar (255),
+	name varchar (255) NOT NULL,
 	report MEDIUMBLOB,
-	plan TEXT,
-	systemName varchar (255),
+	systemName varchar (50) NOT NULL,
 	systemUrl varchar (255),
-	systemContacts varchar (255),
+	systemContacts varchar (255) NOT NULL,
 	state integer DEFAULT 1,
-	companyAdminId integer NOT NULL,
-	leaderId integer,
+	plan TEXT,
+	creationDate date,
+	generalizedDate date,
+	evaluationFinishedDate date,
 	heuristicId integer,
+	leaderId integer,
+	companyAdminId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE User
 (
 	id integer AUTO_INCREMENT,
-	name varchar (255),
-	password varchar (255),
-	lastLogon date,
-	email varchar (255),
+	name varchar (50) NOT NULL,
+	surname varchar(50) NOT NULL,
+	group varchar(50),
+	loginName varchar(50) NOT NULL
+	password varchar (255) NOT NULL,
+	email varchar (150) NOT NULL,
 	companyId integer,
 	systemAdminId integer NOT NULL,
-	role char (255),
+	role char (50) NOT NULL,
+	lastLogon date,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Company
 (
 	id integer AUTO_INCREMENT,
-	name varchar (255),
-	country varchar (255),
+	name varchar (255) NOT NULL,
+	country varchar (60) NOT NULL,
 	url varchar (255),
-	address varchar (255),
+	address varchar (255) NOT NULL,
 	systemAdminId integer NOT NULL,
 	PRIMARY KEY(id)
 );
@@ -108,22 +114,26 @@ CREATE TABLE EvaluatorTeam
 (
 	id integer AUTO_INCREMENT,
 	state integer DEFAULT 1,
-	teamId integer NOT NULL,
+	startedEvaluationDate date,
+	submittedProblemsDate date,
+	submittedRatingsDate date,
 	evaluatorId integer NOT NULL,
+	teamId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Problem
 (
 	id integer AUTO_INCREMENT,
-	description TEXT,
+	description TEXT NOT NULL,
   solution TEXT,
-	location varchar (255),
-	teamId integer NOT NULL,
+	location varchar (255) NOT NULL,
 	position integer,
 	isRevised boolean DEFAULT false,
 	isCombined boolean DEFAULT false,
   ratingsAverage float,
+  createdDate date NOT NULL,
+	teamId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -138,9 +148,8 @@ CREATE TABLE MergedProblem
 CREATE TABLE ProblemPhoto
 (
 	id integer AUTO_INCREMENT,
-	path varchar(255),
-  isRemoved boolean DEFAULT 0,
-	problemId integer,
+	path varchar(255) NOT NULL,
+	problemId integer NOT NULL,
 	PRIMARY KEY(id)
 );
 
