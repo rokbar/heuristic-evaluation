@@ -8,13 +8,17 @@ import {
   Form,
   Grid,
   Segment,
+  Divider,
 } from 'semantic-ui-react'
 import TextAreaFormField from 'components/TextAreaFormField';
 import FileInputFormField from 'components/FileInputFormField';
+import FormMessage from 'components/FormMessage';
 import CheckHeuristicsFormField from '../AddProblemForm/CheckHeuristicsFormField';
 
 import { getProblemById, editProblem } from 'actions/problems';
 import { destroyFormState } from 'actions/editForm';
+
+import {required, minLength10, maxLengthTEXT, maxLength255, imageFile} from 'utils/fieldLevelValidation';
 
 class EditProblemForm extends Component {
   componentDidMount() {
@@ -49,7 +53,7 @@ class EditProblemForm extends Component {
   };
 
   render() {
-    const {handleSubmit, editProblem } = this.props;
+    const {handleSubmit, editProblem, submitFailed } = this.props;
 
     return (
       <div className="AddProblemForm">
@@ -58,7 +62,7 @@ class EditProblemForm extends Component {
           verticalAlign="middle"
         >
           <Grid.Column>
-            <Form onSubmit={handleSubmit(editProblem)}>
+            <Form onSubmit={handleSubmit(editProblem)} error={submitFailed}>
               <Segment basic>
                 <Field
                   name="description"
@@ -66,6 +70,7 @@ class EditProblemForm extends Component {
                   label="Aprašymas"
                   placeholder="Aprašymas"
                   required
+                  validate={[required, minLength10, maxLengthTEXT]}
                 />
                 <Field
                   name="location"
@@ -73,12 +78,14 @@ class EditProblemForm extends Component {
                   label="Problemos lokacija"
                   placeholder="Problemos lokacija"
                   required
+                  validate={[required, minLength10, maxLength255]}
                 />
                 <Field
                   name="solution"
                   component={TextAreaFormField}
                   label="Taisymo pasiūlymas"
                   placeholder="Taisymo pasiūlymas"
+                  validate={[minLength10, maxLengthTEXT]}
                 />
                 <div className="field">
                   <label>Pažeistos euristikos</label>
@@ -95,7 +102,14 @@ class EditProblemForm extends Component {
                   type="file"
                   name="photo"
                   component={FileInputFormField}
+                  validate={imageFile}
                 />
+                <Divider/>
+                {submitFailed && <FormMessage
+                  type="error"
+                  header="Nepavyko išsaugoti pakeitimų"
+                  content="Patikrinkite ar formos laukai užpildyti teisingai"
+                />}
                 <Button
                   style={{marginTop: "20px"}}
                   type="submit"
