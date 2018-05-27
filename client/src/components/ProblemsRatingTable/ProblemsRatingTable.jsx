@@ -140,7 +140,7 @@ class ProblemsRatingTable extends Component {
       });
     }
 
-    return mappedRules && mappedRules.join(' ');
+    return mappedRules && mappedRules.join('\n');
   }
 
   getTableData() {

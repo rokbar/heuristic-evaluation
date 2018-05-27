@@ -6,14 +6,24 @@ export default function TableBody({data, headers}) {
   const renderDataRow = (data, headers) => {
     return data.map((item, index) => {
       return (
-        <Table.Row key={index} style={{backgroundColor: item['completed'] ? '#d6efd6b8' : ''}}>
+        <Table.Row key={index} style={{backgroundColor: item['completed'] ? '#a6c5c4' : ''}}>
           {
             isArray(headers)
               ? map(headers, (value) => {
-                return <Table.Cell key={value}>{item[value]}</Table.Cell>;
+                return <Table.Cell
+                  key={value}
+                  className="table-cell"
+                >
+                  {item[value]}
+                </Table.Cell>;
               })
               : map(headers, (value, key) => {
-                return <Table.Cell key={key}>{item[key]}</Table.Cell>;
+                return <Table.Cell
+                  key={key}
+                  className="table-cell"
+                >
+                  {item[key]}
+                </Table.Cell>;
               })
           }
         </Table.Row>

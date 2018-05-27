@@ -1,6 +1,8 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom';
+import {Switch} from 'react-router-dom';
 import Loadable from 'react-loadable';
+
+import BreadcrumbRoute from 'components/Breadcrumbs/BreadcrumbRoute';
 import LoadingComponent from './components/LoadingComponent';
 import SignInContainer from './containers/SignInContainer';
 import AuthorizationHOC from './components/AuthorizationHOC';
@@ -26,8 +28,8 @@ const EvaluatorHome = UserRoutes(UserHomeContainer);
 
 export default ({childProps}) =>
   <Switch>
-    <Route path="/" exact component={SignInContainer} props={childProps} />
-    <Route path="/systemadmin" component={SystemAdminHome} props={childProps} />
-    <Route path="/companyadmin" component={CompanyAdminHome} props={childProps} />
-    <Route path="/evaluator" component={EvaluatorHome} props={childProps} />
+    <BreadcrumbRoute title="Pradinis" path="/" exact component={SignInContainer} props={childProps} />
+    <BreadcrumbRoute title="Sistemos administratoriaus pradinis" path="/systemadmin" component={SystemAdminHome} props={childProps} />
+    <BreadcrumbRoute title="Įmonės administratoriaus pradinis" path="/companyadmin" component={CompanyAdminHome} props={childProps} />
+    <BreadcrumbRoute title="Vertintojo pradinis" path="/evaluator" component={EvaluatorHome} props={childProps} />
   </Switch>

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
 
+import BreadcrumbRoute from 'components/Breadcrumbs/BreadcrumbRoute';
 import Layout from 'components/Layout';
 import Tabs from 'components/Tabs';
 import SharedMenuContainer from 'containers/SharedMenuContainer';
@@ -47,21 +48,25 @@ class CompanyAdminHomeContainer extends Component {
         currentLocation={location.pathname}
       />,
       <Switch>
-        <Route
+        <BreadcrumbRoute
           exact
-          path='/companyadmin/teams'
+          title="Organizacijos komandų sąrašas"
+          path="/companyadmin/teams"
           component={() => this.renderArticleSegment(TeamsTableContainer)}
         />
-        <Route
-          path='/companyadmin/teams/add'
+        <BreadcrumbRoute
+          title="Sukurti komandą"
+          path="/companyadmin/teams/add"
           component={() => this.renderArticleSegment(AddTeamForm)}
         />
-        <Route
-          path='/companyadmin/teams/edit/:teamId'
+        <BreadcrumbRoute
+          title="Redaguoti komandą"
+          path="/companyadmin/teams/edit/:teamId"
           component={(props) => this.renderArticleSegment(EditTeamTab, props)}
         />
-        <Route
-          path='/companyadmin/editAccount'
+        <BreadcrumbRoute
+          title="Redaguoti paskyrą"
+          path="/companyadmin/editAccount"
           render={() => this.renderArticleSegment(EditAccountContainer)}
         />
       </Switch>,

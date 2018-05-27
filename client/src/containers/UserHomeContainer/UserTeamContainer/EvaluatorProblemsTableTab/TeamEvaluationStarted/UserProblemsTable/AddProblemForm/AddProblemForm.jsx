@@ -41,28 +41,35 @@ class AddProblemForm extends Component {
     return (
       <div className="AddProblemForm">
         <Grid
-          textAlign="center"
           style={{height: "100%"}}
           verticalAlign="middle"
         >
           <Grid.Column>
-            <Form onSubmit={handleSubmit(createProblem)} size="large">
-              <Segment stacked>
+            <Form onSubmit={handleSubmit(createProblem)}>
+              <Segment basic>
                 <Field
                   name="description"
                   component={TextAreaFormField}
+                  label="Aprašymas"
                   placeholder="Aprašymas"
+                  required
                 />
                 <Field
                   name="location"
                   component={TextAreaFormField}
+                  label="Problemos lokacija"
                   placeholder="Problemos lokacija"
+                  required
                 />
                 <Field
                   name="solution"
                   component={TextAreaFormField}
+                  label="Taisymo pasiūlymas"
                   placeholder="Taisymo pasiūlymas"
                 />
+                <div className="field">
+                  <label>Pažeistos euristikos</label>
+                </div>
                 <FieldArray
                   name="rules"
                   component={CheckHeuristicsFormField}
@@ -74,12 +81,12 @@ class AddProblemForm extends Component {
                   component={FileInputFormField}
                 />
                 <Button
+                  style={{marginTop: "20px"}}
                   type="submit"
                   color="teal"
-                  fluid
-                  size="large"
+                  size="big"
                 >
-                  Pridėti
+                  Išsaugoti
                 </Button>
               </Segment>
             </Form>

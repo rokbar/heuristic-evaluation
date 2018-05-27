@@ -18,7 +18,7 @@ export default function Tabs(props) {
 
   const { panes, currentLocation } = props;
   return (
-    <Menu attached="top" tabular>
+    <Menu attached="top" tabular size="large">
       {renderPanes(panes, currentLocation)}
     </Menu>
   )

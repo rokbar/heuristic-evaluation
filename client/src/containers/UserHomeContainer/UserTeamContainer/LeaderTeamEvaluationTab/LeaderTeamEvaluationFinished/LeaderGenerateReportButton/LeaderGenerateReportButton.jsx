@@ -74,7 +74,7 @@ class LeaderGenerateReportButton extends Component {
       });
     }
 
-    return mappedRules && mappedRules.join(' ');
+    return mappedRules && mappedRules.join('\n');
   }
 
   formatUsersRatings(problemProps)  {

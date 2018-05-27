@@ -34,6 +34,7 @@ class EditProblemFormModal extends Component {
         trigger={this.renderEditProblemButton()}
         open={this.state.modalOpen}
         onClose={this.handleClose}
+        size="tiny"
       >
         <Header content="Redaguoti problemą" />
         <Modal.Content>
