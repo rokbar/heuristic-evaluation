@@ -105,7 +105,7 @@ export function createProblem({
   }
 }
 
-export function getProblemById({ problemId }) {
+export function getProblemById({ problemId, formName = '' }) {
   return (dispatch) => {
     return fetch(`/problems/get/${problemId}`, {
       headers: {
@@ -119,6 +119,7 @@ export function getProblemById({ problemId }) {
       .then(problem => {
         problem && dispatch({
           type: EDIT_FORM,
+          formName,
           payload: { ...problem }
         });
         return problem;

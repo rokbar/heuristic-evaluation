@@ -33,7 +33,7 @@ export function getUsers() {
   }
 }
 
-export function getUserById({ userId }) {
+export function getUserById({ userId, formName = '' }) {
   return (dispatch) => {
     return fetch(`/users/${userId}`, {
       headers: {
@@ -47,6 +47,7 @@ export function getUserById({ userId }) {
       .then(user => {
         dispatch({
           type: EDIT_FORM,
+          formName,
           payload: { ...user }
         });
       })

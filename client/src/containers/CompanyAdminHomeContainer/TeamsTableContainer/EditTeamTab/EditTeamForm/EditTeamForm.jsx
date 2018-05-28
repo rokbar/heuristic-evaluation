@@ -5,7 +5,6 @@ import { map } from 'lodash';
 import {
   Button,
   Form,
-  Grid,
   Header,
   Segment,
 } from 'semantic-ui-react'
@@ -14,13 +13,18 @@ import { getTeamById, editTeam } from 'actions/teams';
 import { destroyFormState } from 'actions/editForm';
 import DropdownFormField from 'components/DropdownFormField';
 
+const FORM_NAME = 'editTeam';
+
 class EditTeamForm extends Component {
   componentDidMount() {
-    this.props.getTeamById({ teamId: this.props.teamId });
+    this.props.getTeamById({
+      teamId: this.props.teamId,
+      formName: FORM_NAME,
+    });
   }
 
   componentWillUnmount() {
-    this.props.destroy('editTeam');
+    this.props.destroy(FORM_NAME);
     this.props.destroyFormState();
   }
 
@@ -97,12 +101,12 @@ class EditTeamForm extends Component {
 function mapStateToProps(state) {
   return {
     // redux-form prop which lets to initialize form data
-    initialValues: state.editForm.data,
+    initialValues: state.editForm[FORM_NAME] && state.editForm[FORM_NAME].data,
   };
 }
 
 EditTeamForm = reduxForm({
-  form: 'editTeam',
+  form: FORM_NAME,
 })(EditTeamForm);
 
 EditTeamForm = connect(

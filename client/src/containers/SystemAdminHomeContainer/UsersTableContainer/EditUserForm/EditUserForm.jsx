@@ -15,14 +15,19 @@ import { destroyFormState } from 'actions/editForm';
 import { getCompanies } from 'actions/companies';
 import DropdownFormField from 'components/DropdownFormField';
 
+const FORM_NAME = 'editUser';
+
 class EditUserForm extends Component {
   componentDidMount() {
-    this.props.getUserById({ userId: this.props.match.params.userId });
+    this.props.getUserById({
+      userId: this.props.match.params.userId,
+      formName: FORM_NAME,
+    });
     this.props.getCompanies();
   }
 
   componentWillUnmount() {
-    this.props.destroy('editUser');
+    this.props.destroy(FORM_NAME);
     this.props.destroyFormState();
   }
 
@@ -116,13 +121,13 @@ class EditUserForm extends Component {
 function mapStateToProps(state) {
   return {
     // redux-form prop which lets to initialize form data
-    initialValues: state.editForm.data,
+    initialValues: state.editForm[FORM_NAME] && state.editForm[FORM_NAME].data,
     companies: state.companies,
   };
 }
 
 EditUserForm = reduxForm({
-  form: 'editUser',
+  form: FORM_NAME,
 })(EditUserForm);
 
 EditUserForm = connect(

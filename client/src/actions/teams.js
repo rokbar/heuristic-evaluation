@@ -30,7 +30,7 @@ export function getTeamsByCompanyAdmin() {
   }
 }
 
-export function getTeamById({ teamId }) {
+export function getTeamById({ teamId, formName = '' }) {
   return (dispatch) => {
     return fetch(`/teams?id=${teamId}`, {
       headers: {
@@ -44,6 +44,7 @@ export function getTeamById({ teamId }) {
       .then(teams => {
         teams.length && dispatch({
           type: EDIT_FORM,
+          formName,
           payload: { ...teams[0] }
         });
         return teams[0];

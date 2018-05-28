@@ -6,7 +6,12 @@ import {
 export default (state = {}, action) => {
   switch(action.type) {
     case EDIT_FORM: {
-      return { data: action.payload }
+      return {
+        ...state,
+        [action.formName]: {
+          data: action.payload,
+        }
+      };
     }
     case DESTROY_FORM: {
       return {};

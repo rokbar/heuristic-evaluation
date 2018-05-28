@@ -9,14 +9,19 @@ import EditPasswordForm from './EditPasswordForm';
 import { getUserById, editAccount, editPassword } from 'actions/users';
 import { destroyFormState } from 'actions/editForm';
 
+const FORM_NAME = 'editAccount';
+
 class EditAccountContainer extends Component {
   componentDidMount() {
     this.props.destroyFormState();
-    this.props.getUserById({ userId: this.props.userId });
+    this.props.getUserById({
+      userId: this.props.userId,
+      formName: FORM_NAME,
+    });
   }
 
   componentWillUnmount() {
-    this.props.destroy('editAccount');
+    this.props.destroy(FORM_NAME);
     this.props.destroyFormState();
   }
 
@@ -49,13 +54,13 @@ class EditAccountContainer extends Component {
 function mapStateToProps(state) {
   return {
     // redux-form prop which lets to initialize form data
-    initialValues: state.editForm.data,
+    initialValues: state.editForm[FORM_NAME] && state.editForm[FORM_NAME].data,
     userId: state.auth.userId,
   };
 }
 
 EditAccountContainer = reduxForm({
-  form: 'editAccount',
+  form: FORM_NAME,
 })(EditAccountContainer);
 
 EditAccountContainer = connect(

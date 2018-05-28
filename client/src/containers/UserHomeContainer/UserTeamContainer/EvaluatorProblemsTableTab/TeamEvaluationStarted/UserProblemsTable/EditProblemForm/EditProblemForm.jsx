@@ -24,10 +24,12 @@ import {
   imageFile, imagesSize,
 } from 'utils/fieldLevelValidation';
 
+const FORM_NAME = 'editProblem';
+
 class EditProblemForm extends Component {
   componentDidMount() {
     this.props.destroyFormState();
-    this.props.getProblemById({ problemId: this.props.problemId });
+    this.props.getProblemById({ problemId: this.props.problemId, formName: FORM_NAME });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -45,7 +47,7 @@ class EditProblemForm extends Component {
   }
 
   componentWillUnmount() {
-    this.props.destroy('editTeam');
+    this.props.destroy(FORM_NAME);
     this.props.destroyFormState();
   }
 
@@ -132,12 +134,12 @@ class EditProblemForm extends Component {
 }
 
 function mapStateToProps(state) {
-  if (state.editForm.data && state.editForm.data.problem) {
+  if (state.editForm[FORM_NAME] && state.editForm[FORM_NAME].data && state.editForm[FORM_NAME].data.problem) {
     const {
       problem: {description, location, solution},
       photos,
       problemrule,
-    } = state.editForm.data;
+    } = state.editForm[FORM_NAME].data;
     const checkedRules = map(problemrule, (item) => item.ruleId);
 
     return {
@@ -151,7 +153,7 @@ function mapStateToProps(state) {
 }
 
 EditProblemForm = reduxForm({
-  form: 'editProblem',
+  form: FORM_NAME,
 })(EditProblemForm);
 
 EditProblemForm = connect(

@@ -16,10 +16,15 @@ import CheckHeuristicsFormField from './CheckHeuristicsFormField';
 import { getProblemById } from 'actions/problems';
 import { destroyFormState } from 'actions/editForm';
 
+const FORM_NAME = 'editMergedProblem';
+
 class EditGeneralizedProblemForm extends Component {
   componentDidMount() {
     this.props.destroyFormState();
-    this.props.getProblemById({ problemId: this.props.problemId });
+    this.props.getProblemById({
+      problemId: this.props.problemId,
+      formName: FORM_NAME,
+    });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -37,7 +42,7 @@ class EditGeneralizedProblemForm extends Component {
   }
 
   componentWillUnmount() {
-    this.props.destroy('editMergedProblem');
+    this.props.destroy(FORM_NAME);
     this.props.destroyFormState();
   }
 
@@ -107,12 +112,12 @@ class EditGeneralizedProblemForm extends Component {
 }
 
 function mapStateToProps(state) {
-  if (state.editForm.data && state.editForm.data.problem) {
+  if (state.editForm[FORM_NAME] && state.editForm[FORM_NAME].data && state.editForm[FORM_NAME].data.problem) {
     const {
       problem: {description, location, solution},
       photos,
       problemrule,
-    } = state.editForm.data;
+    } = state.editForm[FORM_NAME].data;
     const checkedRules = map(problemrule, (item) => item.ruleId);
 
     return {
@@ -126,7 +131,7 @@ function mapStateToProps(state) {
 }
 
 EditGeneralizedProblemForm = reduxForm({
-  form: 'editMergedProblem',
+  form: FORM_NAME,
 })(EditGeneralizedProblemForm);
 
 EditGeneralizedProblemForm = connect(
