@@ -37,6 +37,7 @@ class AddProblemFormModal extends Component {
         trigger={this.renderAddProblemButton()}
         open={this.state.modalOpen}
         onClose={this.handleClose}
+        closeIcon
         size="tiny"
       >
         <Header content="Pridėti problemą" />

@@ -34,6 +34,7 @@ class EditGeneralizedProblemFormModal extends Component {
         trigger={this.renderEditProblemButton()}
         open={this.state.modalOpen}
         onClose={this.handleClose}
+        closeIcon
       >
         <Header content="Redaguoti problemą" />
         <Modal.Content>

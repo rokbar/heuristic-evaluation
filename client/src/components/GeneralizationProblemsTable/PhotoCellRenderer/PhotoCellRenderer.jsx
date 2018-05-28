@@ -13,7 +13,7 @@ class PhotoCellRenderer extends Component {
     const { value} = this.props;
     return value
       ? <Image.Group size="mini">
-        {map(value, (item, key) => <Modal key={key} trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
+        {map(value, (item, key) => <Modal closeIcon key={key} trigger={<Image style={{ cursor: 'pointer' }} src={item} />}>
           <Image src={item} />
         </Modal>)}
       </Image.Group>

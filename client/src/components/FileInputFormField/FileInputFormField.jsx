@@ -71,6 +71,7 @@ class FileInputFormField extends Component {
       <div style={{display: 'flex'}}>
         {map(notRemovedPhotos, (item, key) => <div key={key} style={{display: 'flex', margin: '10px'}}>
             <Modal
+              closeIcon
               trigger={
                 <Image style={{cursor: 'pointer', height: '100px', width: 'auto'}} src={item.path || item.uri}/>
               }

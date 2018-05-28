@@ -35,6 +35,7 @@ class EditProblemFormModal extends Component {
         open={this.state.modalOpen}
         onClose={this.handleClose}
         size="tiny"
+        closeIcon
       >
         <Header content="Redaguoti problemą" />
         <Modal.Content>
