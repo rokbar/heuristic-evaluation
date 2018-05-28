@@ -1,4 +1,6 @@
-import {every} from 'lodash';
+import {every, reduce} from 'lodash';
+
+const MAX_IMAGES_SIZE = 2 * 1024 * 1024;
 
 export const required = value => value ? undefined : 'Privalomas laukas';
 
@@ -20,6 +22,13 @@ export const maxLength100 = maxLength(100);
 export const maxLength255 = maxLength(255);
 export const maxLengthTEXT = maxLength(16380);
 
-export const imageFile = files => every(files, image => image.name && image.name.match(/\.(jpeg|JPEG|jpg|JPG|gif|GIF|png|PNG)$/))
-  ? undefined
-  : 'Ne visi pasirinkti failai yra nuotraukos tipo';
+export const imageFile = files => {
+  const imagesExtensions = /\.(jpeg|JPEG|jpg|JPG|gif|GIF|png|PNG)$/;
+  return every(files, ({name, path}) => (name && name.match(imagesExtensions)) || (path && path.match(imagesExtensions)))
+    ? undefined
+    : 'Ne visi pasirinkti failai yra nuotraukos tipo';
+};
+
+export const imagesSize = files => MAX_IMAGES_SIZE < reduce(files, (sum, {removed, size}) => sum += (!removed && size) || 0, 0)
+  ? 'Bendras visų nuotraukų dydis negali viršyti 2MB'
+  : undefined;

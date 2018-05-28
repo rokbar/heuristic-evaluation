@@ -149,6 +149,7 @@ CREATE TABLE ProblemPhoto
 (
 	id integer AUTO_INCREMENT,
 	path varchar(255) NOT NULL,
+	size integer NOT NULL,
 	problemId integer NOT NULL,
 	PRIMARY KEY(id)
 );

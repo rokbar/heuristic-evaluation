@@ -11,7 +11,7 @@ module.exports = function (app) {
       return new Promise((resolve, reject) => {
         const { problemphotos, problemId } = data;
         const rowsToInsert = problemphotos.map((item) => {
-          return { path: item.id || item, problemId }
+          return { path: item.id || item, size: item.size, problemId }
         });
 
         db.transacting(params.transaction.trx)

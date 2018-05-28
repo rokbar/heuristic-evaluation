@@ -17,7 +17,11 @@ import CheckHeuristicsFormField from './CheckHeuristicsFormField';
 
 import {createProblem} from 'actions/problems';
 
-import {required, minLength10, maxLengthTEXT, maxLength255, imageFile} from 'utils/fieldLevelValidation';
+import {
+  required,
+  minLength10, maxLengthTEXT, maxLength255,
+  imageFile, imagesSize,
+} from 'utils/fieldLevelValidation';
 
 class AddProblemForm extends Component {
   componentDidMount() {
@@ -86,7 +90,7 @@ class AddProblemForm extends Component {
                   type="file"
                   name="photo"
                   component={FileInputFormField}
-                  validate={imageFile}
+                  validate={[imageFile, imagesSize]}
                 />
                 <Divider/>
                 {submitFailed && <FormMessage

@@ -98,19 +98,25 @@ module.exports = function (app) {
 
       return new Promise((resolve, reject) => {
         app.service('problemrule').find(
-          { query: { problemId: problemId } },
+          {query: {problemId: problemId}},
         )
           .then(result => {
             problem.problemrule = result;
             return app.service('problemphotos').find(
-              { query: {
-                problemId: problemId,
-                $select: [ 'path' ],
-              }},
+              {
+                query: {
+                  problemId: problemId,
+                  $select: ['path', 'size'],
+                }
+              },
             )
           })
           .then(result => {
-            problem.photos = result.map(item => ({ id: item.id, path: `${proto}://${host}/${item.path}` }));
+            problem.photos = result.map(item => ({
+              id: item.id,
+              path: `${proto}://${host}/${item.path}`,
+              size: item.size,
+            }));
             return app.service('problems').get(
               problemId,
             )

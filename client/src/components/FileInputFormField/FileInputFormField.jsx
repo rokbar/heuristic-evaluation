@@ -32,7 +32,7 @@ class FileInputFormField extends Component {
       promises.push(
         new Promise((resolve, reject) => {
           reader.addEventListener('load', () => {
-            resolve({uri: reader.result, name: file.name});
+            resolve({uri: reader.result, name: file.name, size: file.size});
           }, false);
         })
       )
