@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import { reducer as formReducer } from 'redux-form';
 import authReducer from './authReducer';
+import apiResponseReducer from './apiResponseReducer';
 import editFormReducer from './editFormReducer';
 import usersReducer from './usersReducer';
 import companiesReducer from './companiesReducer';
@@ -14,6 +15,7 @@ const appReducer = combineReducers({
   router: routerReducer,
   form: formReducer,
   auth: authReducer,
+  apiResponse: apiResponseReducer,
   editForm: editFormReducer,
   users: usersReducer,
   companies: companiesReducer,

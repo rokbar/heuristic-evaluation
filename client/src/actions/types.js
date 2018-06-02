@@ -3,6 +3,9 @@ export const INIT = 'initialize-application';
 export const AUTH_USER = 'auth-user';
 export const UNAUTH_USER = 'unauth-user';
 
+export const API_RESPONSE_MODAL_SHOW = 'api-modal-show';
+export const API_RESPONSE_MODAL_CLOSE = 'api-modal-close';
+
 export const EDIT_FORM = 'edit-form';
 export const DESTROY_FORM = 'destroy-form';
 

@@ -1,8 +1,9 @@
 import {ADD_USER, DELETE_USER} from './types';
-import { getJwtToken } from 'utils/localStorage';
-import { evaluatorTeamState } from 'utils/enums';
+import {showAPIResponseError} from './apiResponse';
+import {getJwtToken} from 'utils/localStorage';
+import {evaluatorTeamState} from 'utils/enums';
 
-export function addUserToTeam({ evaluatorId: userId, teamId: teamId }) {
+export function addUserToTeam({evaluatorId: userId, teamId: teamId}) {
   return (dispatch) => {
     return fetch('/evaluatorteam', {
       body: JSON.stringify({
@@ -20,7 +21,7 @@ export function addUserToTeam({ evaluatorId: userId, teamId: teamId }) {
       })
       .then(userTeam => {
         console.log(userTeam);
-        const { user, ...data } = userTeam;
+        const {user, ...data} = userTeam;
         dispatch({
           type: ADD_USER,
           payload: {
@@ -35,7 +36,7 @@ export function addUserToTeam({ evaluatorId: userId, teamId: teamId }) {
   }
 }
 
-export function removeUserFromTeam({ userId, teamId }) {
+export function removeUserFromTeam({userId, teamId}) {
   return (dispatch) => {
     return fetch(`/evaluatorteam?evaluatorId=${userId}&teamId=${teamId}`, {
       headers: {
@@ -48,13 +49,17 @@ export function removeUserFromTeam({ userId, teamId }) {
         return response.json();
       })
       .then(userTeam => {
-        dispatch({
-          type: DELETE_USER,
-          payload: {
-            usersType: 'teamUsers',
-            userId: userTeam[0] && userTeam[0].evaluatorId,
-          }
-        })
+        if (!userTeam.ok) {
+          dispatch(showAPIResponseError(userTeam.message));
+        } else {
+          dispatch({
+            type: DELETE_USER,
+            payload: {
+              usersType: 'teamUsers',
+              userId: userTeam[0] && userTeam[0].evaluatorId,
+            }
+          })
+        }
       })
       .catch(error => {
         console.log(error);
@@ -62,7 +67,7 @@ export function removeUserFromTeam({ userId, teamId }) {
   }
 }
 
-export function getUserTeamState({ userId, teamId }) {
+export function getUserTeamState({userId, teamId}) {
   return fetch(`/evaluatorteam?evaluatorId=${userId}&teamId=${teamId}`, {
     headers: {
       'Authorization': getJwtToken(),
@@ -76,7 +81,7 @@ export function getUserTeamState({ userId, teamId }) {
     .catch();
 }
 
-function changeUserEvaluationState({ id, state }) {
+function changeUserEvaluationState({id, state}) {
   return fetch(`/evaluatorteam/${id}`, {
     body: JSON.stringify({
       state,
@@ -91,40 +96,40 @@ function changeUserEvaluationState({ id, state }) {
 }
 
 // TODO - add backend validations, as well as UI
-export function startUserEvaluation({ id }) {
-  return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationStarted })
+export function startUserEvaluation({id}) {
+  return changeUserEvaluationState({id, state: evaluatorTeamState.evaluationStarted})
     .then(response => {
       return response.json();
     })
     .catch();
 }
 
-export function submitUserProblems({ id }) {
-  return changeUserEvaluationState({ id, state: evaluatorTeamState.submittedProblems })
+export function submitUserProblems({id}) {
+  return changeUserEvaluationState({id, state: evaluatorTeamState.submittedProblems})
     .then(response => {
       return response.json();
     })
     .catch();
 }
 
-export function cancelUserProblems({ id }) {
-  return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationStarted })
+export function cancelUserProblems({id}) {
+  return changeUserEvaluationState({id, state: evaluatorTeamState.evaluationStarted})
     .then(response => {
       return response.json();
     })
     .catch();
 }
 
-export function startRatingProblems({ id }) {
-  return changeUserEvaluationState({ id, state: evaluatorTeamState.ratingProblems })
+export function startRatingProblems({id}) {
+  return changeUserEvaluationState({id, state: evaluatorTeamState.ratingProblems})
     .then(response => {
       return response.json();
     })
     .catch();
 }
 
-export function finishRatingProblems({ id }) {
-  return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationFinished })
+export function finishRatingProblems({id}) {
+  return changeUserEvaluationState({id, state: evaluatorTeamState.evaluationFinished})
     .then(response => {
       return response.json();
     })
