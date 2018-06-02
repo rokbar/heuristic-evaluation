@@ -90,7 +90,7 @@ function changeUserEvaluationState({ id, state }) {
     .catch();
 }
 
-// TODO - add backend validation, as well as UI
+// TODO - add backend validations, as well as UI
 export function startUserEvaluation({ id }) {
   return changeUserEvaluationState({ id, state: evaluatorTeamState.evaluationStarted })
     .then(response => {

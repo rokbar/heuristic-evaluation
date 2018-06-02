@@ -25,19 +25,6 @@ module.exports = {
   error: {
     all: [
       // logger(),
-      (hook) => {
-        const err = hook.error;
-
-        //change `hook.error` to the modified error
-        hook.error = {
-          message: err.message,
-          name: err.name,
-          code: err.code,
-          className: err.className,
-          info: err.info,
-          data: err.data,
-        };
-      }
     ],
     find: [
 

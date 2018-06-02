@@ -1,5 +1,8 @@
 const authHooks = require('feathers-authentication-hooks');
 
+const { hasTeamNotStartedEvaluation } = require('../validations/teams');
+const validateHook = require('../utils/validationHookWrapper');
+
 // TODO - adjust restriction (separate leaders from evaluators)
 module.exports = function ({ auth }) {
   return function (app) {
@@ -47,6 +50,7 @@ module.exports = function ({ auth }) {
           }),
         ],
         remove: [
+          validateHook(() => hasTeamNotStartedEvaluation(42), 'Negalima pašalinti vertintojo. Komanda yra pradėjusi vertinimą.'),
           authHooks.restrictToRoles({
             roles: ['companyadmin'],
             fieldName: 'role',
