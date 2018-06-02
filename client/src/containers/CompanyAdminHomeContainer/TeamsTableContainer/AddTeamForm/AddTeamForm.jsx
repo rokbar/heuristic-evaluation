@@ -13,7 +13,7 @@ import { addTeam } from 'actions/teams';
 
 class AddTeamForm extends Component {
   render() {
-    const {handleSubmit, addTeam } = this.props;
+    const {handleSubmit, addTeam, submitting} = this.props;
 
     return (
       <div className="AddTeamForm">
@@ -65,6 +65,8 @@ class AddTeamForm extends Component {
                   color="teal"
                   fluid
                   size="large"
+                  disabled={submitting}
+                  loading={submitting}
                 >
                   Pridėti
                 </Button>

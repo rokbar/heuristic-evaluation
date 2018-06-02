@@ -44,7 +44,7 @@ class AddUserForm extends Component {
   };
 
   render() {
-    const {handleSubmit, addUser } = this.props;
+    const {handleSubmit, addUser, submitting} = this.props;
     const companyOptions = this.getCompanyOptions();
     const roleOptions = this.getRoleOptions();
 
@@ -103,6 +103,8 @@ class AddUserForm extends Component {
                   color="teal"
                   fluid
                   size="large"
+                  disabled={submitting}
+                  loading={submitting}
                 >
                   Pridėti
                 </Button>

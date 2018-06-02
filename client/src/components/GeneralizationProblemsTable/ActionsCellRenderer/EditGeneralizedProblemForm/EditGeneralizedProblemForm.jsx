@@ -54,7 +54,7 @@ class EditGeneralizedProblemForm extends Component {
   };
 
   render() {
-    const {handleSubmit, editProblem } = this.props;
+    const {handleSubmit, editProblem, submitting} = this.props;
 
     return (
       <div className="EditMergedProblemForm">
@@ -99,6 +99,8 @@ class EditGeneralizedProblemForm extends Component {
                   color="teal"
                   fluid
                   size="large"
+                  disabled={submitting}
+                  loading={submitting}
                 >
                   Redaguoti
                 </Button>

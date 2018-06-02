@@ -8,7 +8,7 @@ import {
   Segment,
 } from 'semantic-ui-react'
 
-export default function EditAccountDetailsForm({handleSubmit, editPassword}) {
+export default function EditAccountDetailsForm({handleSubmit, editPassword, submitting}) {
   return [
     <Header as="h2" color="teal" textAlign="center">
       Keisti slaptažodį
@@ -44,6 +44,8 @@ export default function EditAccountDetailsForm({handleSubmit, editPassword}) {
           color="teal"
           fluid
           size="large"
+          disabled={submitting}
+          loading={submitting}
         >
           Keisti
         </Button>

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { reduxForm, change } from 'redux-form';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {reduxForm, change} from 'redux-form';
 import {
   Form,
   Header,
@@ -8,11 +8,11 @@ import {
   Button,
 } from 'semantic-ui-react';
 
-import { startEvaluation } from 'actions/teams';
+import {startEvaluation} from 'actions/teams';
 import HeuristicSelect from './HeuristicSelect';
 import PlanList from './PlanList';
 
-import { teamState } from 'utils/enums';
+import {teamState} from 'utils/enums';
 
 class StartEvaluationForm extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class StartEvaluationForm extends Component {
   }
 
   componentDidMount() {
-    this.props.initialize({ teamId: this.props.teamId });
+    this.props.initialize({teamId: this.props.teamId});
   }
 
   handleHeuristicClick = (e, titleProps) => {
@@ -32,12 +32,12 @@ class StartEvaluationForm extends Component {
     const newIndex = checkedHeuristic === index ? -1 : index;
     this.props.change('startEvaluation', 'heuristicId', newIndex);
 
-    this.setState({ checkedHeuristic: newIndex });
+    this.setState({checkedHeuristic: newIndex});
   };
 
   onFormSubmit = (data) => {
-    const { startEvaluation, changeTeamState } = this.props;
-    startEvaluation({ ...data })
+    const {startEvaluation, changeTeamState} = this.props;
+    startEvaluation({...data})
       .then((response) => {
         return changeTeamState(teamState.evaluationStarted);
       })
@@ -45,8 +45,8 @@ class StartEvaluationForm extends Component {
   };
 
   render() {
-    const { handleSubmit, heuristics } = this.props;
-    const { checkedHeuristic } = this.state;
+    const {handleSubmit, heuristics, submitting} = this.props;
+    const {checkedHeuristic} = this.state;
 
     return [
       <Header as="h2" color="teal" textAlign="center">
@@ -59,12 +59,14 @@ class StartEvaluationForm extends Component {
             checkedHeuristic={checkedHeuristic}
             handleHeuristicClick={this.handleHeuristicClick}
           />
-          <PlanList />
+          <PlanList/>
           <Button
             type="submit"
             color="teal"
             fluid
             size="large"
+            disabled={submitting}
+            loading={submitting}
           >
             Pradėti
           </Button>
@@ -76,7 +78,7 @@ class StartEvaluationForm extends Component {
 
 StartEvaluationForm = connect(
   null,
-  { startEvaluation, change },
+  {startEvaluation, change},
 )(StartEvaluationForm);
 
 export default reduxForm({

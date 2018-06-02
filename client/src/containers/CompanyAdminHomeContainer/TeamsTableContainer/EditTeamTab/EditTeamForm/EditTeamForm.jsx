@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
-import { map } from 'lodash';
+import {map} from 'lodash';
 import {
   Button,
   Form,
@@ -9,8 +9,8 @@ import {
   Segment,
 } from 'semantic-ui-react'
 
-import { getTeamById, editTeam } from 'actions/teams';
-import { destroyFormState } from 'actions/editForm';
+import {getTeamById, editTeam} from 'actions/teams';
+import {destroyFormState} from 'actions/editForm';
 import DropdownFormField from 'components/DropdownFormField';
 
 const FORM_NAME = 'editTeam';
@@ -36,7 +36,7 @@ class EditTeamForm extends Component {
   };
 
   render() {
-    const {handleSubmit, editTeam } = this.props;
+    const {handleSubmit, editTeam, submitting} = this.props;
     const leaderOptions = this.getLeaderOptions();
 
     return [
@@ -89,6 +89,8 @@ class EditTeamForm extends Component {
             color="teal"
             fluid
             size="large"
+            disabled={submitting}
+            loading={submitting}
           >
             Redaguoti
           </Button>

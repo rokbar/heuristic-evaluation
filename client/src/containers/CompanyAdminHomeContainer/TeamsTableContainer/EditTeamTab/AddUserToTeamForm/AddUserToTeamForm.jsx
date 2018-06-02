@@ -25,7 +25,7 @@ class AddUserToTeamForm extends Component {
   };
 
   render() {
-    const {handleSubmit, addUserToTeam } = this.props;
+    const {handleSubmit, addUserToTeam, submitting} = this.props;
     const userOptions = this.getUserOptions();
 
     return [
@@ -46,6 +46,8 @@ class AddUserToTeamForm extends Component {
             color="teal"
             fluid
             size="large"
+            disabled={submitting}
+            loading={submitting}
           >
             Pridėti
           </Button>

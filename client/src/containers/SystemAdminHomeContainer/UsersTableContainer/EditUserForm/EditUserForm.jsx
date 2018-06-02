@@ -56,7 +56,7 @@ class EditUserForm extends Component {
   };
 
   render() {
-    const {handleSubmit, editUser } = this.props;
+    const {handleSubmit, editUser, submitting} = this.props;
     const companyOptions = this.getCompanyOptions();
     const roleOptions = this.getRoleOptions();
 
@@ -106,6 +106,8 @@ class EditUserForm extends Component {
                   color="teal"
                   fluid
                   size="large"
+                  disabled={submitting}
+                  loading={submitting}
                 >
                   Redaguoti
                 </Button>

@@ -26,7 +26,7 @@ class EditAccountContainer extends Component {
   }
 
   render() {
-    const {handleSubmit, editAccount, editPassword } = this.props;
+    const {handleSubmit, editAccount, editPassword, submitting} = this.props;
 
     return (
       <div className="EditAccountForm">
@@ -39,10 +39,12 @@ class EditAccountContainer extends Component {
             <EditAccountDetailsForm
               handleSubmit={handleSubmit}
               editAccount={editAccount}
+              submitting={submitting}
             />
             <EditPasswordForm
               handleSubmit={handleSubmit}
               editPassword={editPassword}
+              submitting={submitting}
             />
           </Grid.Column>
         </Grid>

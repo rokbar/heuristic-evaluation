@@ -44,7 +44,7 @@ class AddProblemForm extends Component {
   };
 
   render() {
-    const {handleSubmit, createProblem, submitFailed} = this.props;
+    const {handleSubmit, createProblem, submitFailed, submitting} = this.props;
 
     return (
       <div className="AddProblemForm">
@@ -103,6 +103,8 @@ class AddProblemForm extends Component {
                   type="submit"
                   color="teal"
                   size="big"
+                  disabled={submitting}
+                  loading={submitting}
                 >
                   Išsaugoti
                 </Button>

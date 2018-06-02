@@ -13,7 +13,7 @@ import { addCompany } from 'actions/companies';
 
 class AddCompanyForm extends Component {
   render() {
-    const {handleSubmit, addCompany } = this.props;
+    const {handleSubmit, addCompany, submitting} = this.props;
 
     return (
       <div className="AddCompanyForm">
@@ -55,6 +55,8 @@ class AddCompanyForm extends Component {
                   color="teal"
                   fluid
                   size="large"
+                  disabled={submitting}
+                  loading={submitting}
                 >
                   Pridėti
                 </Button>
