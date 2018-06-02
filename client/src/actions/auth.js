@@ -1,5 +1,7 @@
 import feathers from '@feathersjs/client';
-import { push } from 'react-router-redux'
+import {push} from 'react-router-redux'
+import {SubmissionError} from 'redux-form'
+import {includes} from 'lodash';
 
 import {
   AUTH_USER,
@@ -10,11 +12,11 @@ const rest = feathers.rest;
 const auth = feathers.authentication;
 
 const feathersClient = feathers();
-feathersClient.configure(rest().fetch(fetch)).configure(auth({ storage: localStorage }));
+feathersClient.configure(rest().fetch(fetch)).configure(auth({storage: localStorage}));
 
-export function localAuth({ username, password }) {
+export function localAuth({username, password}) {
   return (dispatch) => {
-    feathersClient.authenticate({
+    return feathersClient.authenticate({
       strategy: 'local',
       email: username,
       password: password,
@@ -23,7 +25,7 @@ export function localAuth({ username, password }) {
         return feathersClient.passport.verifyJWT(response.accessToken);
       })
       .then(payload => {
-        const { name, role, userId, companyId } = payload;
+        const {name, role, userId, companyId} = payload;
         dispatch({
           type: AUTH_USER,
           payload: {
@@ -43,11 +45,21 @@ export function localAuth({ username, password }) {
       .catch(function (error) {
         console.error('Error authenticating!', error);
         dispatch(push('/'));
+        return authError(error);
       });
   }
 }
 
-export function jwtAuth({ token }) {
+function authError(error = {message: ''}) {
+  const {message} = error;
+  const submissionMessage = includes(['Missing credentials', 'Invalid login'], message)
+    ? 'Neteisingi prisijungimo duomenys'
+    : 'Įvyko klaida';
+
+  throw new SubmissionError({_error: submissionMessage})
+}
+
+export function jwtAuth({token}) {
   return (dispatch) => {
     feathersClient.authenticate({
       strategy: 'jwt',
@@ -57,7 +69,7 @@ export function jwtAuth({ token }) {
         return feathersClient.passport.verifyJWT(response.accessToken);
       })
       .then(payload => {
-        const { name, role, userId, companyId } = payload;
+        const {name, role, userId, companyId} = payload;
         dispatch({
           type: AUTH_USER,
           payload: {
@@ -91,7 +103,7 @@ export function logout() {
         console.log(error);
       });
 
-    dispatch({ type: UNAUTH_USER });
+    dispatch({type: UNAUTH_USER});
     dispatch(push('/'));
   }
 }
