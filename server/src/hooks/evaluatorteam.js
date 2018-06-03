@@ -50,12 +50,12 @@ module.exports = function ({ auth }) {
           }),
         ],
         remove: [
-          validateHook(() => hasTeamNotStartedEvaluation(42), 'Negalima pašalinti vertintojo. Komanda yra pradėjusi vertinimą.'),
           authHooks.restrictToRoles({
             roles: ['companyadmin'],
             fieldName: 'role',
             idField: 'id',
           }),
+          validateHook(hasTeamNotStartedEvaluation, 'Negalima pašalinti vertintojo. Komanda yra pradėjusi vertinimą.'),
         ],
       },
       after: {

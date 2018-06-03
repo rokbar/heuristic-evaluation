@@ -1,5 +1,5 @@
 import {ADD_USER, DELETE_USER} from './types';
-import {showAPIResponseError} from './apiResponse';
+import {showAPIResponseError, checkAPIResponseValidity} from './apiResponse';
 import {getJwtToken} from 'utils/localStorage';
 import {evaluatorTeamState} from 'utils/enums';
 
@@ -20,7 +20,6 @@ export function addUserToTeam({evaluatorId: userId, teamId: teamId}) {
         return response.json();
       })
       .then(userTeam => {
-        console.log(userTeam);
         const {user, ...data} = userTeam;
         dispatch({
           type: ADD_USER,
@@ -45,25 +44,18 @@ export function removeUserFromTeam({userId, teamId}) {
       },
       method: 'DELETE',
     })
-      .then(response => {
-        return response.json();
-      })
-      .then(userTeam => {
-        if (!userTeam.ok) {
-          dispatch(showAPIResponseError(userTeam.message));
-        } else {
-          dispatch({
-            type: DELETE_USER,
-            payload: {
-              usersType: 'teamUsers',
-              userId: userTeam[0] && userTeam[0].evaluatorId,
-            }
-          })
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      .then(response => dispatch(checkAPIResponseValidity(response)))
+      .then(userTeam => userTeam && dispatch({
+          type: DELETE_USER,
+          payload: {
+            usersType: 'teamUsers',
+            userId: userTeam[0] && userTeam[0].evaluatorId,
+          }
+        })
+      )
+      .catch(error => dispatch(showAPIResponseError({
+        message: 'Neapdorota klaida bandant pašalinti vertintoją iš komandos.'
+      })));
   }
 }
 

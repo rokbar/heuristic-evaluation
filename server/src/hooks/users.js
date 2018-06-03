@@ -1,6 +1,8 @@
 const authHooks = require('feathers-authentication-hooks');
 const bcrypt = require('bcryptjs');
 
+const validateHook = require('../utils/validationHookWrapper');
+
 module.exports = {
   // Add a hook to the user service that automatically replaces
   // the password with a hash of the password before saving it.
@@ -46,13 +48,13 @@ module.exports = {
             }),
           ],
           get: [
-            authHooks.restrictToRoles({
+            validateHook(authHooks.restrictToRoles({
               roles: ['systemadmin'],
               fieldName: 'role',
               idField: 'id',
               ownerField: 'id',
               owner: true,
-            }),
+            }), 'Neturite teisių peržiūrėti pasirinkto naudotojo duomenis.'),
           ],
           create: [
             authHooks.restrictToRoles({

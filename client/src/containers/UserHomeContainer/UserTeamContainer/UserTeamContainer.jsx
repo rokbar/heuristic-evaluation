@@ -13,6 +13,7 @@ import EvaluatorTeamHeuristicsTab from './EvaluatorTeamHeuristicsTab';
 import EvaluatorTeamPlanTab from './EvaluatorTeamPlanTab';
 import ProblemsGeneralizationContainer from 'containers/ProblemsGeneralizationContainer';
 
+import { teamState } from 'utils/enums';
 import { evaluatorTeamState } from 'utils/enums';
 
 import { getTeamStates } from 'actions/teamStates';
@@ -174,20 +175,20 @@ class UserTeamContainer extends Component {
 
   getTabs() {
     const { teamId } = this.props.match.params;
-    const { role } = this.state;
+    const { role, team: { state } } = this.state;
     return role === 'leader'
       ? [
         {name: 'Informacija', pathName: `/evaluator/teams/${teamId}/info`},
         {name: 'Vertinimas', pathName: `/evaluator/teams/${teamId}/evaluation`},
         {name: 'Problemos', pathName: `/evaluator/teams/${teamId}/problems`},
-        {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`},
-        {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`},
+        {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`, hidden: state === teamState.new},
+        {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`, hidden: state === teamState.new},
       ]
       : [
         {name: 'Informacija', pathName: `/evaluator/teams/${teamId}/info`},
         {name: 'Problemos', pathName: `/evaluator/teams/${teamId}/problems`},
-        {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`},
-        {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`},
+        {name: 'Euristikos', pathName: `/evaluator/teams/${teamId}/heuristics`, hidden: state === teamState.new},
+        {name: 'Planas', pathName: `/evaluator/teams/${teamId}/plan`, hidden: state === teamState.new},
       ];
   }
 

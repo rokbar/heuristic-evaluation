@@ -1,5 +1,8 @@
 const { disallow } = require('feathers-hooks-common');
 
+const { canUserSeeHeuristics } = require('../validations/heuristics');
+const validateHook = require('../utils/validationHookWrapper');
+
 module.exports = function ({ auth }) {
   return function (app) {
     app.service('heuristics/all').hooks({
@@ -15,6 +18,7 @@ module.exports = function ({ auth }) {
       before: {
         all: [
           auth.hooks.authenticate('jwt'),
+          validateHook(canUserSeeHeuristics, 'Jūs nepriklausote komandai, kurios euristikas bandote peržiūrėti.'),
         ],
       }
     });

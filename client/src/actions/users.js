@@ -4,7 +4,8 @@ import {
   EDIT_FORM,
   SET_TEAMS,
 } from './types';
-import { getJwtToken} from "utils/localStorage";
+import {getJwtToken} from "utils/localStorage";
+import {showAPIResponseError, checkAPIResponseValidity} from './apiResponse';
 
 export function getUsers() {
   return (dispatch) => {
@@ -33,7 +34,7 @@ export function getUsers() {
   }
 }
 
-export function getUserById({ userId, formName = '' }) {
+export function getUserById({userId, formName = ''}) {
   return (dispatch) => {
     return fetch(`/users/${userId}`, {
       headers: {
@@ -41,25 +42,22 @@ export function getUserById({ userId, formName = '' }) {
       },
       method: 'GET',
     })
-      .then(response => {
-        return response.json()
-      })
-      .then(user => {
-        dispatch({
+      .then(response => dispatch(checkAPIResponseValidity(response)))
+      .then(user => user && dispatch({
           type: EDIT_FORM,
           formName,
-          payload: { ...user }
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      })
+          payload: {...user}
+        })
+      )
+      .catch(error => dispatch(showAPIResponseError({
+        message: 'Neapdorota klaida bandant gauti informaciją apie naudotoją.'
+      })));
   }
 }
 
 export function getUsersByCompanyId() {
   return (dispatch, getState) => {
-    const { companyId } = getState().auth;
+    const {companyId} = getState().auth;
     return fetch(`/users?companyId=${companyId}`, {
       headers: {
         'Authorization': getJwtToken(),
@@ -85,9 +83,9 @@ export function getUsersByCompanyId() {
   }
 }
 
-export function addUser({ name, password, email, company, role }) {
+export function addUser({name, password, email, company, role}) {
   return (dispatch, getState) => {
-    const { userId } = getState().auth;
+    const {userId} = getState().auth;
     return fetch('/users', {
       body: JSON.stringify({
         name,
@@ -104,6 +102,7 @@ export function addUser({ name, password, email, company, role }) {
       },
       method: 'POST',
     })
+
       .then(response => {
         return response.json();
       })
@@ -116,7 +115,7 @@ export function addUser({ name, password, email, company, role }) {
   }
 }
 
-export function editUser({ id, name, email, companyId, role }) {
+export function editUser({id, name, email, companyId, role}) {
   return (dispatch) => {
     return fetch(`/users?id=${id}`, {
       body: JSON.stringify({
@@ -143,7 +142,7 @@ export function editUser({ id, name, email, companyId, role }) {
   }
 }
 
-export function editAccount({ id, name, email, password = '' }) {
+export function editAccount({id, name, email, password = ''}) {
   return (dispatch) => {
     return fetch(`/users/${id}/editAccount`, {
       body: JSON.stringify({
@@ -169,7 +168,7 @@ export function editAccount({ id, name, email, password = '' }) {
   }
 }
 
-export function editPassword({ id, currentPassword, newPassword, confirmPassword }) {
+export function editPassword({id, currentPassword, newPassword, confirmPassword}) {
   return (dispatch) => {
     return fetch(`/users/${id}/changePassword`, {
       body: JSON.stringify({
@@ -224,7 +223,7 @@ export function removeUser(id) {
 
 export function getTeamsByUser() {
   return (dispatch, getState) => {
-    const { userId } = getState().auth;
+    const {userId} = getState().auth;
     return fetch(`/users/${userId}/teams`, {
       headers: {
         'Authorization': getJwtToken(),
@@ -237,7 +236,7 @@ export function getTeamsByUser() {
       .then(teams => {
         dispatch({
           type: SET_TEAMS,
-          payload: { teams }
+          payload: {teams}
         })
       })
       .catch(error => {

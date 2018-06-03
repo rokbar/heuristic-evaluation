@@ -1,4 +1,5 @@
 import { SET_HEURISTICS, SET_SHARED_HEURISTICS } from "./types";
+import {showAPIResponseError, checkAPIResponseValidity} from './apiResponse';
 import { getJwtToken} from "utils/localStorage";
 
 export function getSharedHeuristics() {
@@ -33,18 +34,14 @@ export function getHeuristicsRules({ heuristicId }) {
       },
       method: 'GET',
     })
-      .then(response => {
-        return response.json()
-      })
-      .then(rules => {
-        dispatch({
+      .then(response => dispatch(checkAPIResponseValidity(response)))
+      .then(rules => rules && dispatch({
           type: SET_HEURISTICS,
           payload: { heuristics: [{ id: heuristicId, rules }] },
-        });
-        console.log(rules);
-      })
-      .catch(error => {
-        console.log(error);
-      })
+        })
+      )
+      .catch(error => dispatch(showAPIResponseError({
+        message: 'Neapdorota klaida bandant gauti euristikų rinkinį.'
+      })));
   }
 }

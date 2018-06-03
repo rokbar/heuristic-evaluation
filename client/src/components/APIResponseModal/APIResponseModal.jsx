@@ -9,7 +9,7 @@ class APIResponseModal extends Component {
   showHeader = (type) => {
     switch (type) {
       case 'error':
-        return <Header icon="exclamation" content="Įvykdo klaida"/>;
+        return <Header icon="exclamation" content="Įvyko klaida"/>;
       case 'info':
         return <Header icon="info" content='Informacija'/>;
       case 'succes':
