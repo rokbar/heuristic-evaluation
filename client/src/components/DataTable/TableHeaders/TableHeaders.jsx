@@ -8,6 +8,10 @@ export default function TableHeaders({headers, hasGroupedHeaders = false}) {
       return <Table.HeaderCell key={key}>{item}</Table.HeaderCell>;
     }
 
+    if (typeof item === 'function') {
+      return item();
+    }
+
     if (!isString(item) && !item.isChildHeader) {
       return <Table.HeaderCell colSpan={item.children && item.children.length} key={key}>{item && item.headerName}</Table.HeaderCell>;
     }

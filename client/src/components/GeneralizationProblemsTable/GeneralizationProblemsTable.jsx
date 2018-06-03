@@ -80,7 +80,7 @@ class GeneralizationProblemsTable extends Component {
           autoHeight: true,
         },
         {
-          headerName: 'Aptiko, Įvertinimas',
+          headerName: 'Aktualumo įvertis',
           groupId: 'usersRatings',
           suppressFilter: true,
           children: [...props.usersRatingsColDefs],

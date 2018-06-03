@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
-import { map, reduce, toNumber, isArray, find, uniqBy } from 'lodash';
+import React, {Component} from 'react';
+import {map, reduce, toNumber, isArray, find, uniqBy} from 'lodash';
 import PropTypes from 'prop-types';
 
 import DataTable from 'components/DataTable';
-import { Image, Label, Modal, Rating } from 'semantic-ui-react';
+import {Image, Label, Modal, Rating, Table} from 'semantic-ui-react';
 import StartRatingButton from './StartRatingButton';
 import SaveRatingsButton from './SaveRatingsButton';
 import FinishRatingButton from './FinishRatingButton';
+import RatingsMeaningPopup from './RatingsMeaningPopup';
 
-import { getUserRatingsByTeam, createOrUpdateRatings } from 'actions/ratings';
+import {getUserRatingsByTeam, createOrUpdateRatings} from 'actions/ratings';
 
 const propTypes = {
   startRatingProblems: PropTypes.func,
@@ -38,21 +39,21 @@ class ProblemsRatingTable extends Component {
   }
 
   componentDidMount() {
-    const { teamId } = this.props;
+    const {teamId} = this.props;
 
-    getUserRatingsByTeam({ teamId })
+    getUserRatingsByTeam({teamId})
       .then(response => {
-        this.setState({ ratings: response && response.length ? response : [] });
+        this.setState({ratings: response && response.length ? response : []});
       })
       .catch();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { problems } = nextProps;
+    const {problems} = nextProps;
 
     if (problems && problems.length) {
-      const { ratings } = this.state;
-      const updatedRatings = this.getInitialRatingsState({ problems, ratings });
+      const {ratings} = this.state;
+      const updatedRatings = this.getInitialRatingsState({problems, ratings});
 
       this.setState(prevState => ({
         updatedRatings: uniqBy(
@@ -64,32 +65,32 @@ class ProblemsRatingTable extends Component {
   }
 
   handleRatingClick = (e, data) => {
-    const { rating, problemId } = data;
+    const {rating, problemId} = data;
 
     const existingRating = find(this.state.ratings, (item) => item.problemId === problemId);
     let newRating = {};
 
     if (existingRating) {
       const {id, problemId, evaluatorId} = existingRating;
-      newRating = { id, problemId, value: rating, evaluatorId };
+      newRating = {id, problemId, value: rating, evaluatorId};
     } else {
-      newRating = { problemId, value: rating };
+      newRating = {problemId, value: rating};
     }
 
     this.setState(prevState => ({
       updatedRatings: uniqBy(
-        [{ ...newRating }, ...prevState.updatedRatings],
+        [{...newRating}, ...prevState.updatedRatings],
         'problemId',
       )
     }));
   };
 
   handleClickSave = () => {
-    createOrUpdateRatings({ ratings: this.state.updatedRatings })
+    createOrUpdateRatings({ratings: this.state.updatedRatings})
       .then(response => {
         // response is not a array of inserted ratings
         return response && response.length
-          ? getUserRatingsByTeam({ teamId: this.props.teamId })
+          ? getUserRatingsByTeam({teamId: this.props.teamId})
           : 0;
       })
       .then(ratings => {
@@ -101,13 +102,13 @@ class ProblemsRatingTable extends Component {
       .catch()
   };
 
-  getInitialRatingsState({ problems, ratings }) {
+  getInitialRatingsState({problems, ratings}) {
     // track which problems weren't rated yet
     // if problems are left with 0 rating, ratings will be inserted into DB either way (with 0 value)
     return reduce(problems, (updatedRatings, item) => {
       const rating = find(ratings, (o) => o.problemId === item.id);
 
-      if (!rating) updatedRatings.push({ problemId: item.id, value: 0 });
+      if (!rating) updatedRatings.push({problemId: item.id, value: 0});
 
       return updatedRatings;
     }, []);
@@ -119,7 +120,12 @@ class ProblemsRatingTable extends Component {
       location: 'Lokacija',
       rules: 'Pažeistos euristikos',
       photo: 'Nuotrauka',
-      rating: 'Įvertinimas',
+      rating: () => <Table.HeaderCell
+        rowSpan={'1'}
+        key='customratingsheader'
+      >
+        <span>Aktualumo įvertis  <RatingsMeaningPopup /></span>
+      </Table.HeaderCell>,
       solution: 'Pasiūlymas taisymui',
     }
   }
@@ -144,7 +150,7 @@ class ProblemsRatingTable extends Component {
   }
 
   getTableData() {
-    const { ratings } = this.state;
+    const {ratings} = this.state;
 
     return this.props.problems.map(item => {
       const {id, description, location, photos, solution, rules} = item;
@@ -155,7 +161,7 @@ class ProblemsRatingTable extends Component {
         location,
         rules: this.getRulesDescriptionsList(rules),
         photo: this.renderPhotoCell(photos),
-        rating: this.renderRatingCell({ problemId: id, value: rating ? rating.value : 0 }),
+        rating: this.renderRatingCell({problemId: id, value: rating ? rating.value : 0}),
         solution,
       };
     });
@@ -164,7 +170,8 @@ class ProblemsRatingTable extends Component {
   renderPhotoCell(photos) {
     return photos
       ? <Image.Group size="mini">
-        {map(photos, (item, key) => <Modal closeIcon key={key} trigger={<Image style={{cursor: 'pointer'}} src={item}/>}>
+        {map(photos, (item, key) => <Modal closeIcon key={key}
+                                           trigger={<Image style={{cursor: 'pointer'}} src={item}/>}>
           <Image src={item}/>
         </Modal>)}
       </Image.Group>
@@ -173,8 +180,8 @@ class ProblemsRatingTable extends Component {
       </Image>
   }
 
-  renderRatingCell({ problemId = null, value = 0 }) {
-    const { hasRatingStarted, hasEvaluatorFinishedRating } = this.props;
+  renderRatingCell({problemId = null, value = 0}) {
+    const {hasRatingStarted, hasEvaluatorFinishedRating} = this.props;
 
     return <Rating
       maxRating={4}
@@ -187,7 +194,7 @@ class ProblemsRatingTable extends Component {
   }
 
   renderTableActions() {
-    const { hasRatingStarted, hasEvaluatorFinishedRating } = this.props;
+    const {hasRatingStarted, hasEvaluatorFinishedRating} = this.props;
 
     return hasRatingStarted && !hasEvaluatorFinishedRating && <SaveRatingsButton
       handleClickSave={this.handleClickSave}
@@ -195,17 +202,17 @@ class ProblemsRatingTable extends Component {
   }
 
   render() {
-    const { hasRatingStarted, hasEvaluatorFinishedRating, startRatingProblems, finishRatingProblems } = this.props;
+    const {hasRatingStarted, hasEvaluatorFinishedRating, startRatingProblems, finishRatingProblems} = this.props;
     return [
       !hasEvaluatorFinishedRating
         ? !hasRatingStarted
-          ? <StartRatingButton
-            onStartRating={startRatingProblems}
-          />
-          : <FinishRatingButton
-            onFinishRating={finishRatingProblems}
-            hasSavedRatings={!this.state.updatedRatings.length} // do not let submit ratings if there are unsaved data
-          />
+        ? <StartRatingButton
+          onStartRating={startRatingProblems}
+        />
+        : <FinishRatingButton
+          onFinishRating={finishRatingProblems}
+          hasSavedRatings={!this.state.updatedRatings.length} // do not let submit ratings if there are unsaved data
+        />
         : null,
       <DataTable
         actions={this.renderTableActions()}

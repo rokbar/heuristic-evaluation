@@ -13,7 +13,7 @@ class ReportDataTable extends Component {
       rules: 'Pažeistos euristikos',
       location: 'Lokacija',
       userRatings: {
-        headerName: 'Aptiko, Įvertinimas',
+        headerName: 'Aktualumo įvertis',
         children: userRatingsColDefs,
       },
       ...usersIdsMappedToHeaderNames,

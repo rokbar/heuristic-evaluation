@@ -8,13 +8,21 @@ import {
   Form,
   Grid,
   Segment,
+  Divider,
 } from 'semantic-ui-react'
+import FormMessage from 'components/FormMessage';
 import TextAreaFormField from 'components/TextAreaFormField';
 import FileInputFormField from 'components/FileInputFormField';
 import CheckHeuristicsFormField from './CheckHeuristicsFormField';
 
 import { getProblemById } from 'actions/problems';
 import { destroyFormState } from 'actions/editForm';
+
+import {
+  required,
+  minLength10, maxLengthTEXT, maxLength255,
+  imageFile, imagesSize,
+} from 'utils/fieldLevelValidation';
 
 const FORM_NAME = 'editMergedProblem';
 
@@ -54,32 +62,40 @@ class EditGeneralizedProblemForm extends Component {
   };
 
   render() {
-    const {handleSubmit, editProblem, submitting} = this.props;
+    const {handleSubmit, editProblem, submitFailed, submitting} = this.props;
 
     return (
       <div className="EditMergedProblemForm">
         <Grid
-          textAlign="center"
           style={{height: "100%"}}
           verticalAlign="middle"
         >
           <Grid.Column>
-            <Form onSubmit={handleSubmit(editProblem)} size="large">
-              <Segment stacked>
+            <Form onSubmit={handleSubmit(editProblem)} error={submitFailed}>
+              <Segment basic>
                 <Field
                   name="description"
                   component={TextAreaFormField}
+                  label="Aprašymas"
                   placeholder="Aprašymas"
+                  required
+                  validate={[required, minLength10, maxLengthTEXT]}
                 />
                 <Field
                   name="location"
                   component={TextAreaFormField}
+                  label="Problemos lokacija"
                   placeholder="Problemos lokacija"
+                  required
+                  validate={[required, minLength10, maxLength255]}
                 />
                 <Field
                   name="solution"
                   component={TextAreaFormField}
+                  label="Taisymo pasiūlymas"
                   placeholder="Taisymo pasiūlymas"
+                  required
+                  validate={[required, minLength10, maxLengthTEXT]}
                 />
                 <FieldArray
                   name="rules"
@@ -93,16 +109,23 @@ class EditGeneralizedProblemForm extends Component {
                   type="file"
                   name="photo"
                   component={FileInputFormField}
+                  validate={[imageFile, imagesSize]}
                 />
+                <Divider/>
+                {submitFailed && <FormMessage
+                  type="error"
+                  header="Nepavyko išsaugoti pakeitimų"
+                  content="Patikrinkite ar formos laukai užpildyti teisingai"
+                />}
                 <Button
+                  style={{marginTop: "20px"}}
                   type="submit"
                   color="teal"
-                  fluid
-                  size="large"
+                  size="big"
                   disabled={submitting}
                   loading={submitting}
                 >
-                  Redaguoti
+                  Išsaugoti
                 </Button>
               </Segment>
             </Form>
