@@ -18,7 +18,7 @@ module.exports = function ({ auth }) {
       before: {
         all: [
           auth.hooks.authenticate('jwt'),
-          validateHook(canUserSeeHeuristics, 'Jūs nepriklausote komandai, kurios euristikas bandote peržiūrėti.'),
+          // validateHook(canUserSeeHeuristics, 'Jūs nepriklausote komandai, kurios euristikas bandote peržiūrėti.'),
         ],
       }
     });
