@@ -62,7 +62,7 @@ if (process.env.NODE_ENV === 'production') {
 app.configure(express.rest());
 
 // Configure jwt authentication middlewares
-app.configure(auth({ secret: 'myverysupersecretstring' }));
+app.configure(auth({ secret: process.env.JWT_SECRET }));
 app.configure(local());
 app.configure(jwt());
 
